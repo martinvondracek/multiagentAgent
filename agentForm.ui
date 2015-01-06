@@ -319,10 +319,165 @@
      <y>342</y>
     </hint>
     <hint type="destinationlabel">
-     <x>290</x>
-     <y>192</y>
+     <x>526</x>
+     <y>369</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>nastavAktPolohuButton</sender>
+   <signal>clicked()</signal>
+   <receiver>agentForm</receiver>
+   <slot>nastavAktPolohuClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>202</x>
+     <y>342</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>144</x>
+     <y>366</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pripojComportButton</sender>
+   <signal>clicked()</signal>
+   <receiver>agentForm</receiver>
+   <slot>pripojComportClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>215</x>
+     <y>94</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>197</x>
+     <y>47</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>odpojComportButton</sender>
+   <signal>clicked()</signal>
+   <receiver>agentForm</receiver>
+   <slot>odpojComportClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>231</x>
+     <y>128</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>177</x>
+     <y>147</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pripojServerButton</sender>
+   <signal>clicked()</signal>
+   <receiver>agentForm</receiver>
+   <slot>pripojServerClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>387</x>
+     <y>155</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>315</x>
+     <y>183</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>odpojServerButton</sender>
+   <signal>clicked()</signal>
+   <receiver>agentForm</receiver>
+   <slot>odpojServerClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>499</x>
+     <y>161</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>564</x>
+     <y>137</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>dopreduButton</sender>
+   <signal>clicked()</signal>
+   <receiver>agentForm</receiver>
+   <slot>dopreduClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>428</x>
+     <y>243</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>492</x>
+     <y>225</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>dopravaButton</sender>
+   <signal>clicked()</signal>
+   <receiver>agentForm</receiver>
+   <slot>dopravaClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>531</x>
+     <y>273</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>529</x>
+     <y>240</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>dolavaButton</sender>
+   <signal>clicked()</signal>
+   <receiver>agentForm</receiver>
+   <slot>dolavaClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>321</x>
+     <y>274</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>302</x>
+     <y>300</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>zastavButton</sender>
+   <signal>clicked()</signal>
+   <receiver>agentForm</receiver>
+   <slot>zastavClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>403</x>
+     <y>280</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>389</x>
+     <y>321</y>
     </hint>
    </hints>
   </connection>
  </connections>
+ <slots>
+  <slot>nastavAktPolohuClicked()</slot>
+  <slot>pripojComportClicked()</slot>
+  <slot>odpojComportClicked()</slot>
+  <slot>pripojServerClicked()</slot>
+  <slot>odpojServerClicked()</slot>
+  <slot>dopreduClicked()</slot>
+  <slot>dolavaClicked()</slot>
+  <slot>dopravaClicked()</slot>
+  <slot>zastavClicked()</slot>
+ </slots>
 </ui>

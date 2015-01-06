@@ -243,6 +243,15 @@ public:
 
         retranslateUi(agentForm);
         QObject::connect(koniecButton, SIGNAL(clicked()), agentForm, SLOT(close()));
+        QObject::connect(nastavAktPolohuButton, SIGNAL(clicked()), agentForm, SLOT(nastavAktPolohuClicked()));
+        QObject::connect(pripojComportButton, SIGNAL(clicked()), agentForm, SLOT(pripojComportClicked()));
+        QObject::connect(odpojComportButton, SIGNAL(clicked()), agentForm, SLOT(odpojComportClicked()));
+        QObject::connect(pripojServerButton, SIGNAL(clicked()), agentForm, SLOT(pripojServerClicked()));
+        QObject::connect(odpojServerButton, SIGNAL(clicked()), agentForm, SLOT(odpojServerClicked()));
+        QObject::connect(dopreduButton, SIGNAL(clicked()), agentForm, SLOT(dopreduClicked()));
+        QObject::connect(dopravaButton, SIGNAL(clicked()), agentForm, SLOT(dopravaClicked()));
+        QObject::connect(dolavaButton, SIGNAL(clicked()), agentForm, SLOT(dolavaClicked()));
+        QObject::connect(zastavButton, SIGNAL(clicked()), agentForm, SLOT(zastavClicked()));
 
         QMetaObject::connectSlotsByName(agentForm);
     } // setupUi
