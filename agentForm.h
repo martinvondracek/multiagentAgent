@@ -8,7 +8,12 @@
 #ifndef _AGENTFORM_H
 #define	_AGENTFORM_H
 
+#include <stdio.h>   
+#include <unistd.h>
+#include <iostream>
+
 #include "ui_agentForm.h"
+#include "socketClass.h"
 
 class agentForm : public QDialog {
     Q_OBJECT
