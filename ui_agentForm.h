@@ -267,12 +267,12 @@ public:
         label_15->setText(QApplication::translate("agentForm", "Manu\303\241lne riadenie", 0, QApplication::UnicodeUTF8));
         label->setText(QApplication::translate("agentForm", "Comport:", 0, QApplication::UnicodeUTF8));
         pripojComportButton->setText(QApplication::translate("agentForm", "Pripoj", 0, QApplication::UnicodeUTF8));
-        comportEdit->setText(QApplication::translate("agentForm", "COM1", 0, QApplication::UnicodeUTF8));
+        comportEdit->setText(QString());
         odpojComportButton->setText(QApplication::translate("agentForm", "Odpoj", 0, QApplication::UnicodeUTF8));
         label_2->setText(QApplication::translate("agentForm", "IP:", 0, QApplication::UnicodeUTF8));
-        ipEdit->setText(QApplication::translate("agentForm", "000.000.000.000", 0, QApplication::UnicodeUTF8));
+        ipEdit->setText(QString());
         label_3->setText(QApplication::translate("agentForm", "Port:", 0, QApplication::UnicodeUTF8));
-        ipPortEdit->setText(QApplication::translate("agentForm", "8080", 0, QApplication::UnicodeUTF8));
+        ipPortEdit->setText(QString());
         odpojServerButton->setText(QApplication::translate("agentForm", "Odpoj", 0, QApplication::UnicodeUTF8));
         pripojServerButton->setText(QApplication::translate("agentForm", "Pripoj", 0, QApplication::UnicodeUTF8));
         dopreduButton->setText(QApplication::translate("agentForm", "Dopredu", 0, QApplication::UnicodeUTF8));

@@ -121,7 +121,7 @@
     <item row="1" column="0">
      <widget class="QLineEdit" name="comportEdit">
       <property name="text">
-       <string>COM1</string>
+       <string/>
       </property>
      </widget>
     </item>
@@ -154,7 +154,7 @@
     <item row="0" column="1" colspan="2">
      <widget class="QLineEdit" name="ipEdit">
       <property name="text">
-       <string>000.000.000.000</string>
+       <string/>
       </property>
      </widget>
     </item>
@@ -168,7 +168,7 @@
     <item row="1" column="1" colspan="2">
      <widget class="QLineEdit" name="ipPortEdit">
       <property name="text">
-       <string>8080</string>
+       <string/>
       </property>
      </widget>
     </item>

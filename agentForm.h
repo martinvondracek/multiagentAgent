@@ -32,6 +32,10 @@ public:
     virtual ~agentForm();
 private:
     Ui::agentForm widget;
+    socketClass *socket;
+    
+    bool connectedComport = false;
+    bool connectedIp = false;
 };
 
 #endif	/* _AGENTFORM_H */

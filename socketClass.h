@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <cstring>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -21,16 +22,17 @@
 class socketClass {
 public:
     socketClass();
-    socketClass(int portNum);
+    socketClass(int portNum, const char *hostname);
     virtual ~socketClass();
     
-    int connectServer();
-    int disconnect();
-    int sendPacket();
-    int receivePacket();
-    int waitForClient();
+    int connectToServer(); // pripoji sa na socket
+    int disconnect(); // odpoji sa zo socketu
+    int sendJson(const char *jsonData);
+    int receiveJson(char *buffer, int bufSize);
     
     bool getConnected();
+    const char *getHostName();
+    void setHostName(const char *hostname);
     int getPortNumber();
     void setPortNumber(int portNum);
     
@@ -38,6 +40,11 @@ public:
 private:
     bool connected = false;
     int portNumber;
+    char *hostName = new char[50];
+    
+    int sockfd;
+    struct sockaddr_in serv_addr;
+    struct hostent *server;
 };
 
 #endif	/* SOCKETCLASS_H */
