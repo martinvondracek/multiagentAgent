@@ -31,10 +31,8 @@ agentForm::agentForm() {
     shm_R_GUI = new komunikacia_shm;
     shm_R_GUI->prebieha_uloha = 0;
     shm_R_GUI->ukonci_ulohu = 0;
-    agent = new agentClass(shm_R_GUI);
-    
-    std::cout << "pripojeny comport: " << agent->getConnectedComport() << "\n";
-    std::cout << "pripojeny IP: " << agent->getConnectedIp() << "\n";
+    //agent = new agentClass(shm_R_GUI);
+    agent = new CiCreate(shm_R_GUI);
 }
 
 void agentForm::pripojComportClicked() {

@@ -11,7 +11,7 @@
 #include "agentClass.h"
 
 
-class CiCreate : agentClass {
+class CiCreate : public agentClass {
 public:
     CiCreate(komunikacia_shm *shm2);
     virtual ~CiCreate();

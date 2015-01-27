@@ -14,7 +14,7 @@
 
 #include "ui_agentForm.h"
 #include "agentClass.h"
-#include "socketClass.h"
+#include "CiCreate.h"
 
 class agentForm : public QDialog {
     Q_OBJECT

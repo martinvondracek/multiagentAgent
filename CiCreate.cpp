@@ -11,5 +11,6 @@ CiCreate::CiCreate(komunikacia_shm *shm2) : agentClass(shm2) {
 }
 
 CiCreate::~CiCreate() {
+    std::cout << "destruktor CiCreate\n";
 }
 
