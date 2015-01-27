@@ -36,11 +36,13 @@ public:
     int getPortNumber();
     void setPortNumber(int portNum);
     
-    void test();
+    int test();
 private:
     bool connected = false;
     int portNumber;
     char *hostName = new char[50];
+    
+    // todo ID agenta od servera
     
     int sockfd;
     struct sockaddr_in serv_addr;

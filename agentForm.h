@@ -13,8 +13,8 @@
 #include <iostream>
 
 #include "ui_agentForm.h"
-#include "socketClass.h"
 #include "agentClass.h"
+#include "socketClass.h"
 
 class agentForm : public QDialog {
     Q_OBJECT
@@ -33,9 +33,9 @@ public:
     virtual ~agentForm();
 private:
     Ui::agentForm widget;
-    socketClass *socket;
     
     agentClass *agent;
+    komunikacia_shm *shm_R_GUI;
 };
 
 #endif	/* _AGENTFORM_H */

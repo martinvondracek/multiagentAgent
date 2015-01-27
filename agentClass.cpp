@@ -7,7 +7,8 @@
 
 #include "agentClass.h"
 
-agentClass::agentClass() {
+agentClass::agentClass(komunikacia_shm *shm_R_GUI) {
+    this->shm_R_GUI = shm_R_GUI;
 }
 
 int agentClass::getComport() {
@@ -15,7 +16,6 @@ int agentClass::getComport() {
 }
 
 int agentClass::connectComport(int comport) {
-    // todo implementovat
     this->comport = comport;
     this->connectedComport = true;
     return 0;
@@ -23,7 +23,6 @@ int agentClass::connectComport(int comport) {
 
 int agentClass::disConnectComport() {
     if (connectedComport) {
-        // todo implementovat
         this->connectedComport = false;
     }
     return 0;
@@ -59,6 +58,18 @@ int agentClass::disConnectIp() {
 
 bool agentClass::getConnectedIp() {
     return this->connectedIp;
+}
+
+int agentClass::Nastav_polohu(int x_0, int y_0, int uhol_0) {
+    return 0;
+}
+
+int agentClass::Pohyb(WORD p, WORD l) {
+    return 0;
+}
+
+int agentClass::Preskumaj_prostredie() {
+    return 0;
 }
 
 agentClass::~agentClass() {

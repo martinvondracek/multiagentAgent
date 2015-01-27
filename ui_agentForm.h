@@ -28,7 +28,7 @@ class Ui_agentForm
 {
 public:
     QPushButton *koniecButton;
-    QLabel *label_11;
+    QLabel *infoLabel;
     QLabel *label_12;
     QLabel *label_13;
     QLabel *label_14;
@@ -75,10 +75,10 @@ public:
         koniecButton = new QPushButton(agentForm);
         koniecButton->setObjectName(QString::fromUtf8("koniecButton"));
         koniecButton->setGeometry(QRect(460, 330, 85, 26));
-        label_11 = new QLabel(agentForm);
-        label_11->setObjectName(QString::fromUtf8("label_11"));
-        label_11->setGeometry(QRect(0, 10, 581, 26));
-        label_11->setAlignment(Qt::AlignCenter);
+        infoLabel = new QLabel(agentForm);
+        infoLabel->setObjectName(QString::fromUtf8("infoLabel"));
+        infoLabel->setGeometry(QRect(0, 10, 581, 26));
+        infoLabel->setAlignment(Qt::AlignCenter);
         label_12 = new QLabel(agentForm);
         label_12->setObjectName(QString::fromUtf8("label_12"));
         label_12->setGeometry(QRect(70, 50, 111, 26));
@@ -260,7 +260,7 @@ public:
     {
         agentForm->setWindowTitle(QApplication::translate("agentForm", "agentForm", 0, QApplication::UnicodeUTF8));
         koniecButton->setText(QApplication::translate("agentForm", "Koniec", 0, QApplication::UnicodeUTF8));
-        label_11->setText(QApplication::translate("agentForm", "Info", 0, QApplication::UnicodeUTF8));
+        infoLabel->setText(QApplication::translate("agentForm", "Info", 0, QApplication::UnicodeUTF8));
         label_12->setText(QApplication::translate("agentForm", "Pripojenie robota", 0, QApplication::UnicodeUTF8));
         label_13->setText(QApplication::translate("agentForm", "Pripojenie k serveru", 0, QApplication::UnicodeUTF8));
         label_14->setText(QApplication::translate("agentForm", "Lokaliz\303\241cia", 0, QApplication::UnicodeUTF8));

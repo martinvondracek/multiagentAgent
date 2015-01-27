@@ -130,8 +130,17 @@ int socketClass::receiveJson(char *buffer, int bufSize) {
     return 0;
 }
 
-void socketClass::test() {
-    int sockfd, portno, n;
+int socketClass::test() {
+    if (!connected) {
+        return -1;
+    }
+    char buf[256];
+    sendJson("nejaky string");
+    receiveJson(buf, 255);
+    std::cout << buf << "\n";
+    return 0;
+    
+    /*int sockfd, portno, n;
     struct sockaddr_in serv_addr;
     struct hostent *server;
 
@@ -162,7 +171,7 @@ void socketClass::test() {
     n = read(sockfd, buffer, 255);
     if (n < 0) std::cout << "ERROR reading from socket";
     printf("%s\n", buffer);
-    close(sockfd);
+    close(sockfd);*/
 }
 
 socketClass::~socketClass() {
