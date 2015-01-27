@@ -4,6 +4,7 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
+      <itemPath>CiCreate.h</itemPath>
       <itemPath>agentClass.h</itemPath>
       <itemPath>agentForm.h</itemPath>
       <itemPath>socketClass.h</itemPath>
@@ -16,6 +17,7 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
+      <itemPath>CiCreate.cpp</itemPath>
       <itemPath>agentClass.cpp</itemPath>
       <itemPath>agentForm.cpp</itemPath>
       <itemPath>main.cpp</itemPath>
@@ -46,6 +48,10 @@
       </qt>
       <compileType>
       </compileType>
+      <item path="CiCreate.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="CiCreate.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="agentClass.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="agentClass.h" ex="false" tool="3" flavor2="0">
@@ -87,6 +93,10 @@
           <developmentMode>5</developmentMode>
         </asmTool>
       </compileType>
+      <item path="CiCreate.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="CiCreate.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="agentClass.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="agentClass.h" ex="false" tool="3" flavor2="0">
