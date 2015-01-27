@@ -4,6 +4,7 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
+      <itemPath>agentClass.h</itemPath>
       <itemPath>agentForm.h</itemPath>
       <itemPath>socketClass.h</itemPath>
     </logicalFolder>
@@ -15,6 +16,7 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
+      <itemPath>agentClass.cpp</itemPath>
       <itemPath>agentForm.cpp</itemPath>
       <itemPath>main.cpp</itemPath>
       <itemPath>socketClass.cpp</itemPath>
@@ -44,6 +46,10 @@
       </qt>
       <compileType>
       </compileType>
+      <item path="agentClass.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="agentClass.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="agentForm.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="agentForm.h" ex="false" tool="3" flavor2="0">
@@ -81,6 +87,10 @@
           <developmentMode>5</developmentMode>
         </asmTool>
       </compileType>
+      <item path="agentClass.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="agentClass.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="agentForm.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="agentForm.h" ex="false" tool="3" flavor2="0">

@@ -26,6 +26,8 @@ agentForm::agentForm() {
     widget.dopravaButton->setEnabled(false);
     widget.dolavaButton->setEnabled(false);
     widget.zastavButton->setEnabled(false);
+    
+    agent = new agentClass();
 }
 
 void agentForm::pripojComportClicked() {
@@ -70,10 +72,10 @@ void agentForm::odpojComportClicked() {
 void agentForm::pripojServerClicked() {
     std::cout << "pripojServerClicked\n";
     
-    socket = new socketClass(widget.ipPortEdit->text().toInt(), widget.ipEdit->text().toStdString().c_str());
-    socket->connectToServer();
-    if (socket->getConnected()) {
-        connectedIp = true;
+//    socket = new socketClass(widget.ipPortEdit->text().toInt(), widget.ipEdit->text().toStdString().c_str());
+//    socket->connectToServer();
+//    if (socket->getConnected()) {
+//        connectedIp = true;
         
         widget.odpojComportButton->setEnabled(false);
         widget.pripojServerButton->setEnabled(false);
@@ -88,7 +90,7 @@ void agentForm::pripojServerClicked() {
         widget.dopravaButton->setEnabled(false);
         widget.dolavaButton->setEnabled(false);
         widget.zastavButton->setEnabled(false);
-    }
+ //   }
     //        char buf[256];
 //        socket->sendJson("nejaky string");
 //        socket->receiveJson(buf, 255);
@@ -110,9 +112,6 @@ void agentForm::odpojServerClicked() {
     widget.dopravaButton->setEnabled(true);
     widget.dolavaButton->setEnabled(true);
     widget.zastavButton->setEnabled(true);
-    
-    connectedIp = false;
-    delete socket;
 }
 
 void agentForm::nastavAktPolohuClicked() {
@@ -140,4 +139,5 @@ agentForm::~agentForm() {
     // todo implementovat
     odpojServerClicked();
     odpojComportClicked();
+    delete agent;
 }

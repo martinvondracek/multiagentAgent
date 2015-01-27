@@ -14,6 +14,7 @@
 
 #include "ui_agentForm.h"
 #include "socketClass.h"
+#include "agentClass.h"
 
 class agentForm : public QDialog {
     Q_OBJECT
@@ -34,8 +35,7 @@ private:
     Ui::agentForm widget;
     socketClass *socket;
     
-    bool connectedComport = false;
-    bool connectedIp = false;
+    agentClass *agent;
 };
 
 #endif	/* _AGENTFORM_H */
