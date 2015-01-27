@@ -10,8 +10,7 @@
 
 #define BAUDRATE B57600
 
-#include "../DP_server/polohaClass.h"
-#include "../DP_server/prekazkaClass.h"
+#include "socketClass.h"
 
 typedef short int WORD;
 
@@ -45,6 +44,7 @@ protected:
     bool connectedIp = false;
     bool mappingNow = false;
     komunikacia_shm *shm_R_GUI; //SHM pre komunikáciu medzi robtom a GUI - ukoncenie ulohy
+    socketClass *socket;
     
     int comport;
     int portNumber;

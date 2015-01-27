@@ -19,27 +19,27 @@
 #include <netinet/in.h>
 #include <netdb.h> 
 
+#include "../DP_server/polohaClass.h"
+#include "../DP_server/prekazkaClass.h"
+
 class socketClass {
 public:
     socketClass();
-    socketClass(int portNum, const char *hostname);
     virtual ~socketClass();
     
-    int connectToServer(); // pripoji sa na socket
+    int connectToServer(int portNum, const char *hostname); // pripoji sa na socket
     int disconnect(); // odpoji sa zo socketu
     int sendJson(const char *jsonData);
     int receiveJson(char *buffer, int bufSize);
     
     bool getConnected();
     const char *getHostName();
-    void setHostName(const char *hostname);
     int getPortNumber();
-    void setPortNumber(int portNum);
     
     int test();
 private:
     bool connected = false;
-    int portNumber;
+    int portNumber = 17005;
     char *hostName = new char[50];
     
     // todo ID agenta od servera

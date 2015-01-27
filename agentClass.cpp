@@ -9,6 +9,7 @@
 
 agentClass::agentClass(komunikacia_shm *shm_R_GUI) {
     this->shm_R_GUI = shm_R_GUI;
+    this->socket = new socketClass();    
 }
 
 int agentClass::getComport() {
@@ -41,22 +42,26 @@ int agentClass::getPortNumber() {
 }
 
 int agentClass::connectIp(int portNumber, const char *hostName) {
-    // todo implementovat
     this->portNumber = portNumber;
     std::strcpy(this->hostName, hostName);
-    this->connectedIp = true;
+    
+    socket->connectToServer(this->portNumber, this->hostName);
+    if (socket->getConnected()) {
+        this->connectedIp = true;
+    }
     return 0;
 }
 
 int agentClass::disConnectIp() {
-    if (connectedIp) {
-        // todo implementovat
+    socket->disconnect();
+    if (! socket->getConnected()) {
         this->connectedIp = false;
     }
     return 0;
 }
 
 bool agentClass::getConnectedIp() {
+    this->connectedIp = socket->getConnected();
     return this->connectedIp;
 }
 

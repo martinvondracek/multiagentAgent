@@ -8,13 +8,6 @@
 #include "socketClass.h"
 
 socketClass::socketClass() {
-    this->portNumber = 17005;
-    std::strcpy(this->hostName, "localhost");
-}
-
-socketClass::socketClass(int portNum, const char *hostname) {
-    this->portNumber = portNum;
-    std::strcpy(this->hostName, hostname);
 }
 
 bool socketClass::getConnected() {
@@ -25,19 +18,13 @@ const char * socketClass::getHostName() {
     return this->hostName;
 }
 
-void socketClass::setHostName(const char *hostname) {
-    std::strcpy(this->hostName, hostname);
-}
-
 int socketClass::getPortNumber() {
     return this->portNumber;
 }
 
-void socketClass::setPortNumber(int portNum) {
+int socketClass::connectToServer(int portNum, const char *hostname) {
     this->portNumber = portNum;
-}
-
-int socketClass::connectToServer() {
+    std::strcpy(this->hostName, hostname);
     std::cout << "connecting to server IP: " << hostName << ":" << portNumber << "\n";
     
     int n;
@@ -65,26 +52,6 @@ int socketClass::connectToServer() {
     connected = true;
     std::cout << "connected to server IP: " << hostName << ":" << portNumber << "\n";
     return 0;
-    
-//    // TODO implementovat
-//    sockfd = socket(AF_INET, SOCK_STREAM, 0); //vytvori novy socket
-//    if (sockfd < 0) {
-//        std::cout << "error opening socket\n";
-//        return -1;
-//    }
-//    bzero((char *) &serv_addr, sizeof (serv_addr)); //sets all values in a buffer to zero
-//    serv_addr.sin_family = AF_INET;
-//    serv_addr.sin_addr.s_addr = INADDR_ANY;
-//    serv_addr.sin_port = htons(portNumber); //converts a port number in host byte order to a port number in network byte order
-//    if (bind(sockfd, (struct sockaddr *) &serv_addr, sizeof (serv_addr)) < 0) { // naviaze socket na adresu
-//        std::cout << "ERROR on binding\n";
-//        return -1;
-//    }
-//    listen(sockfd, 5); //kolko moze cakat na spojenie
-//    
-//    std::cout << "server started on port " << portNumber << "\n";
-//    connected = true;
-//    return 0;
 }
 
 int socketClass::disconnect() {
