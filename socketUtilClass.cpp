@@ -25,6 +25,21 @@ int socketUtilClass::parseAgentIdFromJson(const char *json) {
     }
 }
 
+int socketUtilClass::parseAgentIdSpusteniaFromJson(const char *json) {
+    int id;
+    
+    rapidjson::Document document;
+    document.Parse<0>(json);
+    
+    std::string ctype = document["CLASSTYPE"].GetString();
+    if (ctype.compare("AGENTID") == 0) {
+        id = document["ID_SPUSTENIA"].GetInt();
+        return id;
+    } else {
+        return -1;
+    }
+}
+
 socketUtilClass::~socketUtilClass() {
 }
 

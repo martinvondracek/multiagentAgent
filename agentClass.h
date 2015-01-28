@@ -17,6 +17,7 @@ typedef short int WORD;
 
 struct komunikacia_shm {
     int agent_id;
+    int id_spustenia;
     int prebieha_uloha = 0;
     int ukonci_ulohu = 0; // či má ukončiť prehladávie
 };

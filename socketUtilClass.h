@@ -21,6 +21,7 @@ public:
     virtual ~socketUtilClass();
     
     static int parseAgentIdFromJson(const char *json);
+    static int parseAgentIdSpusteniaFromJson(const char *json);
 private:
 
 };

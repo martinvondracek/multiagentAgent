@@ -49,11 +49,14 @@ int agentClass::connectIp(int portNumber, const char *hostName) {
     if (socket->getConnected()) {
         char jsonData[256];
         socket->receiveJson(jsonData, 255);
+        std::cout << jsonData << "\n";
         int id = socketUtilClass::parseAgentIdFromJson(jsonData);
-        if (id > 0) {
+        int idSpustenia = socketUtilClass::parseAgentIdSpusteniaFromJson(jsonData);
+        if (id>0 && idSpustenia>0) {
             shm_R_GUI->agent_id = id;
+            shm_R_GUI->id_spustenia = idSpustenia;
             this->connectedIp = true;
-            std::cout << "mame id " << shm_R_GUI->agent_id << "\n";
+            std::cout << "mame id " << shm_R_GUI->agent_id << ", id_spustenia " << shm_R_GUI->id_spustenia << "\n";
             return 0;
         }
     }
