@@ -15,6 +15,10 @@ class CiCreate : public agentClass {
 public:
     CiCreate(komunikacia_shm *shm2);
     virtual ~CiCreate();
+    
+    int Nastav_polohu(int x_0, int y_0, int uhol_0);
+    int Pohyb(WORD p, WORD l);
+    int Preskumaj_prostredie();
 private:
 
 };

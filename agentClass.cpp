@@ -57,6 +57,8 @@ int agentClass::connectIp(int portNumber, const char *hostName) {
             shm_R_GUI->id_spustenia = idSpustenia;
             this->connectedIp = true;
             std::cout << "mame id " << shm_R_GUI->agent_id << ", id_spustenia " << shm_R_GUI->id_spustenia << "\n";
+            
+            // todo vytvorime nove vlakno na prijimanie zo socketu
             return 0;
         }
     }
