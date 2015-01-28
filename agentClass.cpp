@@ -47,9 +47,18 @@ int agentClass::connectIp(int portNumber, const char *hostName) {
     
     socket->connectToServer(this->portNumber, this->hostName);
     if (socket->getConnected()) {
-        this->connectedIp = true;
+        char jsonData[256];
+        socket->receiveJson(jsonData, 255);
+        int id = socketUtilClass::parseAgentIdFromJson(jsonData);
+        if (id > 0) {
+            shm_R_GUI->agent_id = id;
+            this->connectedIp = true;
+            std::cout << "mame id " << shm_R_GUI->agent_id << "\n";
+            return 0;
+        }
     }
-    return 0;
+    
+    return -1;
 }
 
 int agentClass::disConnectIp() {

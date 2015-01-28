@@ -11,10 +11,12 @@
 #define BAUDRATE B57600
 
 #include "socketClass.h"
+#include "socketUtilClass.h"
 
 typedef short int WORD;
 
 struct komunikacia_shm {
+    int agent_id;
     int prebieha_uloha = 0;
     int ukonci_ulohu = 0; // či má ukončiť prehladávie
 };

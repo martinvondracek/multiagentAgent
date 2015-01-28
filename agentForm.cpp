@@ -127,6 +127,8 @@ void agentForm::odpojServerClicked() {
         widget.dopravaButton->setEnabled(true);
         widget.dolavaButton->setEnabled(true);
         widget.zastavButton->setEnabled(true);
+        
+        // todo posleme serveru info o ukonceni, posleme posledne polohy, prekazky
     }
     
 }
