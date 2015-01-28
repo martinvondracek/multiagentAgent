@@ -18,6 +18,8 @@ typedef short int WORD;
 struct komunikacia_shm {
     int agent_id;
     int id_spustenia;
+    socketClass *socket;
+    
     int prebieha_uloha = 0;
     int ukonci_ulohu = 0; // či má ukončiť prehladávie
 };
@@ -48,6 +50,9 @@ protected:
     bool mappingNow = false;
     komunikacia_shm *shm_R_GUI; //SHM pre komunikáciu medzi robtom a GUI - ukoncenie ulohy
     socketClass *socket;
+    
+    pthread_t vlaknoPrijimanie; //prijimanie sprav zo servera
+    pthread_t vlaknoMapovanie;
     
     int comport;
     int portNumber;

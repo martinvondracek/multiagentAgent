@@ -56,6 +56,8 @@ void agentForm::pripojComportClicked() {
         widget.dopravaButton->setEnabled(true);
         widget.dolavaButton->setEnabled(true);
         widget.zastavButton->setEnabled(true);
+    } else {
+        widget.infoLabel->setText("Nepodarilo sa pripojit k robotu");
     }
     
 }
@@ -81,6 +83,8 @@ void agentForm::odpojComportClicked() {
         widget.dopravaButton->setEnabled(false);
         widget.dolavaButton->setEnabled(false);
         widget.zastavButton->setEnabled(false);
+    } else {
+        widget.infoLabel->setText("Nepodarilo sa odpojit robot");
     }
     
 }
@@ -104,6 +108,8 @@ void agentForm::pripojServerClicked() {
         widget.dopravaButton->setEnabled(false);
         widget.dolavaButton->setEnabled(false);
         widget.zastavButton->setEnabled(false);
+    } else {
+        widget.infoLabel->setText("Nepodarilo sa pripojit k serveru");
     }
     
 }
@@ -129,6 +135,8 @@ void agentForm::odpojServerClicked() {
         widget.zastavButton->setEnabled(true);
         
         // todo posleme serveru info o ukonceni, posleme posledne polohy, prekazky
+    }  else {
+        widget.infoLabel->setText("Nepodarilo sa odpojit od serveru");
     }
     
 }

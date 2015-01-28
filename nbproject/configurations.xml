@@ -49,6 +49,12 @@
         <modules>core gui widgets</modules>
       </qt>
       <compileType>
+        <linkerTool>
+          <linkerLibItems>
+            <linkerLibStdlibItem>PosixThreads</linkerLibStdlibItem>
+            <linkerOptionItem>-lpthread</linkerOptionItem>
+          </linkerLibItems>
+        </linkerTool>
       </compileType>
       <item path="CiCreate.cpp" ex="false" tool="1" flavor2="0">
       </item>

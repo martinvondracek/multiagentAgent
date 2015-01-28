@@ -7,9 +7,18 @@
 
 #include "agentClass.h"
 
+void *vlaknoPrijimanieDatServera(void *arg) {
+    //todo implementovat
+    while (1) {
+        std::cout << "vlakno prijimanie\n";
+        usleep(1000*1000);
+    }
+}
+
 agentClass::agentClass(komunikacia_shm *shm_R_GUI) {
     this->shm_R_GUI = shm_R_GUI;
     this->socket = new socketClass();    
+    this->shm_R_GUI->socket = this->socket;
 }
 
 int agentClass::getComport() {
@@ -57,8 +66,17 @@ int agentClass::connectIp(int portNumber, const char *hostName) {
             shm_R_GUI->id_spustenia = idSpustenia;
             this->connectedIp = true;
             std::cout << "mame id " << shm_R_GUI->agent_id << ", id_spustenia " << shm_R_GUI->id_spustenia << "\n";
-            
             // todo vytvorime nove vlakno na prijimanie zo socketu
+            pthread_attr_t parametre;
+            if (pthread_attr_init(&parametre)) {
+                std::cout << "chyba v attr_init\n";
+                return -1;
+            }
+            pthread_attr_setdetachstate(&parametre, PTHREAD_CREATE_DETACHED);
+            if (pthread_create(&(vlaknoPrijimanie), &parametre, vlaknoPrijimanieDatServera, (void*) shm_R_GUI)) {
+                std::cout << "chyba vo vytvarani vlakna na prijimanie\n";
+                return -1;
+            }
             return 0;
         }
     }
@@ -67,6 +85,8 @@ int agentClass::connectIp(int portNumber, const char *hostName) {
 }
 
 int agentClass::disConnectIp() {
+    // todo poposielat co treba
+    pthread_cancel(vlaknoPrijimanie);
     socket->disconnect();
     if (! socket->getConnected()) {
         this->connectedIp = false;
