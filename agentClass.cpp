@@ -57,7 +57,7 @@ int agentClass::connectIp(int portNumber, const char *hostName) {
             return 0;
         }
     }
-    
+    socket->disconnect();
     return -1;
 }
 
