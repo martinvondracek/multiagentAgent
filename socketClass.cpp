@@ -92,9 +92,9 @@ int socketClass::receiveJson(char *buffer, int bufSize) {
     n = read(sockfd, buffer, bufSize);
     if (n < 0) {
         std::cout << "ERROR reading from socket\n";
-        return -1;
+        return n;
     }
-    return 0;
+    return n;
 }
 
 int socketClass::test() {

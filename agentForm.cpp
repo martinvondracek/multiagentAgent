@@ -33,6 +33,8 @@ agentForm::agentForm() {
     shm_R_GUI->ukonci_ulohu = 0;
     //agent = new agentClass(shm_R_GUI);
     agent = new CiCreate(shm_R_GUI);
+    //shm_R_GUI->agent = agent;
+    
 }
 
 void agentForm::pripojComportClicked() {

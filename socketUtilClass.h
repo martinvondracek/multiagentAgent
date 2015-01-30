@@ -22,6 +22,7 @@ public:
     
     static int parseAgentIdFromJson(const char *json);
     static int parseAgentIdSpusteniaFromJson(const char *json);
+    static const char * parseClassTypeFromJson(const char *json);
 private:
 
 };

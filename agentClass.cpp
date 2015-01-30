@@ -8,17 +8,38 @@
 #include "agentClass.h"
 
 void *vlaknoPrijimanieDatServera(void *arg) {
-    //todo implementovat
+    int n;
+    
+    komunikacia_shm *shm_R_GUI = (komunikacia_shm *) arg;
     while (1) {
         std::cout << "vlakno prijimanie\n";
-        usleep(1000*1000);
+        char jsonData[256];
+        n = shm_R_GUI->socket->receiveJson(jsonData, 255);
+        if (n > 0) { //musia byt prijate byty
+            std::cout << "data=" << jsonData << "\n";
+            //todo rozparsovat a vyhodnotit
+            std::string ctype = socketUtilClass::parseClassTypeFromJson(jsonData);
+            if (ctype.compare("SPUSTIT_MAPOVANIE")) {
+                //todo ak treba pustit mapovanie tak pustime vlakno
+            }
+            //todo ak pride koordinacna suradnica pre mapovanie
+        }
+        usleep(300*1000);
     }
+    
+}
+
+void *vlaknoMapovanie(void *arg) {
+    //todo implementovat
+    komunikacia_shm *shm_R_GUI = (komunikacia_shm *) arg;
+    //shm_R_GUI->agent->Preskumaj_prostredie();
 }
 
 agentClass::agentClass(komunikacia_shm *shm_R_GUI) {
     this->shm_R_GUI = shm_R_GUI;
     this->socket = new socketClass();    
     this->shm_R_GUI->socket = this->socket;
+    this->shm_R_GUI->vlaknoMapovanie = &(this->vlaknoMapovanie);
 }
 
 int agentClass::getComport() {

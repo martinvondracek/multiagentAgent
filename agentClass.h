@@ -12,6 +12,7 @@
 
 #include "socketClass.h"
 #include "socketUtilClass.h"
+#include "agentClass.h"
 
 typedef short int WORD;
 
@@ -19,6 +20,8 @@ struct komunikacia_shm {
     int agent_id;
     int id_spustenia;
     socketClass *socket;
+    pthread_t *vlaknoMapovanie;
+    //agentClass *agent;
     
     int prebieha_uloha = 0;
     int ukonci_ulohu = 0; // či má ukončiť prehladávie
