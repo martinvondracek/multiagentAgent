@@ -129,7 +129,7 @@ int agentClass::disConnectIp() {
     std::cout << "disConnectIp\n";
     // todo poposielat co treba
     // todo posleme serveru ze koncime
-    // skoncime vlakno mapovania
+    // skoncime vlakno mapovania aj prijimania
     
     if (this->connectedIp) {
         if (shm_R_GUI->prebieha_uloha == true) {
@@ -163,8 +163,11 @@ int agentClass::Pohyb(WORD p, WORD l) {
 }
 
 int agentClass::Preskumaj_prostredie() {
-    for (int i=0; i<20; i++) {
-        std::cout << "preskumaj prostredie v agentClass\n";
+    while (1) {
+        if (shm_R_GUI->ukonci_ulohu == true) {
+            break;
+        }
+        std::cout << "preskumaj prostredie\n";
         usleep(1000*1000);
     }
     return 0;
