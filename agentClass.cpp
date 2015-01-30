@@ -30,7 +30,7 @@ void *vlaknoPrijimanieDatServera(void *arg) {
             std::cout << "data=" << jsonData << "\n";
             //rozparsovat a vyhodnotit
             std::string ctype = socketUtilClass::parseClassTypeFromJson(jsonData);
-            //todo ak treba pustit mapovanie tak pustime vlakno
+            //ak treba pustit mapovanie tak pustime nove vlakno
             if (ctype.compare("SPUSTIT_MAPOVANIE") == 0) {
                 pthread_attr_t parametre;
                 if (pthread_attr_init(&parametre)) {
@@ -44,7 +44,7 @@ void *vlaknoPrijimanieDatServera(void *arg) {
                 }
             }
             //todo ak pride koordinacna suradnica pre mapovanie
-            //todo ak pride poziadavka na ukoncenie mapovania
+            //ak pride poziadavka na ukoncenie mapovania
             if (ctype.compare("STOP_MAPOVANIE") == 0) {
                 shm_R_GUI->ukonci_ulohu = true;
             }
@@ -127,8 +127,8 @@ int agentClass::connectIp(int portNumber, const char *hostName) {
 
 int agentClass::disConnectIp() {
     std::cout << "disConnectIp\n";
-    // todo poposielat co treba
-    // todo posleme serveru ze koncime
+    // poposielat co treba
+    // posleme serveru ze koncime
     // skoncime vlakno mapovania aj prijimania
     
     if (this->connectedIp) {

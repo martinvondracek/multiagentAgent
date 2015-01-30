@@ -55,7 +55,7 @@ int socketClass::connectToServer(int portNum, const char *hostname) {
 }
 
 int socketClass::disconnect() {
-    // todo odpojime zo socketu ak je pripojeny
+    // odpojime zo socketu ak je pripojeny
     if (!connected) {
         return -1;
     }
