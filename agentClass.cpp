@@ -23,6 +23,8 @@ void *vlaknoPrijimanieDatServera(void *arg) {
                 //todo ak treba pustit mapovanie tak pustime vlakno
             }
             //todo ak pride koordinacna suradnica pre mapovanie
+            //todo ak pride poziadavka na ukoncenie mapovania
+            //todo ak pride poziadavka na ukoncenie agenta
         }
         usleep(300*1000);
     }
@@ -32,7 +34,10 @@ void *vlaknoPrijimanieDatServera(void *arg) {
 void *vlaknoMapovanie(void *arg) {
     //todo implementovat
     komunikacia_shm *shm_R_GUI = (komunikacia_shm *) arg;
-    //shm_R_GUI->agent->Preskumaj_prostredie();
+    agentClass *agent = (agentClass *) shm_R_GUI->agent;
+    shm_R_GUI->prebieha_uloha = true;
+    agent->Preskumaj_prostredie();
+    shm_R_GUI->prebieha_uloha = false;
 }
 
 agentClass::agentClass(komunikacia_shm *shm_R_GUI) {

@@ -30,10 +30,10 @@ agentForm::agentForm() {
     
     shm_R_GUI = new komunikacia_shm;
     shm_R_GUI->prebieha_uloha = 0;
-    shm_R_GUI->ukonci_ulohu = 0;
-    //agent = new agentClass(shm_R_GUI);
+    shm_R_GUI->ukonci_ulohu = false;
+    //agent = new agentClass(shm_R_GUI); všeobecne agent
     agent = new CiCreate(shm_R_GUI);
-    //shm_R_GUI->agent = agent;
+    shm_R_GUI->agent = (void *) agent;
     
 }
 

@@ -21,10 +21,10 @@ struct komunikacia_shm {
     int id_spustenia;
     socketClass *socket;
     pthread_t *vlaknoMapovanie;
-    //agentClass *agent;
+    void *agent; // (agentClass *)
     
-    int prebieha_uloha = 0;
-    int ukonci_ulohu = 0; // či má ukončiť prehladávie
+    bool prebieha_uloha = false;
+    bool ukonci_ulohu = false; // či má ukončiť prehladávie
 };
 
 class agentClass {
