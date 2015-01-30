@@ -34,6 +34,7 @@ agentForm::agentForm() {
     //agent = new agentClass(shm_R_GUI); všeobecne agent
     agent = new CiCreate(shm_R_GUI);
     shm_R_GUI->agent = (void *) agent;
+    shm_R_GUI->widget = &widget;
     
 }
 
@@ -200,6 +201,10 @@ void agentForm::dopravaClicked() {
     }
     
     agent->Pohyb(-100, 100);
+}
+
+void agentForm::mapujClicked() {
+    
 }
 
 agentForm::~agentForm() {

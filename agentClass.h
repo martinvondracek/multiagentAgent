@@ -13,6 +13,7 @@
 #include "socketClass.h"
 #include "socketUtilClass.h"
 #include "agentClass.h"
+#include "ui_agentForm.h"
 
 typedef short int WORD;
 
@@ -22,6 +23,7 @@ struct komunikacia_shm {
     socketClass *socket;
     pthread_t *vlaknoMapovanie;
     void *agent; // (agentClass *)
+    Ui::agentForm *widget;
     
     bool prebieha_uloha = false;
     bool ukonci_ulohu = false; // či má ukončiť prehladávie
@@ -43,9 +45,9 @@ public:
     int disConnectIp();
     bool getConnectedIp();
     
-    int Nastav_polohu(int x_0, int y_0, int uhol_0);
-    int Pohyb(WORD p, WORD l);
-    int Preskumaj_prostredie();
+    virtual int Nastav_polohu(int x_0, int y_0, int uhol_0);
+    virtual int Pohyb(WORD p, WORD l);
+    virtual int Preskumaj_prostredie();
     
 protected:
     bool connectedComport = false;

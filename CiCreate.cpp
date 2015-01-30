@@ -22,7 +22,10 @@ int CiCreate::Pohyb(WORD p, WORD l) {
 
 int CiCreate::Preskumaj_prostredie() {
     std::cout << "preskumaj prostredie\n";
-    for (int i=0; i<20; i++) {
+    while (1) {
+        if (shm_R_GUI->ukonci_ulohu == true) {
+            break;
+        }
         std::cout << "preskumaj prostredie\n";
         usleep(1000*1000);
     }

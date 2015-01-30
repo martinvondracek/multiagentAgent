@@ -22,7 +22,7 @@ static const uint qt_meta_data_agentForm[] = {
        6,       // revision
        0,       // classname
        0,    0, // classinfo
-       9,   14, // methods
+      10,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -39,6 +39,7 @@ static const uint qt_meta_data_agentForm[] = {
      141,   10,   10,   10, 0x0a,
      157,   10,   10,   10, 0x0a,
      173,   10,   10,   10, 0x0a,
+     190,   10,   10,   10, 0x0a,
 
        0        // eod
 };
@@ -49,6 +50,7 @@ static const char qt_meta_stringdata_agentForm[] = {
     "odpojServerClicked()\0nastavAktPolohuClicked()\0"
     "dopreduClicked()\0zastavClicked()\0"
     "dolavaClicked()\0dopravaClicked()\0"
+    "mapujClicked()\0"
 };
 
 void agentForm::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -66,6 +68,7 @@ void agentForm::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, v
         case 6: _t->zastavClicked(); break;
         case 7: _t->dolavaClicked(); break;
         case 8: _t->dopravaClicked(); break;
+        case 9: _t->mapujClicked(); break;
         default: ;
         }
     }
@@ -104,9 +107,9 @@ int agentForm::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 9)
+        if (_id < 10)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 9;
+        _id -= 10;
     }
     return _id;
 }

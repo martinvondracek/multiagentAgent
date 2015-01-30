@@ -7,6 +7,17 @@
 
 #include "agentClass.h"
 
+void *vlaknoMapovanie(void *arg) {
+    //todo implementovat
+    std::cout << "vlakno mapovanie aaa\n";
+    komunikacia_shm *shm_R_GUI = (komunikacia_shm *) arg;
+    agentClass *agent = (agentClass *) shm_R_GUI->agent;
+    shm_R_GUI->prebieha_uloha = true;
+    shm_R_GUI->ukonci_ulohu = false;
+    agent->Preskumaj_prostredie();
+    shm_R_GUI->prebieha_uloha = false;
+}
+
 void *vlaknoPrijimanieDatServera(void *arg) {
     int n;
     
@@ -17,27 +28,31 @@ void *vlaknoPrijimanieDatServera(void *arg) {
         n = shm_R_GUI->socket->receiveJson(jsonData, 255);
         if (n > 0) { //musia byt prijate byty
             std::cout << "data=" << jsonData << "\n";
-            //todo rozparsovat a vyhodnotit
+            //rozparsovat a vyhodnotit
             std::string ctype = socketUtilClass::parseClassTypeFromJson(jsonData);
-            if (ctype.compare("SPUSTIT_MAPOVANIE")) {
-                //todo ak treba pustit mapovanie tak pustime vlakno
+            //todo ak treba pustit mapovanie tak pustime vlakno
+            if (ctype.compare("SPUSTIT_MAPOVANIE") == 0) {
+                pthread_attr_t parametre;
+                if (pthread_attr_init(&parametre)) {
+                    std::cout << "chyba v attr_init\n";
+                    continue;
+                }
+                pthread_attr_setdetachstate(&parametre, PTHREAD_CREATE_DETACHED);
+                if (pthread_create(shm_R_GUI->vlaknoMapovanie, &parametre, vlaknoMapovanie, (void*) shm_R_GUI)) {
+                    std::cout << "chyba vo vytvarani vlakna na prijimanie\n";
+                    continue;
+                }
             }
             //todo ak pride koordinacna suradnica pre mapovanie
             //todo ak pride poziadavka na ukoncenie mapovania
+            if (ctype.compare("STOP_MAPOVANIE") == 0) {
+                shm_R_GUI->ukonci_ulohu = true;
+            }
             //todo ak pride poziadavka na ukoncenie agenta
         }
         usleep(300*1000);
     }
     
-}
-
-void *vlaknoMapovanie(void *arg) {
-    //todo implementovat
-    komunikacia_shm *shm_R_GUI = (komunikacia_shm *) arg;
-    agentClass *agent = (agentClass *) shm_R_GUI->agent;
-    shm_R_GUI->prebieha_uloha = true;
-    agent->Preskumaj_prostredie();
-    shm_R_GUI->prebieha_uloha = false;
 }
 
 agentClass::agentClass(komunikacia_shm *shm_R_GUI) {
@@ -90,9 +105,8 @@ int agentClass::connectIp(int portNumber, const char *hostName) {
         if (id>0 && idSpustenia>0) {
             shm_R_GUI->agent_id = id;
             shm_R_GUI->id_spustenia = idSpustenia;
-            this->connectedIp = true;
             std::cout << "mame id " << shm_R_GUI->agent_id << ", id_spustenia " << shm_R_GUI->id_spustenia << "\n";
-            // todo vytvorime nove vlakno na prijimanie zo socketu
+            // vytvorime nove vlakno na prijimanie zo socketu
             pthread_attr_t parametre;
             if (pthread_attr_init(&parametre)) {
                 std::cout << "chyba v attr_init\n";
@@ -103,6 +117,7 @@ int agentClass::connectIp(int portNumber, const char *hostName) {
                 std::cout << "chyba vo vytvarani vlakna na prijimanie\n";
                 return -1;
             }
+            this->connectedIp = true;
             return 0;
         }
     }
@@ -111,8 +126,22 @@ int agentClass::connectIp(int portNumber, const char *hostName) {
 }
 
 int agentClass::disConnectIp() {
+    std::cout << "disConnectIp\n";
     // todo poposielat co treba
-    pthread_cancel(vlaknoPrijimanie);
+    // todo posleme serveru ze koncime
+    // skoncime vlakno mapovania
+    
+    if (this->connectedIp) {
+        if (shm_R_GUI->prebieha_uloha == true) {
+            shm_R_GUI->ukonci_ulohu = true;
+            std::cout << "ukoncujeme ulohu v disConnectIp\n";
+            usleep(200 * 1000);
+            pthread_cancel(vlaknoMapovanie);
+        }
+        shm_R_GUI->socket->sendJson("{\"CLASSTYPE\" : \"QUIT\"}");
+        pthread_cancel(vlaknoPrijimanie);
+    }
+    
     socket->disconnect();
     if (! socket->getConnected()) {
         this->connectedIp = false;
@@ -134,6 +163,10 @@ int agentClass::Pohyb(WORD p, WORD l) {
 }
 
 int agentClass::Preskumaj_prostredie() {
+    for (int i=0; i<20; i++) {
+        std::cout << "preskumaj prostredie v agentClass\n";
+        usleep(1000*1000);
+    }
     return 0;
 }
 
