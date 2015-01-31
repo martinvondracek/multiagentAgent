@@ -10,6 +10,18 @@
 socketUtilClass::socketUtilClass() {
 }
 
+const char * socketUtilClass::createQuit(int idAgenta) {
+    std::string json = "{\n";
+    json.append("\"CLASSTYPE\" : \"QUIT\"");
+    
+    json.append(",\n\"ID\" : ");
+    json.append(std::to_string(idAgenta));
+    
+    json.append("\n}\n");
+        
+    return json.c_str();
+}
+
 int socketUtilClass::parseAgentIdFromJson(const char *json) {
     int id;
     

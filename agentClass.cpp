@@ -138,7 +138,7 @@ int agentClass::disConnectIp() {
             usleep(200 * 1000);
             pthread_cancel(vlaknoMapovanie);
         }
-        shm_R_GUI->socket->sendJson("{\"CLASSTYPE\" : \"QUIT\"}");
+        shm_R_GUI->socket->sendJson(socketUtilClass::createQuit(shm_R_GUI->agent_id));
         pthread_cancel(vlaknoPrijimanie);
     }
     

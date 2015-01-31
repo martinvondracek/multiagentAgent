@@ -49,6 +49,9 @@
         <modules>core gui widgets</modules>
       </qt>
       <compileType>
+        <ccTool>
+          <standard>8</standard>
+        </ccTool>
         <linkerTool>
           <linkerLibItems>
             <linkerLibStdlibItem>PosixThreads</linkerLibStdlibItem>
