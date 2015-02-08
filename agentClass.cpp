@@ -55,7 +55,9 @@ void *vlaknoPrijimanieDatServera(void *arg) {
                 }
             }
             //todo ak pride koordinacna suradnica pre mapovanie
-            
+            if (ctype.compare("KOORDINACNA_SURADNICA") == 0) {
+                // TODO implementovat
+            }
             //ak pride poziadavka na ukoncenie mapovania
             if (ctype.compare("STOP_MAPOVANIE") == 0) {
                 shm_R_GUI->ukonci_ulohu = true;

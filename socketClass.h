@@ -19,9 +19,6 @@
 #include <netinet/in.h>
 #include <netdb.h> 
 
-#include "../DP_server/polohaClass.h"
-#include "../DP_server/prekazkaClass.h"
-
 class socketClass {
 public:
     socketClass();

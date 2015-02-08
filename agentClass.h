@@ -14,6 +14,8 @@
 #include "socketUtilClass.h"
 #include "agentClass.h"
 #include "ui_agentForm.h"
+#include "polohaClass.h"
+#include "prekazkaClass.h"
 
 typedef short int WORD;
 

@@ -7,6 +7,8 @@
       <itemPath>CiCreate.h</itemPath>
       <itemPath>agentClass.h</itemPath>
       <itemPath>agentForm.h</itemPath>
+      <itemPath>polohaClass.h</itemPath>
+      <itemPath>prekazkaClass.h</itemPath>
       <itemPath>socketClass.h</itemPath>
       <itemPath>socketUtilClass.h</itemPath>
     </logicalFolder>
@@ -22,6 +24,8 @@
       <itemPath>agentClass.cpp</itemPath>
       <itemPath>agentForm.cpp</itemPath>
       <itemPath>main.cpp</itemPath>
+      <itemPath>polohaClass.cpp</itemPath>
+      <itemPath>prekazkaClass.cpp</itemPath>
       <itemPath>socketClass.cpp</itemPath>
       <itemPath>socketUtilClass.cpp</itemPath>
     </logicalFolder>
@@ -75,6 +79,14 @@
       </item>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
       </item>
+      <item path="polohaClass.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="polohaClass.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="prekazkaClass.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="prekazkaClass.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="socketClass.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="socketClass.h" ex="false" tool="3" flavor2="0">
@@ -123,6 +135,14 @@
       <item path="agentForm.ui" ex="false" tool="3" flavor2="0">
       </item>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="polohaClass.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="polohaClass.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="prekazkaClass.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="prekazkaClass.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="socketClass.cpp" ex="false" tool="1" flavor2="0">
       </item>
