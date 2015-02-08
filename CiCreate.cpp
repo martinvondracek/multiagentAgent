@@ -31,7 +31,6 @@ int CiCreate::Preskumaj_prostredie() {
         polohaClass *poloha = new polohaClass(0, shm_R_GUI->id_spustenia, shm_R_GUI->agent_id, 1.23, 2.34, 3.45);
         prekazkaClass *prekazka = new prekazkaClass(0, shm_R_GUI->id_spustenia, 0, shm_R_GUI->agent_id, 1.23, 2.34, 3.45, 1.23, 2.34, 0, 0, 1);
         shm_R_GUI->socket->sendJson(poloha->toJson());
-        usleep(10*1000);
         shm_R_GUI->socket->sendJson(prekazka->toJson());
         
         std::cout << "preskumaj prostredie\n";

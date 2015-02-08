@@ -74,6 +74,7 @@ int socketClass::sendJson(const char *jsonData) {
     int n;
     
     n = write(sockfd, jsonData, strlen(jsonData));
+    usleep(10*1000);
     if (n < 0) {
         std::cout << "ERROR writing to socket\n";
         return -1;
