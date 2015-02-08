@@ -35,6 +35,7 @@ agentForm::agentForm() {
     agent = new CiCreate(shm_R_GUI);
     shm_R_GUI->agent = (void *) agent;
     shm_R_GUI->widget = &widget;
+    shm_R_GUI->agentForm = (void *) this;
     
 }
 

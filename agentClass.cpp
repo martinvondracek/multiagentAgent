@@ -6,6 +6,7 @@
  */
 
 #include "agentClass.h"
+#include "agentForm.h"
 
 void *vlaknoMapovanie(void *arg) {
     //todo implementovat
@@ -18,10 +19,20 @@ void *vlaknoMapovanie(void *arg) {
     shm_R_GUI->prebieha_uloha = false;
 }
 
+void *vlaknoObsluzenieServerQuit(void *arg) {
+    // ked server posle ze konci tak sa od neho odpojime
+    std::cout << "vlakno obsluzenie skoncenia servera\n";
+    
+    agentForm *aagentForm = (agentForm *) arg;
+    aagentForm->odpojServerClicked();
+}
+
 void *vlaknoPrijimanieDatServera(void *arg) {
     int n;
     
     komunikacia_shm *shm_R_GUI = (komunikacia_shm *) arg;
+    agentClass *agent = (agentClass *) shm_R_GUI->agent;
+    
     while (1) {
         std::cout << "vlakno prijimanie\n";
         char jsonData[256];
@@ -44,11 +55,25 @@ void *vlaknoPrijimanieDatServera(void *arg) {
                 }
             }
             //todo ak pride koordinacna suradnica pre mapovanie
+            
             //ak pride poziadavka na ukoncenie mapovania
             if (ctype.compare("STOP_MAPOVANIE") == 0) {
                 shm_R_GUI->ukonci_ulohu = true;
             }
-            //todo ak pride poziadavka na ukoncenie agenta
+            //ak pride ze konci server - odpojime
+            if (ctype.compare("SERVER_QUIT") == 0) {
+                shm_R_GUI->ukonci_ulohu = true;
+                
+                pthread_t thr1;
+                pthread_attr_t parametre;
+                if (pthread_attr_init(&parametre)) {
+                    std::cout << "chyba v attr_init\n";
+                }
+                pthread_attr_setdetachstate(&parametre, PTHREAD_CREATE_DETACHED);
+                if (pthread_create(&thr1, &parametre, vlaknoObsluzenieServerQuit, (void*) shm_R_GUI->agentForm)) {
+                    std::cout << "chyba vo vytvarani vlakna na prijimanie\n";
+                }
+            }
         }
         usleep(300*1000);
     }

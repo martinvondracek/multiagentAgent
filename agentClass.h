@@ -24,6 +24,7 @@ struct komunikacia_shm {
     pthread_t *vlaknoMapovanie;
     void *agent; // (agentClass *)
     Ui::agentForm *widget;
+    void *agentForm;
     
     bool prebieha_uloha = false;
     bool ukonci_ulohu = false; // či má ukončiť prehladávie
