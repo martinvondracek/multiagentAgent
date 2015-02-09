@@ -73,7 +73,7 @@ void *vlaknoPrijimanieDatServera(void *arg) {
                 }
                 pthread_attr_setdetachstate(&parametre, PTHREAD_CREATE_DETACHED);
                 if (pthread_create(&thr1, &parametre, vlaknoObsluzenieServerQuit, (void*) shm_R_GUI->agentForm)) {
-                    std::cout << "chyba vo vytvarani vlakna na prijimanie\n";
+                    std::cout << "chyba vo vytvarani vlakna na odpojenie\n";
                 }
             }
         }
