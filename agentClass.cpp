@@ -24,6 +24,7 @@ void *vlaknoObsluzenieServerQuit(void *arg) {
     
     agentForm *aagentForm = (agentForm *) arg;
     aagentForm->odpojServerClicked();
+    usleep(300*1000);
 }
 
 void *vlaknoPrijimanieDatServera(void *arg) {
@@ -74,6 +75,7 @@ void *vlaknoPrijimanieDatServera(void *arg) {
                 if (pthread_create(&thr1, &parametre, vlaknoObsluzenieServerQuit, (void*) shm_R_GUI->agentForm)) {
                     std::cout << "chyba vo vytvarani vlakna na odpojenie\n";
                 }
+                return 0;
             }
             // ak pride nove ID spustenia
             if (ctype.compare("ID_SPUSTENIA") == 0) {
