@@ -9,7 +9,6 @@
 #include "agentForm.h"
 
 void *vlaknoMapovanie(void *arg) {
-    //todo implementovat
     std::cout << "vlakno mapovanie aaa\n";
     komunikacia_shm *shm_R_GUI = (komunikacia_shm *) arg;
     agentClass *agent = (agentClass *) shm_R_GUI->agent;
@@ -76,6 +75,14 @@ void *vlaknoPrijimanieDatServera(void *arg) {
                     std::cout << "chyba vo vytvarani vlakna na odpojenie\n";
                 }
             }
+            // ak pride nove ID spustenia
+            if (ctype.compare("ID_SPUSTENIA") == 0) {
+                int id_p = socketUtilClass::parseIdSpusteniaFromJson(jsonData);
+                if (id_p > 0) {
+                    shm_R_GUI->id_spustenia = id_p;
+                }
+            }
+            
         }
         usleep(300*1000);
     }
