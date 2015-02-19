@@ -18,6 +18,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h> 
+#include <mutex>
 
 class socketClass {
 public:
@@ -38,6 +39,7 @@ private:
     bool connected = false;
     int portNumber = 17005;
     char *hostName = new char[50];
+    std::mutex m;
     
     int sockfd;
     struct sockaddr_in serv_addr;

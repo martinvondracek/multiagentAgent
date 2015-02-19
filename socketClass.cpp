@@ -73,8 +73,16 @@ int socketClass::sendJson(const char *jsonData) {
     
     int n;
     
-    n = write(sockfd, jsonData, strlen(jsonData));
+    std::string str = "";
+    str.append(jsonData);
+    str.append("KKK");
+    const char * data = str.c_str();
+    
+    m.lock();
+    n = write(sockfd, data, strlen(data));
     usleep(10*1000);
+    m.unlock();
+    
     if (n < 0) {
         std::cout << "ERROR writing to socket\n";
         return -1;
