@@ -37,10 +37,10 @@ public:
     agentClass(komunikacia_shm *shm2);
     virtual ~agentClass();
     
-    int getComport();
-    int connectComport(int comport); // pripoji sa na robota
-    int disConnectComport();
-    bool getConnectedComport();
+    const char * getComport();
+    virtual int connectComport(const char * comport); // pripoji sa na robota
+    virtual int disConnectComport();
+    virtual bool getConnectedComport();
     
     const char *getHostName();
     int getPortNumber();
@@ -62,7 +62,7 @@ protected:
     pthread_t vlaknoPrijimanie; //prijimanie sprav zo servera
     pthread_t vlaknoMapovanie;
     
-    int comport;
+    const char * comport;
     int portNumber;
     char *hostName = new char[50];
     

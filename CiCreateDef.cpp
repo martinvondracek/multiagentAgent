@@ -10,7 +10,7 @@
 CiCreateDef::CiCreateDef() : CComport() {
 }
 
-CiCreateDef::CiCreateDef(char *cp, int bd) : CComport(cp, bd) {
+CiCreateDef::CiCreateDef(const char *cp, int bd) : CComport(cp, bd) {
 }
 
 int CiCreateDef::ConnectToPort() {

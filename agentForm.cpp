@@ -9,7 +9,7 @@
 
 agentForm::agentForm() {
     widget.setupUi(this);
-    widget.comportEdit->setText("COM1");
+    widget.comportEdit->setText("/dev/rfcomm0");
     widget.ipEdit->setText("localhost");
     widget.ipPortEdit->setText("17005");
     widget.infoLabel->setText("");
@@ -42,7 +42,8 @@ agentForm::agentForm() {
 void agentForm::pripojComportClicked() {
     std::cout << "pripojComportClicked\n";
     
-    agent->connectComport(widget.comportEdit->text().toInt());
+    std::string comp = widget.comportEdit->text().toStdString();
+    agent->connectComport(comp.c_str());
     if (agent->getConnectedComport()) {
         widget.infoLabel->setText("Robot pripojeny");
         widget.pripojComportButton->setEnabled(false);

@@ -267,7 +267,7 @@ class CiCreateDef : private CComport {
     CreateSensors sensors; //sem ukladá stav senzorov robota
 public:
     CiCreateDef();
-    CiCreateDef(char *cp, int bd);
+    CiCreateDef(const char *cp, int bd);
     int ConnectToPort(); //pripojí sa na robota
     int SendToCreate(unsigned char OI_code); //pošle robotu príkaz
     int SendToCreate(unsigned char OI_code, unsigned char data);//pošle robotu príkaz

@@ -112,11 +112,11 @@ agentClass::agentClass(komunikacia_shm *shm_R_GUI) {
     this->shm_R_GUI->vlaknoMapovanie = &(this->vlaknoMapovanie);
 }
 
-int agentClass::getComport() {
+const char * agentClass::getComport() {
     return this->comport;
 }
 
-int agentClass::connectComport(int comport) {
+int agentClass::connectComport(const char * comport) {
     this->comport = comport;
     this->connectedComport = true;
     return 0;

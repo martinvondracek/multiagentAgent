@@ -12,7 +12,7 @@ CComport::CComport() {
     baudrate = B57600;
 }
 
-CComport::CComport(char *cp, int bd) {
+CComport::CComport(const char *cp, int bd) {
     strcpy(comport, cp);
     baudrate = bd;
 }

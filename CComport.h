@@ -30,7 +30,7 @@ class CComport {
     int baudrate; //baudrate
 public:
     CComport();
-    CComport(char *cp, int bd);
+    CComport(const char *cp, int bd);
     int OpenComport(); // pripojí sa na port
     int PollComport(unsigned char *buf, int size); //číta z portu
     int SendByte(unsigned char byte); // pošle byte
