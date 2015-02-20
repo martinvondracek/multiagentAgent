@@ -8,8 +8,10 @@
 #ifndef CICREATE_H
 #define	CICREATE_H
 
+#include "CiCreate.h"
 #include "agentClass.h"
 #include "CiCreateDef.h"
+#include "agentForm.h"
 
 struct odometria_shm {
     int bateriaNapatie;
@@ -41,14 +43,28 @@ public:
     int connectComport(const char * comport);
     int disConnectComport();
     bool getConnectedComport();
+    int startTeleriadenie(void *widget);
+    int stopTeleriadenie();
     
     int Nastav_polohu(int x_0, int y_0, int uhol_0);
     int Pohyb(WORD p, WORD l);
     int Preskumaj_prostredie();
+    
+    int getPolohaX();
+    int getPolohaY();
+    int getPolohaUhol();
 private:
     CiCreateDef *crDef;
     odometria_shm *shm_odo;
     pthread_t vlaknoOdometria;
+    pthread_t vlaknoTeleriadenie;
+    bool stopTele = false;
+};
+
+struct param_tele {
+    bool *ukonci;
+    CiCreate *create;
+    Ui::agentForm *widget;
 };
 
 #endif	/* CICREATE_H */

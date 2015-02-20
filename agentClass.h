@@ -16,6 +16,7 @@
 #include "ui_agentForm.h"
 #include "polohaClass.h"
 #include "prekazkaClass.h"
+//#include "agentForm.h"
 
 typedef short int WORD;
 
@@ -41,6 +42,8 @@ public:
     virtual int connectComport(const char * comport); // pripoji sa na robota
     virtual int disConnectComport();
     virtual bool getConnectedComport();
+    virtual int startTeleriadenie(void *widget);
+    virtual int stopTeleriadenie();
     
     const char *getHostName();
     int getPortNumber();

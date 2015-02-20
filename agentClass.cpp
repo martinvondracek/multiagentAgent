@@ -133,6 +133,14 @@ bool agentClass::getConnectedComport() {
     return this->connectedComport;
 }
 
+int agentClass::startTeleriadenie(void *widget) {
+    return 0;
+}
+
+int agentClass::stopTeleriadenie() {
+    return 0;
+}
+
 const char * agentClass::getHostName() {
     return this->hostName;
 }

@@ -61,6 +61,8 @@ void agentForm::pripojComportClicked() {
         widget.dopravaButton->setEnabled(true);
         widget.dolavaButton->setEnabled(true);
         widget.zastavButton->setEnabled(true);
+        
+        agent->startTeleriadenie((void *) &widget);
     } else {
         widget.infoLabel->setText("Nepodarilo sa pripojit k robotu");
     }
@@ -70,6 +72,7 @@ void agentForm::pripojComportClicked() {
 void agentForm::odpojComportClicked() {
     std::cout << "odpojComportClicked\n";
     
+    agent->stopTeleriadenie();
     agent->disConnectComport();
     if (! agent->getConnectedComport()) {
         widget.infoLabel->setText("Robot odpojeny");
