@@ -21,10 +21,10 @@ void *vlaknoMapovanie(void *arg) {
 void *vlaknoObsluzenieServerQuit(void *arg) {
     // ked server posle ze konci tak sa od neho odpojime
     std::cout << "vlakno obsluzenie skoncenia servera\n";
-    
+    usleep(300*1000);
     agentForm *aagentForm = (agentForm *) arg;
     aagentForm->odpojServerClicked();
-    usleep(300*1000);
+    //usleep(300*1000);
 }
 
 void *vlaknoPrijimanieDatServera(void *arg) {
@@ -35,56 +35,70 @@ void *vlaknoPrijimanieDatServera(void *arg) {
     
     while (1) {
         std::cout << "vlakno prijimanie\n";
-        char jsonData[256];
-        n = shm_R_GUI->socket->receiveJson(jsonData, 255);
+        char jsonData[50001];
+        bzero(jsonData, 50000);
+        n = shm_R_GUI->socket->receiveJson(jsonData, 50000);
         if (n > 0) { //musia byt prijate byty
-            std::cout << "data=" << jsonData << "\n";
-            //rozparsovat a vyhodnotit
-            std::string ctype = socketUtilClass::parseClassTypeFromJson(jsonData);
-            //ak treba pustit mapovanie tak pustime nove vlakno
-            if (ctype.compare("SPUSTIT_MAPOVANIE") == 0) {
-                pthread_attr_t parametre;
-                if (pthread_attr_init(&parametre)) {
-                    std::cout << "chyba v attr_init\n";
-                    continue;
-                }
-                pthread_attr_setdetachstate(&parametre, PTHREAD_CREATE_DETACHED);
-                if (pthread_create(shm_R_GUI->vlaknoMapovanie, &parametre, vlaknoMapovanie, (void*) shm_R_GUI)) {
-                    std::cout << "chyba vo vytvarani vlakna na prijimanie\n";
-                    continue;
-                }
-            }
-            //todo ak pride koordinacna suradnica pre mapovanie
-            if (ctype.compare("KOORDINACNA_SURADNICA") == 0) {
-                // TODO implementovat
-            }
-            //ak pride poziadavka na ukoncenie mapovania
-            if (ctype.compare("STOP_MAPOVANIE") == 0) {
-                shm_R_GUI->ukonci_ulohu = true;
-            }
-            //ak pride ze konci server - odpojime
-            if (ctype.compare("SERVER_QUIT") == 0) {
-                shm_R_GUI->ukonci_ulohu = true;
-                
-                pthread_t thr1;
-                pthread_attr_t parametre;
-                if (pthread_attr_init(&parametre)) {
-                    std::cout << "chyba v attr_init\n";
-                }
-                pthread_attr_setdetachstate(&parametre, PTHREAD_CREATE_DETACHED);
-                if (pthread_create(&thr1, &parametre, vlaknoObsluzenieServerQuit, (void*) shm_R_GUI->agentForm)) {
-                    std::cout << "chyba vo vytvarani vlakna na odpojenie\n";
-                }
-                return 0;
-            }
-            // ak pride nove ID spustenia
-            if (ctype.compare("ID_SPUSTENIA") == 0) {
-                int id_p = socketUtilClass::parseIdSpusteniaFromJson(jsonData);
-                if (id_p > 0) {
-                    shm_R_GUI->id_spustenia = id_p;
-                }
-            }
+            //std::cout << "data=" << jsonData << "\n";
             
+            //ak pride viacej dat naraz tak ich rozdelime
+            std::string s = jsonData;
+            std::string delimiter = "KKK";
+            size_t pos = 0;
+            std::string token;
+            while ((pos = s.find(delimiter)) != std::string::npos) {
+                token = s.substr(0, pos);
+                //std::cout << "data=" << jsonData << "\n";
+                std::cout << "data token=" << token << "=KONIEC\n";
+
+                //rozparsovat a vyhodnotit
+                std::string ctype = socketUtilClass::parseClassTypeFromJson(token.c_str());
+                std::cout << "prislo ctype=" << ctype << "\n";
+                //ak treba pustit mapovanie tak pustime nove vlakno
+                if (ctype.compare("SPUSTIT_MAPOVANIE") == 0) {
+                    pthread_attr_t parametre;
+                    if (pthread_attr_init(&parametre)) {
+                        std::cout << "chyba v attr_init\n";
+                        continue;
+                    }
+                    pthread_attr_setdetachstate(&parametre, PTHREAD_CREATE_DETACHED);
+                    if (pthread_create(shm_R_GUI->vlaknoMapovanie, &parametre, vlaknoMapovanie, (void*) shm_R_GUI)) {
+                        std::cout << "chyba vo vytvarani vlakna na prijimanie\n";
+                        continue;
+                    }
+                }
+                //todo ak pride koordinacna suradnica pre mapovanie
+                if (ctype.compare("KOORDINACNA_SURADNICA") == 0) {
+                    // TODO implementovat
+                }
+                //ak pride poziadavka na ukoncenie mapovania
+                if (ctype.compare("STOP_MAPOVANIE") == 0) {
+                    shm_R_GUI->ukonci_ulohu = true;
+                }
+                //ak pride ze konci server - odpojime
+                if (ctype.compare("SERVER_QUIT") == 0) {
+                    shm_R_GUI->ukonci_ulohu = true;
+
+                    pthread_t thr1;
+                    pthread_attr_t parametre;
+                    if (pthread_attr_init(&parametre)) {
+                        std::cout << "chyba v attr_init\n";
+                    }
+                    pthread_attr_setdetachstate(&parametre, PTHREAD_CREATE_DETACHED);
+                    if (pthread_create(&thr1, &parametre, vlaknoObsluzenieServerQuit, (void*) shm_R_GUI->agentForm)) {
+                        std::cout << "chyba vo vytvarani vlakna na odpojenie\n";
+                    }
+                    return 0;
+                }
+                // ak pride nove ID spustenia
+                if (ctype.compare("ID_SPUSTENIA") == 0) {
+                    int id_p = socketUtilClass::parseIdSpusteniaFromJson(token.c_str());
+                    if (id_p > 0) {
+                        shm_R_GUI->id_spustenia = id_p;
+                    }
+                }
+                s.erase(0, pos + delimiter.length());
+            }
         }
         usleep(300*1000);
     }
@@ -133,11 +147,19 @@ int agentClass::connectIp(int portNumber, const char *hostName) {
     
     socket->connectToServer(this->portNumber, this->hostName);
     if (socket->getConnected()) {
-        char jsonData[256];
-        socket->receiveJson(jsonData, 255);
-        std::cout << jsonData << "\n";
-        int id = socketUtilClass::parseAgentIdFromJson(jsonData);
-        int idSpustenia = socketUtilClass::parseAgentIdSpusteniaFromJson(jsonData);
+        char jsonData[1001];
+        socket->receiveJson(jsonData, 1000);
+        //std::cout << jsonData << "\n";
+        
+        std::string s = jsonData;
+        std::string delimiter = "KKK";
+        size_t pos = 0;
+        std::string token;
+        pos = s.find(delimiter);
+        token = s.substr(0, pos);
+        
+        int id = socketUtilClass::parseAgentIdFromJson(token.c_str());
+        int idSpustenia = socketUtilClass::parseAgentIdSpusteniaFromJson(token.c_str());
         if (id>0 && idSpustenia>0) {
             shm_R_GUI->agent_id = id;
             shm_R_GUI->id_spustenia = idSpustenia;

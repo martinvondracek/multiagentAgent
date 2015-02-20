@@ -67,13 +67,13 @@ int socketUtilClass::parseIdSpusteniaFromJson(const char *json) {
     }
 }
 
-const char * socketUtilClass::parseClassTypeFromJson(const char *json) {
+std::string socketUtilClass::parseClassTypeFromJson(const char *json) {
     rapidjson::Document document;
     document.Parse<0>(json);
     
     std::string ctype = document["CLASSTYPE"].GetString();
     
-    return ctype.c_str();
+    return ctype;
 }
 
 socketUtilClass::~socketUtilClass() {
