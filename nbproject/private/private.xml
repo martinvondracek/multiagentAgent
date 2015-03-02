@@ -8,8 +8,15 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/home/martin/NetBeansProjects/DP_agent/agentClass.cpp</file>
-            <file>file:/home/martin/NetBeansProjects/DP_agent/socketUtilClass.cpp</file>
-            <file>file:/home/martin/NetBeansProjects/DP_agent/socketUtilClass.h</file>
+            <file>file:/home/martin/NetBeansProjects/DP_agent/agentClass.h</file>
+            <file>file:/home/martin/NetBeansProjects/DP_agent/CComport.cpp</file>
+            <file>file:/home/martin/NetBeansProjects/DP_agent/CiCreateDef.h</file>
+            <file>file:/home/martin/NetBeansProjects/DP_agent/CiCreateDef.cpp</file>
+            <file>file:/home/martin/NetBeansProjects/DP_agent/agentForm.cpp</file>
+            <file>file:/home/martin/NetBeansProjects/DP_agent/CiCreate.cpp</file>
+            <file>file:/home/martin/NetBeansProjects/DP_agent/CComport.h</file>
+            <file>file:/home/martin/NetBeansProjects/DP_agent/CiCreate.h</file>
+            <file>file:/home/martin/NetBeansProjects/DP_agent/agentForm.h</file>
         </group>
     </open-files>
 </project-private>

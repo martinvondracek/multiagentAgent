@@ -9,6 +9,9 @@
 #define	AGENTCLASS_H
 
 #define BAUDRATE B57600
+//#define BAUDRATE B9600
+
+#include <mutex>
 
 #include "socketClass.h"
 #include "socketUtilClass.h"
@@ -31,7 +34,11 @@ struct komunikacia_shm {
     
     bool prebieha_uloha = false;
     bool ukonci_ulohu = false; // či má ukončiť prehladávie
+    
+    std::mutex mutSocket;
 };
+
+
 
 class agentClass {
 public:

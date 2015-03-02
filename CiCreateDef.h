@@ -15,6 +15,11 @@
 
 typedef short int WORD;
 typedef int DWORD;
+
+#define COMMAND_CREATE 0x6F
+#define COMMAND_GYRO 0x70
+#define COMMAND_CREATE_SIZE 1
+
 //prikaz na start, kym neni poslany,neda sa s create nic robit ziadne data
 #define OI_START 0x80
 // prikaz na zmenu baud 1 byte ako data
@@ -311,6 +316,7 @@ public:
     void DecodeRequestedRightVelocityFromPacket(CreateSensors &IO_SENSORS_CREATE, unsigned char *data);//dekoduje žiadanú rýchlosť pravého kolesa
     void DecodeRequestedLeftVelocityFromPacket(CreateSensors &IO_SENSORS_CREATE, unsigned char *data);//dekoduje žiadanú rýchlosť lavého kolesa
     void UpdateSensorsStates(); //vyžiada stav senzorov robota a uloži do premennej
+    void UpdateSomeSensorsStates();
     int getLastDistance(); //vráti poslendú prejdenú vzdialenosť
     int getLastAngle(); //vráti posledný prejdený uhol
     int getBumpLeft(); //vráti stav lavého nárazníka

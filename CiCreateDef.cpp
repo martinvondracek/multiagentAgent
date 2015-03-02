@@ -18,6 +18,7 @@ int CiCreateDef::ConnectToPort() {
 }
 
 int CiCreateDef::SendToCreate(unsigned char OI_code) {
+    //SendByte(COMMAND_CREATE);
     return SendByte(OI_code);
 }
 
@@ -26,6 +27,7 @@ int CiCreateDef::SendToCreate(unsigned char OI_code, unsigned char data1) {
 
     data[0] = OI_code;
     data[1] = data1;
+    //SendByte(COMMAND_CREATE);
     return SendnBytes(&(data[0]), 2);
 }
 
@@ -43,6 +45,7 @@ int CiCreateDef::SendToCreate(unsigned char OI_code, WORD data1) {
     data[1] = pomoc1.datab[1];
     data[2] = pomoc1.datab[0];
 
+    //SendByte(COMMAND_CREATE);
     return SendnBytes(&(data[0]), 3);
 
 }
@@ -65,12 +68,14 @@ int CiCreateDef::SendToCreate(unsigned char OI_code, WORD data1, WORD data2) {
     data[3] = pomoc1.datab[1];
     data[4] = pomoc1.datab[0];
 
+    //SendByte(COMMAND_CREATE);
     return SendnBytes(&(data[0]), 5);
 }
 
 int CiCreateDef::SendToCreate(unsigned char OI_code, int NumOfBytes, unsigned char *data) {
     int pocet;
 
+    //SendByte(COMMAND_CREATE);
     pocet = SendByte(OI_code);
     pocet += SendBuf(data, NumOfBytes);
     return pocet;
@@ -81,7 +86,19 @@ int CiCreateDef::ReceivePacketFromCreate(CreateSensors &IO_SENSORS_CREATE, unsig
     DWORD pocet;
     dataR = (unsigned char*) malloc(100);
     pocet = PollComport(dataR, 100);
+    
+    //std::cout << "ma byt" << OI_PacketSize[packet]+COMMAND_CREATE_SYZE << " prislo" << pocet << "\n";
+    /*union pomoc_t {
+        WORD data;
+        unsigned char datab[2];
+    } pomoc1;
+    pomoc1.datab[1] = *(dataR + 13);
+    pomoc1.datab[0] = *(dataR + 14);
+    std::cout << "zmena polohy" << pomoc1.data << "\n";*/
+    
+    
     if (pocet == OI_PacketSize[packet]) {
+        //std::cout << "prvy" << static_cast<int>(*(dataR)) << "\n";
         DecodeSensorsFromPacket(IO_SENSORS_CREATE, packet, dataR);
         return pocet;
     } else {
@@ -315,6 +332,7 @@ void CiCreateDef::DecodeDistanceFromPacket(CreateSensors &IO_SENSORS_CREATE, uns
     pomoc1.datab[0] = *(data + 1);
     IO_SENSORS_CREATE.Distance = pomoc1.data;
 
+    //std::cout << "zmena polohy" << pomoc1.data << "\n";
 
 }
 
@@ -329,6 +347,7 @@ void CiCreateDef::DecodeAngleFromPacket(CreateSensors &IO_SENSORS_CREATE, unsign
     pomoc1.datab[0] = *(data + 1);
     IO_SENSORS_CREATE.Angle = pomoc1.data;
 
+    //std::cout << "zmena uhlu" << pomoc1.data << "\n";
 
 }
 
@@ -581,8 +600,37 @@ void CiCreateDef::DecodeRequestedLeftVelocityFromPacket(CreateSensors &IO_SENSOR
 
 void CiCreateDef::UpdateSensorsStates() {
     //vyžiada packet so všetkými informáciami
-    SendToCreate(OI_SENSORS, (unsigned char) 0x06);
-    ReceivePacketFromCreate(sensors, (unsigned char) 0x06);
+    SendToCreate(OI_SENSORS, (unsigned char) 6);
+    ReceivePacketFromCreate(sensors, (unsigned char) 6);
+}
+
+void CiCreateDef::UpdateSomeSensorsStates() {
+    //vyžiada packet so všetkými informáciami
+    
+    // distance
+    SendToCreate(OI_SENSORS, (unsigned char) 19);
+    ReceivePacketFromCreate(sensors, (unsigned char) 19);
+    usleep(10*1000);
+    
+    //angle
+    SendToCreate(OI_SENSORS, (unsigned char) 20);
+    ReceivePacketFromCreate(sensors, (unsigned char) 20);
+    usleep(10*1000);
+    
+    //Bumps and Wheel Drops
+    SendToCreate(OI_SENSORS, (unsigned char) 7);
+    ReceivePacketFromCreate(sensors, (unsigned char) 7);
+    usleep(10*1000);
+    
+    //wall
+    SendToCreate(OI_SENSORS, (unsigned char) 8);
+    ReceivePacketFromCreate(sensors, (unsigned char) 8);
+    usleep(10*1000);
+    
+    //wall signal
+    SendToCreate(OI_SENSORS, (unsigned char) 21);
+    ReceivePacketFromCreate(sensors, (unsigned char) 21);
+    usleep(10*1000);
 }
 
 int CiCreateDef::getLastDistance() {
