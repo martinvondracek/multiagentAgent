@@ -66,6 +66,7 @@ public:
     QLabel *zLabel;
     QLineEdit *z0Edit;
     QPushButton *nastavAktPolohuButton;
+    QPushButton *testButton;
 
     void setupUi(QDialog *agentForm)
     {
@@ -240,6 +241,9 @@ public:
 
         gridLayout_3->addWidget(nastavAktPolohuButton, 4, 0, 1, 3);
 
+        testButton = new QPushButton(agentForm);
+        testButton->setObjectName(QString::fromUtf8("testButton"));
+        testButton->setGeometry(QRect(310, 330, 85, 26));
 
         retranslateUi(agentForm);
         QObject::connect(koniecButton, SIGNAL(clicked()), agentForm, SLOT(close()));
@@ -252,6 +256,7 @@ public:
         QObject::connect(dopravaButton, SIGNAL(clicked()), agentForm, SLOT(dopravaClicked()));
         QObject::connect(dolavaButton, SIGNAL(clicked()), agentForm, SLOT(dolavaClicked()));
         QObject::connect(zastavButton, SIGNAL(clicked()), agentForm, SLOT(zastavClicked()));
+        QObject::connect(testButton, SIGNAL(clicked()), agentForm, SLOT(testClicked()));
 
         QMetaObject::connectSlotsByName(agentForm);
     } // setupUi
@@ -287,6 +292,7 @@ public:
         label_6->setText(QApplication::translate("agentForm", "Uhol:", 0, QApplication::UnicodeUTF8));
         zLabel->setText(QApplication::translate("agentForm", "0", 0, QApplication::UnicodeUTF8));
         nastavAktPolohuButton->setText(QApplication::translate("agentForm", "Nastav ako aktu\303\241lnu polohu", 0, QApplication::UnicodeUTF8));
+        testButton->setText(QApplication::translate("agentForm", "T", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
 };

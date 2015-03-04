@@ -239,6 +239,10 @@ int agentClass::Preskumaj_prostredie() {
     return 0;
 }
 
+void agentClass::pokusy() {
+    
+}
+
 agentClass::~agentClass() {
     std::cout << "destruktor agentClass\n";
     disConnectIp();

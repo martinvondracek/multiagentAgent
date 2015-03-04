@@ -305,6 +305,19 @@
     </item>
    </layout>
   </widget>
+  <widget class="QPushButton" name="testButton">
+   <property name="geometry">
+    <rect>
+     <x>310</x>
+     <y>330</y>
+     <width>85</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>T</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections>
@@ -468,6 +481,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>testButton</sender>
+   <signal>clicked()</signal>
+   <receiver>agentForm</receiver>
+   <slot>testClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>342</x>
+     <y>344</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>419</x>
+     <y>365</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>nastavAktPolohuClicked()</slot>
@@ -479,5 +508,6 @@
   <slot>dolavaClicked()</slot>
   <slot>dopravaClicked()</slot>
   <slot>zastavClicked()</slot>
+  <slot>testClicked()</slot>
  </slots>
 </ui>

@@ -62,6 +62,8 @@ public:
     virtual int Pohyb(WORD p, WORD l);
     virtual int Preskumaj_prostredie();
     
+    virtual void pokusy();
+    
 protected:
     bool connectedComport = false;
     bool connectedIp = false;

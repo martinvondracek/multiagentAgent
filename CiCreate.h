@@ -8,10 +8,17 @@
 #ifndef CICREATE_H
 #define	CICREATE_H
 
+#include <mutex>
+
 #include "CiCreate.h"
 #include "agentClass.h"
 #include "CiCreateDef.h"
 #include "agentForm.h"
+
+#define LEFT_WHEEL_MAX_POS_SPEED 500
+#define LEFT_WHEEL_MAX_NEG_SPEED -500
+#define RIGHT_WHEEL_MAX_POS_SPEED 500
+#define RIGHT_WHEEL_MAX_NEG_SPEED -500
 
 struct odometria_shm {
     int bateriaNapatie;
@@ -33,6 +40,8 @@ struct odometria_shm {
     
     unsigned char Cliff;
     unsigned char Wheelpdrop; //0-1
+    
+    std::mutex mutCrdef;
 };
 
 class CiCreate : public agentClass {
@@ -53,12 +62,18 @@ public:
     int getPolohaX();
     int getPolohaY();
     int getPolohaUhol();
+    
+    void pokusy();
 private:
     CiCreateDef *crDef;
     odometria_shm *shm_odo;
     pthread_t vlaknoOdometria;
     pthread_t vlaknoTeleriadenie;
     bool stopTele = false;
+    
+    int Dopredu_po_naraz(); //pošle robot rovno až pokial nenarazí nárazníkom
+    int Dopredu_o_vzdialenost(int ziad_vzdial); //prejde rovno o zadanú vzdialenosť
+    int Dopredu_o_vzdialenost_reg(int ziad_vzdial); // regulatorom prejde rovno o zadanú vzdialenosť
 };
 
 struct param_tele {

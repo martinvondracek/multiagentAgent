@@ -29,6 +29,7 @@ public slots:
     void dolavaClicked(); //pohne robot dolava
     void dopravaClicked(); //pohne robot doprava
     void mapujClicked();
+    void testClicked();
 public:
     agentForm();
     virtual ~agentForm();

@@ -212,6 +212,17 @@ void agentForm::mapujClicked() {
     
 }
 
+void agentForm::testClicked() {
+    std::cout << "testClicked\n";
+    
+    if (!agent->getConnectedComport()) {
+        std::cout << "neni pripojeny\n";
+        return;
+    }
+    
+    agent->pokusy();
+}
+
 agentForm::~agentForm() {
     std::cout << "destruktor agentForm\n";
     zastavClicked();

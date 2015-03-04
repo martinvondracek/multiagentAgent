@@ -10,58 +10,61 @@
 #define PI 3.14159265
 
 void *Odometria(void *arg) {
-    odometria_shm * shm2 = (odometria_shm *) arg;
+    odometria_shm * shmO = (odometria_shm *) arg;
     
     // inicializujeme
-    shm2->prejdena_vzdialenost = 0;
-    shm2->prejdeny_uhol = 0;
-    shm2->aktualny_uhol = 0;
-    shm2->x_rel = 0;
-    shm2->y_rel = 0;
+    shmO->prejdena_vzdialenost = 0;
+    shmO->prejdeny_uhol = 0;
+    shmO->aktualny_uhol = 0;
+    shmO->x_rel = 0;
+    shmO->y_rel = 0;
     
     //cyklický update údajov
-    while (!(shm2->ukonci_vlakno)) {
-        shm2->crDef->UpdateSensorsStates();
-        shm2->prejdena_vzdialenost += abs(shm2->crDef->getLastDistance());
-        shm2->prejdeny_uhol += abs(shm2->crDef->getLastAngle());
-        shm2->aktualny_uhol += shm2->crDef->getLastAngle();
-        shm2->aktualny_uhol = shm2->aktualny_uhol % 360;
-        if (shm2->aktualny_uhol < 0) {
-            shm2->aktualny_uhol += 360;
+    while (!(shmO->ukonci_vlakno)) {
+        shmO->mutCrdef.lock();
+        auto t_start = std::chrono::high_resolution_clock::now();
+        shmO->crDef->UpdateSensorsStates();
+        shmO->prejdena_vzdialenost += abs(shmO->crDef->getLastDistance());
+        shmO->prejdeny_uhol += abs(shmO->crDef->getLastAngle());
+        shmO->aktualny_uhol += shmO->crDef->getLastAngle();
+        shmO->aktualny_uhol = shmO->aktualny_uhol % 360;
+        if (shmO->aktualny_uhol < 0) {
+            shmO->aktualny_uhol += 360;
         }
-        shm2->x_rel += shm2->crDef->getLastDistance() * sin(shm2->aktualny_uhol * PI / 180) * -1;
-        shm2->y_rel += shm2->crDef->getLastDistance() * cos(shm2->aktualny_uhol * PI / 180);
-        if (shm2->crDef->getWall()) {
-            shm2->stena = 1;
+        shmO->x_rel += shmO->crDef->getLastDistance() * sin(shmO->aktualny_uhol * PI / 180) * -1;
+        shmO->y_rel += shmO->crDef->getLastDistance() * cos(shmO->aktualny_uhol * PI / 180);
+        if (shmO->crDef->getWall()) {
+            shmO->stena = 1;
         } else {
-            shm2->stena = 0;
+            shmO->stena = 0;
         }
-        if (shm2->crDef->getBumpLeft()) {
-            if (shm2->crDef->getBumpRight()) {
-                shm2->naraznik_vpredu = 1;
-                shm2->naraznik_vlavo = 0;
-                shm2->naraznik_vpravo = 0;
+        if (shmO->crDef->getBumpLeft()) {
+            if (shmO->crDef->getBumpRight()) {
+                shmO->naraznik_vpredu = 1;
+                shmO->naraznik_vlavo = 0;
+                shmO->naraznik_vpravo = 0;
             } else {
-                shm2->naraznik_vpredu = 0;
-                shm2->naraznik_vlavo = 1;
-                shm2->naraznik_vpravo = 0;
+                shmO->naraznik_vpredu = 0;
+                shmO->naraznik_vlavo = 1;
+                shmO->naraznik_vpravo = 0;
             }
         } else {
-            if (shm2->crDef->getBumpRight()) {
-                shm2->naraznik_vpredu = 0;
-                shm2->naraznik_vlavo = 0;
-                shm2->naraznik_vpravo = 1;
+            if (shmO->crDef->getBumpRight()) {
+                shmO->naraznik_vpredu = 0;
+                shmO->naraznik_vlavo = 0;
+                shmO->naraznik_vpravo = 1;
             } else {
-                shm2->naraznik_vpredu = 0;
-                shm2->naraznik_vlavo = 0;
-                shm2->naraznik_vpravo = 0;
+                shmO->naraznik_vpredu = 0;
+                shmO->naraznik_vlavo = 0;
+                shmO->naraznik_vpravo = 0;
             }
         }
-        shm2->signalSteny = shm2->crDef->getWallSingal();
-        shm2->bateriaNapatie = shm2->crDef->getBatteryNapatie();
-        shm2->bateriaTeplota = shm2->crDef->getBatteryTeplota();
-        shm2->Wheelpdrop = shm2->crDef->getZdvihnutie();
-        shm2->Cliff = shm2->crDef->getSchody();
+        shmO->signalSteny = shmO->crDef->getWallSingal();
+        shmO->bateriaNapatie = shmO->crDef->getBatteryNapatie();
+        shmO->bateriaTeplota = shmO->crDef->getBatteryTeplota();
+        shmO->Wheelpdrop = shmO->crDef->getZdvihnutie();
+        shmO->Cliff = shmO->crDef->getSchody();
+        shmO->mutCrdef.unlock();
         //výpis do terminálu
 //        system("clear");
 //        std::cout << "Celková prejdená vzdialenosť " << shm2->prejdena_vzdialenost << "\n";
@@ -78,8 +81,12 @@ void *Odometria(void *arg) {
 //        std::cout << "stena " << shm2->stena << "\n";
 //        std::cout << "signal steny " << ((int) shm2->signalSteny) << "\n";
         //shm2->crDef->UpdateSensorsStates();
-        //usleep(40 * 1000);
-        usleep(150 * 1000);
+        usleep(40 * 1000);
+        //usleep(150 * 1000);
+        auto t_end = std::chrono::high_resolution_clock::now();
+        /*std::cout << "odometria Wall clock time passed: "
+                << std::chrono::duration<double, std::milli>(t_end - t_start).count()
+                << " ms\n";*/
     }
     pthread_exit(NULL);
 }
@@ -115,13 +122,21 @@ int CiCreate::Nastav_polohu(int x_0, int y_0, int uhol_0) {
 }
 
 int CiCreate::Pohyb(WORD p, WORD l) {
-    std::cout << "pohyb\n";
+    //std::cout << "pohyb\n";
     
     if (connectedComport) {
-        this->crDef->SendToCreate((unsigned char) 0x91, (WORD) p, (WORD) l);
+        //saturujeme na min a max hodnoty rychlosti
+        if (p < RIGHT_WHEEL_MAX_NEG_SPEED) p = RIGHT_WHEEL_MAX_NEG_SPEED;
+        if (p > RIGHT_WHEEL_MAX_POS_SPEED) p = RIGHT_WHEEL_MAX_POS_SPEED;
+        if (l < LEFT_WHEEL_MAX_NEG_SPEED) l = LEFT_WHEEL_MAX_NEG_SPEED;
+        if (l > LEFT_WHEEL_MAX_POS_SPEED) l = LEFT_WHEEL_MAX_POS_SPEED;
+        
+        shm_odo->mutCrdef.lock();
+        shm_odo->crDef->SendToCreate((unsigned char) 0x91, (WORD) p, (WORD) l);
+        shm_odo->mutCrdef.unlock();
         return 0;
     } else {
-        printf("Nemožno spustit pohyb, neni pripojený robot\n");
+        std::cout << "Nemožno spustit pohyb po naraz, neni pripojený robot\n";
         return -1;
     }
     
@@ -241,6 +256,183 @@ int CiCreate::getPolohaY() {
 
 int CiCreate::getPolohaUhol() {
     return shm_odo->aktualny_uhol;
+}
+
+void CiCreate::pokusy() {
+    //Dopredu_po_naraz();
+    Dopredu_o_vzdialenost_reg(500);
+    //usleep(2000 * 1000);
+    //Dopredu_o_vzdialenost_reg(500);
+}
+
+int CiCreate::Dopredu_po_naraz() {
+    if (connectedComport) {
+        shm_odo->mutCrdef.lock();
+        shm_odo->crDef->SendToCreate((unsigned char) 0x91, (WORD) 120, (WORD) 120);
+        shm_odo->mutCrdef.unlock();
+        while (1) {
+            if (shm_odo->naraznik_vpredu || shm_odo->naraznik_vlavo || shm_odo->naraznik_vpravo) {
+                shm_odo->mutCrdef.lock();
+                shm_odo->crDef->SendToCreate((unsigned char) 0x91, (WORD) 0, (WORD) 0);
+                shm_odo->mutCrdef.unlock();
+                break;
+            }
+            if (shm_odo->ukonci_vlakno) {
+                shm_odo->mutCrdef.lock();
+                shm_odo->crDef->SendToCreate((unsigned char) 0x91, (WORD) 0, (WORD) 0);
+                shm_odo->mutCrdef.unlock();
+                break;
+            }
+            usleep(10 * 1000);
+        }
+        return 1;
+    } else {
+        std::cout << "Nemožno spustit pohyb po naraz, neni pripojený robot\n";
+        return 0;
+    }
+}
+
+int CiCreate::Dopredu_o_vzdialenost(int ziad_vzdial) {
+    //postupne zrýchluje a spomaluje aby sa zmenšila chyba prešmykovaním kolies
+    if (connectedComport && shm_odo->ukonci_vlakno==0) {
+        int poc_vzdial = shm_odo->prejdena_vzdialenost;
+        // ak chceme prejst o vzdialenost vacsiu ako 200mm rozbiehame sa 
+        // na 2 krat aby sme nepresmykovali, inak ideme len pomalsou rychlostou
+        if (ziad_vzdial > 200) {
+            ziad_vzdial += poc_vzdial;
+            shm_odo->mutCrdef.lock();
+            shm_odo->crDef->SendToCreate((unsigned char) 0x91, (WORD) 150, (WORD) 150);
+            shm_odo->mutCrdef.unlock();
+            while (1) {
+                if (abs(shm_odo->prejdena_vzdialenost - poc_vzdial) > 10) {
+                    break;
+                }
+                if (shm_odo->ukonci_vlakno) {
+                    shm_odo->mutCrdef.lock();
+                    shm_odo->crDef->SendToCreate((unsigned char) 0x91, (WORD) 0, (WORD) 0);
+                    shm_odo->mutCrdef.unlock();
+                    break;
+                }
+                usleep(10 * 1000);
+            }
+            shm_odo->mutCrdef.lock();
+            shm_odo->crDef->SendToCreate((unsigned char) 0x91, (WORD) 250, (WORD) 250);
+            shm_odo->mutCrdef.unlock();
+        } else {
+            ziad_vzdial += poc_vzdial;
+            shm_odo->mutCrdef.lock();
+            shm_odo->crDef->SendToCreate((unsigned char) 0x91, (WORD) 150, (WORD) 150);
+            shm_odo->mutCrdef.unlock();
+        }
+        //cakame kym sa priblizime na 70mm
+        while (1) {
+            if (abs(shm_odo->prejdena_vzdialenost - ziad_vzdial) < 70) {
+                break;
+            }
+            if (shm_odo->ukonci_vlakno) {
+                shm_odo->mutCrdef.lock();
+                shm_odo->crDef->SendToCreate((unsigned char) 0x91, (WORD) 0, (WORD) 0);
+                shm_odo->mutCrdef.unlock();
+                break;
+            }
+            usleep(10 * 1000);
+        }
+        //ked sme blizko zmensime rychlost aby sme sa presnejsie priblizili
+        shm_odo->mutCrdef.lock();
+        shm_odo->crDef->SendToCreate((unsigned char) 0x91, (WORD) 100, (WORD) 100);
+        shm_odo->mutCrdef.unlock();
+        while (1) {
+            if (abs(shm_odo->prejdena_vzdialenost - ziad_vzdial) < 20) {
+                break;
+            }
+            if (shm_odo->ukonci_vlakno) {
+                shm_odo->mutCrdef.lock();
+                shm_odo->crDef->SendToCreate((unsigned char) 0x91, (WORD) 0, (WORD) 0);
+                shm_odo->mutCrdef.unlock();
+                break;
+            }
+            usleep(10 * 1000);
+        }
+        //sme na mieste zastavime
+        shm_odo->mutCrdef.lock();
+        shm_odo->crDef->SendToCreate((unsigned char) 0x91, (WORD) 0, (WORD) 0);
+        shm_odo->mutCrdef.unlock();
+        return 1;
+    } else {
+        std::cout << "Nemožno spustit pohyb po naraz, neni pripojený robot\n";
+        return 0;
+    }
+}
+
+int CiCreate::Dopredu_o_vzdialenost_reg(int ziad_vzdial) {
+    //postupne zrýchluje a potom regulatorom zastavi na pozadovanej vzdialenosti
+    int K = 2;
+    int rychl = 50;
+    int akcZasah;
+    
+    if (connectedComport && shm_odo->ukonci_vlakno==0) {
+        ziad_vzdial = abs(ziad_vzdial);
+        int poc_vzdial = shm_odo->prejdena_vzdialenost;
+        ziad_vzdial += poc_vzdial;
+        
+        // rozbiehame az dokedy sa nedostaneme na rychlost aktualneho akcneho zasahu
+        int cyklus = 0;
+        while (1) {
+            cyklus++;
+            rychl += 10*K;
+            akcZasah = K*(ziad_vzdial - shm_odo->prejdena_vzdialenost);
+            
+            shm_odo->mutCrdef.lock();
+            shm_odo->crDef->SendToCreate((unsigned char) 0x91, (WORD) rychl, (WORD) rychl);
+            shm_odo->mutCrdef.unlock();
+            
+            if (rychl >= abs(akcZasah) || abs(rychl) > LEFT_WHEEL_MAX_POS_SPEED) {
+                break;
+            }
+            
+            if (shm_odo->ukonci_vlakno) {
+                shm_odo->mutCrdef.lock();
+                shm_odo->crDef->SendToCreate((unsigned char) 0x91, (WORD) 0, (WORD) 0);
+                shm_odo->mutCrdef.unlock();
+                break;
+            }
+            usleep(10 * 1000);
+        }
+        
+        //brzdime
+        while (1) {
+            akcZasah = K*(ziad_vzdial - shm_odo->prejdena_vzdialenost);
+            // min rychlost 50
+            if (abs(akcZasah<50)) {
+                if (akcZasah>0) akcZasah=50;
+                if (akcZasah<0) akcZasah=-50;
+            }
+            
+            shm_odo->mutCrdef.lock();
+            shm_odo->crDef->SendToCreate((unsigned char) 0x91, (WORD) akcZasah, (WORD) akcZasah);
+            shm_odo->mutCrdef.unlock();
+            
+            if (abs(shm_odo->prejdena_vzdialenost - ziad_vzdial) < 10) {
+                break;
+            }
+            
+            if (shm_odo->ukonci_vlakno) {
+                shm_odo->mutCrdef.lock();
+                shm_odo->crDef->SendToCreate((unsigned char) 0x91, (WORD) 0, (WORD) 0);
+                shm_odo->mutCrdef.unlock();
+                break;
+            }
+            usleep(10 * 1000);
+        }
+        //sme na mieste zastavime
+        shm_odo->mutCrdef.lock();
+        shm_odo->crDef->SendToCreate((unsigned char) 0x91, (WORD) 0, (WORD) 0);
+        shm_odo->mutCrdef.unlock();
+        return 1;
+    } else {
+        std::cout << "Nemožno spustit pohyb po naraz, neni pripojený robot\n";
+        return 0;
+    }
 }
 
 CiCreate::~CiCreate() {
