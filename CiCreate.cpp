@@ -240,7 +240,7 @@ int CiCreate::Preskumaj_prostredie() {
 //        shm_R_GUI->socket->sendJson(prekazka->toJson());
         
         std::cout << "preskumaj prostredie\n";
-        usleep(1000*1000);
+        usleep(200*1000);
     }
     
     return 0;
@@ -260,27 +260,21 @@ int CiCreate::getPolohaUhol() {
 
 void CiCreate::pokusy() {
     //Dopredu_po_naraz();
+    Dopredu_o_vzdialenost_reg(100);
+    usleep(1000 * 1000);
     Dopredu_o_vzdialenost_reg(500);
-    //usleep(2000 * 1000);
-    //Dopredu_o_vzdialenost_reg(500);
 }
 
 int CiCreate::Dopredu_po_naraz() {
     if (connectedComport) {
-        shm_odo->mutCrdef.lock();
-        shm_odo->crDef->SendToCreate((unsigned char) 0x91, (WORD) 120, (WORD) 120);
-        shm_odo->mutCrdef.unlock();
+        Pohyb(120, 120);
         while (1) {
             if (shm_odo->naraznik_vpredu || shm_odo->naraznik_vlavo || shm_odo->naraznik_vpravo) {
-                shm_odo->mutCrdef.lock();
-                shm_odo->crDef->SendToCreate((unsigned char) 0x91, (WORD) 0, (WORD) 0);
-                shm_odo->mutCrdef.unlock();
+                Pohyb(0, 0);
                 break;
             }
             if (shm_odo->ukonci_vlakno) {
-                shm_odo->mutCrdef.lock();
-                shm_odo->crDef->SendToCreate((unsigned char) 0x91, (WORD) 0, (WORD) 0);
-                shm_odo->mutCrdef.unlock();
+                Pohyb(0, 0);
                 break;
             }
             usleep(10 * 1000);
@@ -300,29 +294,21 @@ int CiCreate::Dopredu_o_vzdialenost(int ziad_vzdial) {
         // na 2 krat aby sme nepresmykovali, inak ideme len pomalsou rychlostou
         if (ziad_vzdial > 200) {
             ziad_vzdial += poc_vzdial;
-            shm_odo->mutCrdef.lock();
-            shm_odo->crDef->SendToCreate((unsigned char) 0x91, (WORD) 150, (WORD) 150);
-            shm_odo->mutCrdef.unlock();
+            Pohyb(150, 150);
             while (1) {
                 if (abs(shm_odo->prejdena_vzdialenost - poc_vzdial) > 10) {
                     break;
                 }
                 if (shm_odo->ukonci_vlakno) {
-                    shm_odo->mutCrdef.lock();
-                    shm_odo->crDef->SendToCreate((unsigned char) 0x91, (WORD) 0, (WORD) 0);
-                    shm_odo->mutCrdef.unlock();
+                    Pohyb(0, 0);
                     break;
                 }
                 usleep(10 * 1000);
             }
-            shm_odo->mutCrdef.lock();
-            shm_odo->crDef->SendToCreate((unsigned char) 0x91, (WORD) 250, (WORD) 250);
-            shm_odo->mutCrdef.unlock();
+            Pohyb(250, 250);
         } else {
             ziad_vzdial += poc_vzdial;
-            shm_odo->mutCrdef.lock();
-            shm_odo->crDef->SendToCreate((unsigned char) 0x91, (WORD) 150, (WORD) 150);
-            shm_odo->mutCrdef.unlock();
+            Pohyb(150, 150);
         }
         //cakame kym sa priblizime na 70mm
         while (1) {
@@ -330,33 +316,25 @@ int CiCreate::Dopredu_o_vzdialenost(int ziad_vzdial) {
                 break;
             }
             if (shm_odo->ukonci_vlakno) {
-                shm_odo->mutCrdef.lock();
-                shm_odo->crDef->SendToCreate((unsigned char) 0x91, (WORD) 0, (WORD) 0);
-                shm_odo->mutCrdef.unlock();
+                Pohyb(0, 0);
                 break;
             }
             usleep(10 * 1000);
         }
         //ked sme blizko zmensime rychlost aby sme sa presnejsie priblizili
-        shm_odo->mutCrdef.lock();
-        shm_odo->crDef->SendToCreate((unsigned char) 0x91, (WORD) 100, (WORD) 100);
-        shm_odo->mutCrdef.unlock();
+        Pohyb(100, 100);
         while (1) {
             if (abs(shm_odo->prejdena_vzdialenost - ziad_vzdial) < 20) {
                 break;
             }
             if (shm_odo->ukonci_vlakno) {
-                shm_odo->mutCrdef.lock();
-                shm_odo->crDef->SendToCreate((unsigned char) 0x91, (WORD) 0, (WORD) 0);
-                shm_odo->mutCrdef.unlock();
+                Pohyb(0, 0);
                 break;
             }
             usleep(10 * 1000);
         }
         //sme na mieste zastavime
-        shm_odo->mutCrdef.lock();
-        shm_odo->crDef->SendToCreate((unsigned char) 0x91, (WORD) 0, (WORD) 0);
-        shm_odo->mutCrdef.unlock();
+        Pohyb(0, 0);
         return 1;
     } else {
         std::cout << "Nemožno spustit pohyb po naraz, neni pripojený robot\n";
@@ -382,18 +360,14 @@ int CiCreate::Dopredu_o_vzdialenost_reg(int ziad_vzdial) {
             rychl += 10*K;
             akcZasah = K*(ziad_vzdial - shm_odo->prejdena_vzdialenost);
             
-            shm_odo->mutCrdef.lock();
-            shm_odo->crDef->SendToCreate((unsigned char) 0x91, (WORD) rychl, (WORD) rychl);
-            shm_odo->mutCrdef.unlock();
+            Pohyb((WORD) rychl, (WORD) rychl);
             
             if (rychl >= abs(akcZasah) || abs(rychl) > LEFT_WHEEL_MAX_POS_SPEED) {
                 break;
             }
             
             if (shm_odo->ukonci_vlakno) {
-                shm_odo->mutCrdef.lock();
-                shm_odo->crDef->SendToCreate((unsigned char) 0x91, (WORD) 0, (WORD) 0);
-                shm_odo->mutCrdef.unlock();
+                Pohyb(0, 0);
                 break;
             }
             usleep(10 * 1000);
@@ -408,31 +382,39 @@ int CiCreate::Dopredu_o_vzdialenost_reg(int ziad_vzdial) {
                 if (akcZasah<0) akcZasah=-50;
             }
             
-            shm_odo->mutCrdef.lock();
-            shm_odo->crDef->SendToCreate((unsigned char) 0x91, (WORD) akcZasah, (WORD) akcZasah);
-            shm_odo->mutCrdef.unlock();
+            Pohyb((WORD) akcZasah, (WORD) akcZasah);
             
             if (abs(shm_odo->prejdena_vzdialenost - ziad_vzdial) < 10) {
                 break;
             }
             
             if (shm_odo->ukonci_vlakno) {
-                shm_odo->mutCrdef.lock();
-                shm_odo->crDef->SendToCreate((unsigned char) 0x91, (WORD) 0, (WORD) 0);
-                shm_odo->mutCrdef.unlock();
+                Pohyb(0, 0);
                 break;
             }
             usleep(10 * 1000);
         }
         //sme na mieste zastavime
-        shm_odo->mutCrdef.lock();
-        shm_odo->crDef->SendToCreate((unsigned char) 0x91, (WORD) 0, (WORD) 0);
-        shm_odo->mutCrdef.unlock();
+        Pohyb(0, 0);
         return 1;
     } else {
         std::cout << "Nemožno spustit pohyb po naraz, neni pripojený robot\n";
         return 0;
     }
+}
+
+int CiCreate::Otocenie_o_uhol(int ziad_uhol, int smer) {
+    // 0 doprava
+    // 1 dolava
+}
+
+int CiCreate::Otocenie_o_uhol_reg(int ziad_uhol, int smer) {
+    // 0 doprava
+    // 1 dolava
+}
+
+int CiCreate::Sledovanie_steny() {
+    
 }
 
 CiCreate::~CiCreate() {

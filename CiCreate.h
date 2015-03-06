@@ -15,10 +15,10 @@
 #include "CiCreateDef.h"
 #include "agentForm.h"
 
-#define LEFT_WHEEL_MAX_POS_SPEED 500
-#define LEFT_WHEEL_MAX_NEG_SPEED -500
-#define RIGHT_WHEEL_MAX_POS_SPEED 500
-#define RIGHT_WHEEL_MAX_NEG_SPEED -500
+#define LEFT_WHEEL_MAX_POS_SPEED 250
+#define LEFT_WHEEL_MAX_NEG_SPEED -250
+#define RIGHT_WHEEL_MAX_POS_SPEED 250
+#define RIGHT_WHEEL_MAX_NEG_SPEED -250
 
 struct odometria_shm {
     int bateriaNapatie;
@@ -74,6 +74,9 @@ private:
     int Dopredu_po_naraz(); //pošle robot rovno až pokial nenarazí nárazníkom
     int Dopredu_o_vzdialenost(int ziad_vzdial); //prejde rovno o zadanú vzdialenosť
     int Dopredu_o_vzdialenost_reg(int ziad_vzdial); // regulatorom prejde rovno o zadanú vzdialenosť
+    int Otocenie_o_uhol(int ziad_uhol, int smer); //otočí sa o zadaný uhol 0 doprava 1 dolava
+    int Otocenie_o_uhol_reg(int ziad_uhol, int smer); //regulatorovo - otočí sa o zadaný uhol 0 doprava 1 dolava
+    int Sledovanie_steny(); //obíde krabicu alebo prekážku
 };
 
 struct param_tele {

@@ -7,6 +7,11 @@
 
 #include "agentForm.h"
 
+// TODO vymazat
+void *testClickedThread(void *agent) {
+    ((agentClass *)agent)->pokusy();
+}
+
 agentForm::agentForm() {
     widget.setupUi(this);
     widget.comportEdit->setText("/dev/rfcomm0");
@@ -213,6 +218,7 @@ void agentForm::mapujClicked() {
 }
 
 void agentForm::testClicked() {
+    // TODO vymazat
     std::cout << "testClicked\n";
     
     if (!agent->getConnectedComport()) {
@@ -220,7 +226,10 @@ void agentForm::testClicked() {
         return;
     }
     
-    agent->pokusy();
+    pthread_attr_t parametre;
+    if (pthread_attr_init(&parametre));
+    pthread_attr_setdetachstate(&parametre, PTHREAD_CREATE_DETACHED);
+    if (pthread_create(&threadTest, &parametre, testClickedThread, (void*) agent));
 }
 
 agentForm::~agentForm() {

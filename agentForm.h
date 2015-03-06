@@ -11,6 +11,7 @@
 #include <stdio.h>   
 #include <unistd.h>
 #include <iostream>
+#include <thread>
 
 #include "ui_agentForm.h"
 #include "agentClass.h"
@@ -38,6 +39,8 @@ private:
     
     agentClass *agent;
     komunikacia_shm *shm_R_GUI;
+    
+    pthread_t threadTest; // TODO vymazat
 };
 
 #endif	/* _AGENTFORM_H */
