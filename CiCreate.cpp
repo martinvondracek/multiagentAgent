@@ -260,9 +260,9 @@ int CiCreate::getPolohaUhol() {
 
 void CiCreate::pokusy() {
     //Dopredu_po_naraz();
-    Dopredu_o_vzdialenost_reg(100);
+    Otocenie_o_uhol_reg(90, 0);
     usleep(1000 * 1000);
-    Dopredu_o_vzdialenost_reg(500);
+    Otocenie_o_uhol_reg(90, 1);
 }
 
 int CiCreate::Dopredu_po_naraz() {
@@ -288,7 +288,7 @@ int CiCreate::Dopredu_po_naraz() {
 
 int CiCreate::Dopredu_o_vzdialenost(int ziad_vzdial) {
     //postupne zrýchluje a spomaluje aby sa zmenšila chyba prešmykovaním kolies
-    if (connectedComport && shm_odo->ukonci_vlakno==0) {
+    if (connectedComport && shm_R_GUI->ukonci_ulohu==false) {
         int poc_vzdial = shm_odo->prejdena_vzdialenost;
         // ak chceme prejst o vzdialenost vacsiu ako 200mm rozbiehame sa 
         // na 2 krat aby sme nepresmykovali, inak ideme len pomalsou rychlostou
@@ -299,7 +299,7 @@ int CiCreate::Dopredu_o_vzdialenost(int ziad_vzdial) {
                 if (abs(shm_odo->prejdena_vzdialenost - poc_vzdial) > 10) {
                     break;
                 }
-                if (shm_odo->ukonci_vlakno) {
+                if (shm_R_GUI->ukonci_ulohu) {
                     Pohyb(0, 0);
                     break;
                 }
@@ -315,7 +315,7 @@ int CiCreate::Dopredu_o_vzdialenost(int ziad_vzdial) {
             if (abs(shm_odo->prejdena_vzdialenost - ziad_vzdial) < 70) {
                 break;
             }
-            if (shm_odo->ukonci_vlakno) {
+            if (shm_R_GUI->ukonci_ulohu) {
                 Pohyb(0, 0);
                 break;
             }
@@ -327,7 +327,7 @@ int CiCreate::Dopredu_o_vzdialenost(int ziad_vzdial) {
             if (abs(shm_odo->prejdena_vzdialenost - ziad_vzdial) < 20) {
                 break;
             }
-            if (shm_odo->ukonci_vlakno) {
+            if (shm_R_GUI->ukonci_ulohu) {
                 Pohyb(0, 0);
                 break;
             }
@@ -348,15 +348,13 @@ int CiCreate::Dopredu_o_vzdialenost_reg(int ziad_vzdial) {
     int rychl = 50;
     int akcZasah;
     
-    if (connectedComport && shm_odo->ukonci_vlakno==0) {
+    if (connectedComport && shm_R_GUI->ukonci_ulohu==false) {
         ziad_vzdial = abs(ziad_vzdial);
         int poc_vzdial = shm_odo->prejdena_vzdialenost;
         ziad_vzdial += poc_vzdial;
         
         // rozbiehame az dokedy sa nedostaneme na rychlost aktualneho akcneho zasahu
-        int cyklus = 0;
         while (1) {
-            cyklus++;
             rychl += 10*K;
             akcZasah = K*(ziad_vzdial - shm_odo->prejdena_vzdialenost);
             
@@ -366,7 +364,7 @@ int CiCreate::Dopredu_o_vzdialenost_reg(int ziad_vzdial) {
                 break;
             }
             
-            if (shm_odo->ukonci_vlakno) {
+            if (shm_R_GUI->ukonci_ulohu) {
                 Pohyb(0, 0);
                 break;
             }
@@ -388,7 +386,7 @@ int CiCreate::Dopredu_o_vzdialenost_reg(int ziad_vzdial) {
                 break;
             }
             
-            if (shm_odo->ukonci_vlakno) {
+            if (shm_R_GUI->ukonci_ulohu) {
                 Pohyb(0, 0);
                 break;
             }
@@ -406,11 +404,159 @@ int CiCreate::Dopredu_o_vzdialenost_reg(int ziad_vzdial) {
 int CiCreate::Otocenie_o_uhol(int ziad_uhol, int smer) {
     // 0 doprava
     // 1 dolava
+    
+    //postupne zrýchluje a spomaluje aby sa zmenšila chyba prešmykovaním kolies
+    if (connectedComport && shm_R_GUI->ukonci_ulohu==false) {
+        int pociatocny_uhol = shm_odo->prejdeny_uhol;
+        ziad_uhol = ziad_uhol % 360;
+        if (ziad_uhol < 0) {
+            ziad_uhol = -ziad_uhol;
+            smer = (smer) ? 0 : 1;
+        }
+        if (ziad_uhol > 30) {
+            ziad_uhol += shm_odo->prejdeny_uhol;
+            if (smer) {
+                Pohyb(100, -100);
+            } else {
+                Pohyb(-100, 100);
+            }
+            while (1) {
+                if (abs(shm_odo->prejdeny_uhol - pociatocny_uhol) > 4) {
+                    break;
+                }
+                if (shm_R_GUI->ukonci_ulohu) {
+                    Pohyb(0, 0);
+                    break;
+                }
+                usleep(10 * 1000);
+            }
+            if (smer) {
+                Pohyb(220, -220);
+            } else {
+                Pohyb(-220, 220);
+            }
+        } else {
+            ziad_uhol += shm_odo->prejdeny_uhol;
+            if (smer) {
+                Pohyb(45, -45);
+            } else {
+                Pohyb(-45, 45);
+            }
+
+        }
+        while (1) {
+            if (abs((shm_odo->prejdeny_uhol) - (ziad_uhol)) < 30) {
+                if (smer) {
+                    Pohyb(100, -100);
+                } else {
+                    Pohyb(-100, 100);
+                }
+                break;
+            }
+            if (shm_R_GUI->ukonci_ulohu) {
+                Pohyb(0, 0);
+                break;
+            }
+            usleep(30000);
+        }
+        while (1) {
+            if (abs((shm_odo->prejdeny_uhol) - (ziad_uhol)) < 15) {
+                if (smer) {
+                    Pohyb(45, -45);
+                } else {
+                    Pohyb(-45, 45);
+                }
+                break;
+            }
+            if (shm_R_GUI->ukonci_ulohu) {
+                Pohyb(0, 0);
+                break;
+            }
+            usleep(30000);
+        }
+        while (1) {
+            if (abs((shm_odo->prejdeny_uhol) - (ziad_uhol)) < 7) {
+                Pohyb(0, 0);
+                break;
+            }
+            if (shm_R_GUI->ukonci_ulohu) {
+                Pohyb(0, 0);
+                break;
+            }
+            usleep(30000);
+        }
+        return 1;
+    } else {
+        std::cout << "Nemožno spustit pohyb po naraz, neni pripojený robot\n";
+        return 0;
+    }
 }
 
 int CiCreate::Otocenie_o_uhol_reg(int ziad_uhol, int smer) {
     // 0 doprava
     // 1 dolava
+    
+    // rozbiehame az dokedy sa nedostaneme na rychlost aktualneho akcneho zasahu
+    if (connectedComport && shm_R_GUI->ukonci_ulohu==false) {
+        float e; //reg odchylka
+        float P = 6;
+        int zasah;
+        int rychl = 50;
+        
+        int pociatocny_uhol = shm_odo->prejdeny_uhol;
+        ziad_uhol = ziad_uhol % 360;
+        if (ziad_uhol < 0) {
+            ziad_uhol = -ziad_uhol;
+            smer = (smer) ? 0 : 1;
+        }
+        ziad_uhol += shm_odo->prejdeny_uhol;
+        
+        while (1) {
+            rychl += 2*P;
+            e = ziad_uhol - shm_odo->prejdeny_uhol;   
+            zasah = e*P;
+            
+            if (smer) {
+                Pohyb(rychl, -1*rychl);
+            } else {
+                Pohyb(-1*rychl, rychl);
+            }
+            
+            if (rychl >= abs(zasah) || abs(rychl) > LEFT_WHEEL_MAX_POS_SPEED) {
+                break;
+            }
+            
+            if (shm_R_GUI->ukonci_ulohu) {
+                Pohyb(0, 0);
+                break;
+            }
+            usleep(10 * 1000);
+        }
+        
+        //brzdime
+        while (1) {
+            e = ziad_uhol - shm_odo->prejdeny_uhol;   
+            zasah = e*P;
+            if (smer) {
+                Pohyb((WORD) zasah, (WORD) -1*zasah);
+            } else {
+                Pohyb((WORD) -1*zasah, (WORD) zasah);
+            }
+            if (abs((shm_odo->prejdeny_uhol) - (ziad_uhol)) < 2) {
+                Pohyb(0, 0);
+                break;
+            }
+            if (shm_R_GUI->ukonci_ulohu) {
+                Pohyb(0, 0);
+                break;
+            }
+            usleep(30000);
+        }
+        return 1;
+    } else {
+        std::cout << "Nemožno spustit pohyb po naraz, neni pripojený robot\n";
+        return 0;
+    }
 }
 
 int CiCreate::Sledovanie_steny() {
