@@ -64,7 +64,7 @@ prekazkaClass::prekazkaClass(int id, int id_spustenia, int prekazka, polohaClass
     
     //ak ideme iba podla senzoru steny (neni ziaden naraznik aktivovany)
     if (naraz_vpravo==false && naraz_vlavo==false && naraz_vpredu==false) {
-        int pomUhol = this->fi_rob - 45;
+        int pomUhol = this->fi_rob - 90;
         pomUhol = pomUhol % 360;
         if (pomUhol < 0) {
             pomUhol += 360;

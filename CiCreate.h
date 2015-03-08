@@ -72,6 +72,7 @@ private:
     odometria_shm *shm_odo;
     pthread_t vlaknoOdometria;
     pthread_t vlaknoTeleriadenie;
+    std::thread posielanieThread;
     bool stopTele = false;
     
     int Dopredu_po_naraz(); //pošle robot rovno až pokial nenarazí nárazníkom

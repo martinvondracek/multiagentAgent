@@ -110,6 +110,32 @@ void *teleriadenie(void *arg) {
     pthread_exit(NULL);
 }
 
+void posielaniePolohy(odometria_shm *shm_odo, komunikacia_shm *shm_R_GUI) {
+    std::cout << "preskumaj prostredie\n";
+    
+    polohaClass *poloha;
+    prekazkaClass *prekazka;
+    
+    while (1) {
+        if (shm_R_GUI->ukonci_ulohu == true) {
+            break;
+        }
+        poloha = new polohaClass(0, shm_R_GUI->id_spustenia, shm_R_GUI->agent_id, shm_odo->x_rel, shm_odo->y_rel, shm_odo->aktualny_uhol);
+        shm_R_GUI->socket->sendJson(poloha->toJson());
+        
+        // ak sme narazeny posleme suradnicu prekazky
+        if (((agentClass *)shm_R_GUI->agent)->isKolizia()) {
+            prekazkaClass *prekazka = new prekazkaClass(0, shm_R_GUI->id_spustenia, 0, poloha, shm_odo->naraznik_vpravo, shm_odo->naraznik_vlavo, shm_odo->naraznik_vpredu);
+            shm_R_GUI->socket->sendJson(prekazka->toJson());
+        }
+        
+        std::cout << "preskumaj prostredie\n";
+        usleep(350*1000);
+    }
+    
+    return;
+}
+
 CiCreate::CiCreate(komunikacia_shm *shm2) : agentClass(shm2) {
 }
 
@@ -224,25 +250,12 @@ int CiCreate::stopTeleriadenie() {
 int CiCreate::Preskumaj_prostredie() {
     std::cout << "preskumaj prostredie\n";
     
-    polohaClass *poloha;
-    prekazkaClass *prekazka;
+    // najskor spustime vlakno pre pravidelne posielanie polohy
+    posielanieThread = std::thread(posielaniePolohy, shm_odo, shm_R_GUI);
     
-    while (1) {
-        if (shm_R_GUI->ukonci_ulohu == true) {
-            break;
-        }
-        poloha = new polohaClass(0, shm_R_GUI->id_spustenia, shm_R_GUI->agent_id, shm_odo->x_rel, shm_odo->y_rel, shm_odo->aktualny_uhol);
-        shm_R_GUI->socket->sendJson(poloha->toJson());
-        
-        // ak sme narazeny posleme suradnicu prekazky
-        if (isKolizia()) {
-            prekazkaClass *prekazka = new prekazkaClass(0, shm_R_GUI->id_spustenia, 0, poloha, shm_odo->naraznik_vpravo, shm_odo->naraznik_vlavo, shm_odo->naraznik_vpredu);
-            shm_R_GUI->socket->sendJson(prekazka->toJson());
-        }
-        
-        std::cout << "preskumaj prostredie\n";
-        usleep(350*1000);
-    }
+    Sledovanie_steny();
+    usleep (500*1000);
+    posielanieThread.detach();
     
     return 0;
 }

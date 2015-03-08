@@ -243,6 +243,10 @@ void agentClass::pokusy() {
     
 }
 
+bool agentClass::isKolizia() {
+    return false;
+}
+
 agentClass::~agentClass() {
     std::cout << "destruktor agentClass\n";
     disConnectIp();

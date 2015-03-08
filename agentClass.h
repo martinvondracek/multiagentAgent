@@ -62,6 +62,8 @@ public:
     virtual int Pohyb(WORD p, WORD l);
     virtual int Preskumaj_prostredie();
     
+    virtual bool isKolizia();
+    
     virtual void pokusy();
     
 protected:
