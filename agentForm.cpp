@@ -236,6 +236,7 @@ agentForm::~agentForm() {
     std::cout << "destruktor agentForm\n";
     zastavClicked();
     odpojServerClicked();
+    shm_R_GUI->ukonci_ulohu=true; // todo otestovat
     odpojComportClicked();
     delete agent;
 }

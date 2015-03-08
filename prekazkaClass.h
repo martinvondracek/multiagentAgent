@@ -15,10 +15,16 @@
 #include <unistd.h>
 #include <iostream>
 
+#include "polohaClass.h"
+
+#define PI 3.14159265
+
 class prekazkaClass {
 public:
     prekazkaClass(int id, int id_spustenia, int prekazka, int robot, float x_rob,
             float y_rob, float fi_rob, float x_p, float y_p, bool naraz_vpravo,
+            bool naraz_vlavo, bool naraz_vpredu);
+    prekazkaClass(int id, int id_spustenia, int prekazka, polohaClass *poloha, bool naraz_vpravo,
             bool naraz_vlavo, bool naraz_vpredu);
     virtual ~prekazkaClass();
     

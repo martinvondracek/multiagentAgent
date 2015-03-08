@@ -24,6 +24,61 @@ prekazkaClass::prekazkaClass(int id, int id_spustenia, int prekazka, int robot,
     this->naraz_vpredu = naraz_vpredu;
 }
 
+prekazkaClass::prekazkaClass(int id, int id_spustenia, int prekazka, polohaClass *poloha, bool naraz_vpravo,
+            bool naraz_vlavo, bool naraz_vpredu) {
+    this->id = id;
+    this->id_spustenia = id_spustenia;
+    this->prekazka = prekazka;
+    this->robot = poloha->GetRobot();
+    this->x_rob = poloha->GetX();
+    this->y_rob = poloha->GetY();
+    this->fi_rob = poloha->GetFi();
+    this->x_p = poloha->GetX();
+    this->y_p = poloha->GetY();
+    
+    //upravime polohu prekazky na presnu polohu
+    if (naraz_vpredu) {
+        this->x_p += 170 * sin(this->fi_rob * PI / 180) * -1;
+        this->y_p += 170 * cos(this->fi_rob * PI / 180);
+    }
+    if (naraz_vpravo) {
+        int pomUhol = this->fi_rob - 45;
+        pomUhol = pomUhol % 360;
+        if (pomUhol < 0) {
+            pomUhol += 360;
+        }
+        
+        this->x_p += 170 * sin(pomUhol * PI / 180) * -1;
+        this->y_p += 170 * cos(pomUhol * PI / 180);
+    }
+    if (naraz_vlavo) {
+        int pomUhol = this->fi_rob - 45;
+        pomUhol = pomUhol % 360;
+        if (pomUhol < 0) {
+            pomUhol += 360;
+        }
+        
+        this->x_p += 170 * sin(pomUhol * PI / 180) * -1;
+        this->y_p += 170 * cos(pomUhol * PI / 180);
+    }
+    
+    //ak ideme iba podla senzoru steny (neni ziaden naraznik aktivovany)
+    if (naraz_vpravo==false && naraz_vlavo==false && naraz_vpredu==false) {
+        int pomUhol = this->fi_rob - 45;
+        pomUhol = pomUhol % 360;
+        if (pomUhol < 0) {
+            pomUhol += 360;
+        }
+        
+        this->x_p += 170 * sin(pomUhol * PI / 180) * -1;
+        this->y_p += 170 * cos(pomUhol * PI / 180);
+    }
+    
+    this->naraz_vpravo = naraz_vpravo;
+    this->naraz_vlavo = naraz_vlavo;
+    this->naraz_vpredu = naraz_vpredu;
+}
+
 float prekazkaClass::GetFi_rob() {
     return fi_rob;
 }

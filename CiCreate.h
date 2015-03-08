@@ -37,6 +37,7 @@ struct odometria_shm {
     int naraznik_vlavo = 0;
     int stena = 0; //či je prítomná stena
     int signalSteny = 0; //velkosť signálu steny
+    bool wallFollowing = false;
     
     unsigned char Cliff;
     unsigned char Wheelpdrop; //0-1
@@ -62,6 +63,8 @@ public:
     int getPolohaX();
     int getPolohaY();
     int getPolohaUhol();
+    
+    bool isKolizia(); // vrati 1 ak je v kolizii (naraz) 0 ak neni
     
     void pokusy();
 private:
