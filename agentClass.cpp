@@ -97,6 +97,11 @@ void *vlaknoPrijimanieDatServera(void *arg) {
                         shm_R_GUI->id_spustenia = id_p;
                     }
                 }
+                // ak pride nove ID prekazky
+                if (ctype.compare("NEW_ID_PREKAZKY") == 0) {
+                    int id_p = socketUtilClass::parseNewIdPrekazkyFromJson(token.c_str());
+                    shm_R_GUI->id_prekazky = id_p;
+                }
                 s.erase(0, pos + delimiter.length());
             }
         }

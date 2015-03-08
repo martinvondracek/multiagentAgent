@@ -26,6 +26,9 @@ typedef short int WORD;
 struct komunikacia_shm {
     int agent_id;
     int id_spustenia;
+    int id_prekazky = 0;
+    bool isIdPrekazkyValid = false;
+    
     socketClass *socket;
     pthread_t *vlaknoMapovanie;
     void *agent; // (agentClass *)

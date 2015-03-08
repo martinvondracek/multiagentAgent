@@ -21,10 +21,12 @@ public:
     virtual ~socketUtilClass();
     
     static const char * createQuit(int idAgenta);
+    static const char * createNewIdPrekazky();
     
     static int parseAgentIdFromJson(const char *json);
     static int parseAgentIdSpusteniaFromJson(const char *json);
     static int parseIdSpusteniaFromJson(const char *json);
+    static int parseNewIdPrekazkyFromJson(const char *json);
     static std::string parseClassTypeFromJson(const char *json);
 private:
 

@@ -123,6 +123,7 @@ void posielaniePolohy(odometria_shm *shm_odo, komunikacia_shm *shm_R_GUI) {
     lastPoloha = poloha;
     shm_R_GUI->socket->sendJson(poloha->toJson());
     prekazka = new prekazkaClass(0, shm_R_GUI->id_spustenia, 0, poloha, shm_odo->naraznik_vpravo, shm_odo->naraznik_vlavo, shm_odo->naraznik_vpredu);
+    shm_R_GUI->socket->sendJson(prekazka->toJson());
     lastPrekazka = prekazka;
     
     while (1) {
@@ -136,8 +137,8 @@ void posielaniePolohy(odometria_shm *shm_odo, komunikacia_shm *shm_R_GUI) {
         }
         
         // ak sme narazeny posleme suradnicu prekazky
-        if (((agentClass *)shm_R_GUI->agent)->isKolizia()) {
-            prekazkaClass *prekazka = new prekazkaClass(0, shm_R_GUI->id_spustenia, 0, poloha, shm_odo->naraznik_vpravo, shm_odo->naraznik_vlavo, shm_odo->naraznik_vpredu);
+        if (((agentClass *)shm_R_GUI->agent)->isKolizia() && shm_R_GUI->isIdPrekazkyValid) {//aby bola pouzite dobre id prekazky
+            prekazkaClass *prekazka = new prekazkaClass(0, shm_R_GUI->id_spustenia, shm_R_GUI->id_prekazky, poloha, shm_odo->naraznik_vpravo, shm_odo->naraznik_vlavo, shm_odo->naraznik_vpredu);
             if (prekazka->getVzdialenost(lastPrekazka) >= VZDIAL_PREKAZKY_POSLANIE) {
                 shm_R_GUI->socket->sendJson(prekazka->toJson());
                 lastPrekazka = prekazka;
@@ -265,10 +266,13 @@ int CiCreate::stopTeleriadenie() {
 int CiCreate::Preskumaj_prostredie() {
     std::cout << "preskumaj prostredie\n";
     
-    // najskor spustime vlakno pre pravidelne posielanie polohy
+    // najskor spustime vlakno pre pravidelne posielanie polohy a prekazok
     posielanieThread = std::thread(posielaniePolohy, shm_odo, shm_R_GUI);
     
-    Sledovanie_steny();
+    while (shm_R_GUI->ukonci_ulohu == false) {
+        Sledovanie_steny();
+    }
+    //ukoncime odosielanie polohy a prekazok
     usleep (500*1000);
     posielanieThread.detach();
     
@@ -587,7 +591,6 @@ int CiCreate::Otocenie_o_uhol_reg(int ziad_uhol, int smer) {
 }
 
 int CiCreate::Sledovanie_steny() {
-    int pom = 0;
     int uhol_0;
     int celk_uhol_0;
     int x_0;
@@ -604,13 +607,18 @@ int CiCreate::Sledovanie_steny() {
         }
         Dopredu_po_naraz();
         //vyžiada id prekážky
-        //id_prekazky = shm2->prekazky->NovaPrekazka();
+        int lastIdPrekazky = shm_R_GUI->id_prekazky;
+        shm_R_GUI->socket->sendJson(socketUtilClass::createNewIdPrekazky());
+        while (lastIdPrekazky==shm_R_GUI->id_prekazky && shm_R_GUI->ukonci_ulohu==false) {
+            //pockame kym nam pride nove
+            usleep(50*1000);
+        }
+        shm_R_GUI->isIdPrekazkyValid = true;
 
         // ulozime ze sledujeme stenu koli posielaniu suradnic prekazok
         shm_odo->wallFollowing = true;
         
         celk_uhol_0 = shm_odo->prejdeny_uhol;
-        //if (shm->naraznik_vpravo) {}
         if (shm_odo->naraznik_vlavo) {
             Otocenie_o_uhol(60, 1);
         }
@@ -620,33 +628,20 @@ int CiCreate::Sledovanie_steny() {
         Dopredu_po_naraz();
         //chytí sa steny (natočí sa aby chytil signál steny)
         while (shm_odo->signalSteny < 35) {
-            /*
-            vpravo 0
-            vlavo 1
-            vpredu 2
-             */
-            if (shm_odo->naraznik_vlavo) {
-                pom = 1;
-            }
-            if (shm_odo->naraznik_vpravo) {
-                pom = 0;
-            }
-            if (shm_odo->naraznik_vpredu) {
-                pom = 2;
-            }
-            //shm2->prekazky->PridajSuradnicu(shm->x_rel, shm->y_rel, id_prekazky);
-            Otocenie_o_uhol(20, 1);
+            Pohyb(100, -100);
             if (shm_odo->naraznik_vpravo == 0) {
                 //Dopredu_po_naraz();
             }
             if (shm_R_GUI->ukonci_ulohu) {
                 Pohyb(0, 0);
                 shm_odo->wallFollowing = false;
+                shm_R_GUI->isIdPrekazkyValid = false;
                 return 1;
             }
             if (abs(celk_uhol_0 - shm_odo->prejdeny_uhol) > 200) {
                 Pohyb(0, 0);
                 shm_odo->wallFollowing = false;
+                shm_R_GUI->isIdPrekazkyValid = false;
                 return 0;
             }
             usleep(35 * 1000);
@@ -657,22 +652,6 @@ int CiCreate::Sledovanie_steny() {
         prejdena_vzdial = shm_odo->prejdena_vzdialenost;
         //obchádza na základe údajov z nárazníka a signálu steny
         while (1) {
-            /*
-             vpravo 0
-             vlavo 1
-             vpredu 2
-             */
-            if (shm_odo->naraznik_vlavo) {
-                pom = 1;
-            }
-            if (shm_odo->naraznik_vpravo) {
-                pom = 0;
-            }
-            if (shm_odo->naraznik_vpredu) {
-                pom = 2;
-            }
-            //zaznamená súradnice nárazu
-            //shm2->prekazky->PridajSuradnicu(shm->x_rel, shm->y_rel, id_prekazky);
             //ak narazí na stenu pred sebou otočí sa dolava        
             if (shm_odo->naraznik_vpredu) {
                 Otocenie_o_uhol(70, 1);
@@ -680,7 +659,6 @@ int CiCreate::Sledovanie_steny() {
             //mení zakrivenie pohybu podla pozície k stene
             if ((shm_odo->stena == 0) && (shm_odo->naraznik_vpravo == 0)) {
                 if (shm_odo->signalSteny < 20) {
-                    //Pohyb(200, 200);
                     Pohyb(30, 230);
                 } else {
                     Pohyb(180, 200);
@@ -701,25 +679,24 @@ int CiCreate::Sledovanie_steny() {
                 Pohyb(0, 0);
                 break;
             }
-//            tolerancia = (((shm->prejdena_vzdialenost - prejdena_vzdial) / 3000) + 1) * 130;
-//            ROB_PRED_SYN
-//            vzdial = sqrt(((abs(x_0 - shm->x_rel)) * (abs(x_0 - shm->x_rel))) + ((abs(y_0 - shm->y_rel)) * (abs(y_0 - shm->y_rel))));
-//            ROB_PO_SYN
-//            std::cout << "vzdial: " << vzdial << "\n";
-//            // ukončí ak sa vráti do počiatočného bodu
-//            if (((shm->prejdena_vzdialenost - prejdena_vzdial) > 1000) && (abs(shm->aktualny_uhol - uhol_0) < 40) && (vzdial < tolerancia)) {
-//                crDef->SendToCreate((unsigned char) 0x91, (WORD) 0, (WORD) 0);
-//                break;
-//            }
-            //ukončí ak tu už bol iný robot
+            // kazde 2 metre tolerancia + 130mm
+            tolerancia = (((shm_odo->prejdena_vzdialenost - prejdena_vzdial) / 2000) + 1) * 130;
+            vzdial = sqrt(((abs(x_0 - shm_odo->x_rel)) * (abs(x_0 - shm_odo->x_rel))) + ((abs(y_0 - shm_odo->y_rel)) * (abs(y_0 - shm_odo->y_rel))));
+            std::cout << "vzdial: " << vzdial << "toler: " << tolerancia << "\n";
+            // ukončí ak sa vráti do počiatočného bodu
+            if (((shm_odo->prejdena_vzdialenost - prejdena_vzdial) > 1000) && (abs(shm_odo->aktualny_uhol - uhol_0) < 40) && (vzdial < tolerancia)) {
+                Pohyb(0, 0);
+                break;
+            }
+            // TODO ukončí ak tu už bol iný robot
 //            if (shm2->prekazky->HladajSuradnicu(shm->x_rel, shm->y_rel, id_prekazky)) {
-//                crDef->SendToCreate((unsigned char) 0x91, (WORD) 0, (WORD) 0);
-//                fclose(fw);
+//                Pohyb(0, 0);
 //                return 1;
 //            }
             usleep(40 * 1000);
         }
         shm_odo->wallFollowing = false;
+        shm_R_GUI->isIdPrekazkyValid = false;
         return 1;
 
     } else {

@@ -9,7 +9,11 @@
         <group>
             <file>file:/home/martin/NetBeansProjects/DP_agent/agentClass.cpp</file>
             <file>file:/home/martin/NetBeansProjects/DP_agent/agentClass.h</file>
+            <file>file:/home/martin/NetBeansProjects/DP_agent/prekazkaClass.cpp</file>
+            <file>file:/home/martin/NetBeansProjects/DP_agent/prekazkaClass.h</file>
+            <file>file:/home/martin/NetBeansProjects/DP_agent/polohaClass.cpp</file>
             <file>file:/home/martin/NetBeansProjects/DP_agent/CiCreate.cpp</file>
+            <file>file:/home/martin/NetBeansProjects/DP_agent/polohaClass.h</file>
             <file>file:/home/martin/NetBeansProjects/DP_agent/CiCreate.h</file>
         </group>
     </open-files>
