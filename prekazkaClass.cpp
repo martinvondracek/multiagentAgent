@@ -269,6 +269,10 @@ const char * prekazkaClass::toString() {
     return toJson();
 }
 
+float prekazkaClass::getVzdialenost(prekazkaClass *p2) {
+    return sqrt((x_p-p2->GetX_p())*(x_p-p2->GetX_p()) + (y_p-p2->GetY_p())*(y_p-p2->GetY_p()));
+}
+
 prekazkaClass::~prekazkaClass() {
 }
 

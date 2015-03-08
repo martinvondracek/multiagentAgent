@@ -32,6 +32,8 @@ public:
     static prekazkaClass * fromJson(const char *json);
     const char * toString();
     
+    float getVzdialenost(prekazkaClass *p2);
+    
     float GetFi_rob();
     void SetFi_rob(float fi_rob);
     int GetId();

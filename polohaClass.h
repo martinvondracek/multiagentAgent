@@ -24,6 +24,8 @@ public:
     static polohaClass * fromJson(const char *json);
     const char * toString();
     
+    float getVzdialenost(polohaClass *p2);
+    
     float GetFi();
     void SetFi(float fi);
     int GetId();
