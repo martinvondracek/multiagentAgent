@@ -14,6 +14,8 @@ void *vlaknoMapovanie(void *arg) {
     agentClass *agent = (agentClass *) shm_R_GUI->agent;
     shm_R_GUI->prebieha_uloha = true;
     shm_R_GUI->ukonci_ulohu = false;
+    shm_R_GUI->id_prekazky;
+    shm_R_GUI->isIdPrekazkyValid = false;
     agent->Preskumaj_prostredie();
     shm_R_GUI->prebieha_uloha = false;
 }
@@ -34,7 +36,7 @@ void *vlaknoPrijimanieDatServera(void *arg) {
     agentClass *agent = (agentClass *) shm_R_GUI->agent;
     
     while (1) {
-        std::cout << "vlakno prijimanie\n";
+        //std::cout << "vlakno prijimanie\n";
         char jsonData[50001];
         bzero(jsonData, 50000);
         n = shm_R_GUI->socket->receiveJson(jsonData, 50000);
@@ -49,11 +51,11 @@ void *vlaknoPrijimanieDatServera(void *arg) {
             while ((pos = s.find(delimiter)) != std::string::npos) {
                 token = s.substr(0, pos);
                 //std::cout << "data=" << jsonData << "\n";
-                std::cout << "data token=" << token << "=KONIEC\n";
+                //std::cout << "data token=" << token << "=KONIEC\n";
 
                 //rozparsovat a vyhodnotit
                 std::string ctype = socketUtilClass::parseClassTypeFromJson(token.c_str());
-                std::cout << "prislo ctype=" << ctype << "\n";
+                //std::cout << "prislo ctype=" << ctype << "\n";
                 //ak treba pustit mapovanie tak pustime nove vlakno
                 if (ctype.compare("SPUSTIT_MAPOVANIE") == 0) {
                     pthread_attr_t parametre;
@@ -95,6 +97,7 @@ void *vlaknoPrijimanieDatServera(void *arg) {
                     int id_p = socketUtilClass::parseIdSpusteniaFromJson(token.c_str());
                     if (id_p > 0) {
                         shm_R_GUI->id_spustenia = id_p;
+                        std::cout << "id spustenia=" << shm_R_GUI->id_spustenia << "\n";
                     }
                 }
                 // ak pride nove ID prekazky

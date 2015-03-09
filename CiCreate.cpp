@@ -145,7 +145,6 @@ void posielaniePolohy(odometria_shm *shm_odo, komunikacia_shm *shm_R_GUI) {
             }
         }
         
-        std::cout << "preskumaj prostredie\n";
         usleep(100*1000);
     }
     
@@ -293,6 +292,7 @@ int CiCreate::getPolohaUhol() {
 
 void CiCreate::pokusy() {
     //Dopredu_po_naraz();
+    shm_R_GUI->id_prekazky = 0;
     Sledovanie_steny();
 }
 
@@ -606,14 +606,6 @@ int CiCreate::Sledovanie_steny() {
             return 1;
         }
         Dopredu_po_naraz();
-        //vyžiada id prekážky
-        int lastIdPrekazky = shm_R_GUI->id_prekazky;
-        shm_R_GUI->socket->sendJson(socketUtilClass::createNewIdPrekazky());
-        while (lastIdPrekazky==shm_R_GUI->id_prekazky && shm_R_GUI->ukonci_ulohu==false) {
-            //pockame kym nam pride nove
-            usleep(50*1000);
-        }
-        shm_R_GUI->isIdPrekazkyValid = true;
 
         // ulozime ze sledujeme stenu koli posielaniu suradnic prekazok
         shm_odo->wallFollowing = true;
@@ -635,17 +627,32 @@ int CiCreate::Sledovanie_steny() {
             if (shm_R_GUI->ukonci_ulohu) {
                 Pohyb(0, 0);
                 shm_odo->wallFollowing = false;
-                shm_R_GUI->isIdPrekazkyValid = false;
                 return 1;
             }
             if (abs(celk_uhol_0 - shm_odo->prejdeny_uhol) > 200) {
                 Pohyb(0, 0);
                 shm_odo->wallFollowing = false;
-                shm_R_GUI->isIdPrekazkyValid = false;
                 return 0;
             }
             usleep(35 * 1000);
         }
+        //vyžiada id prekážky
+        shm_R_GUI->isIdPrekazkyValid = false;
+        if (connectedIp) {
+            int lastIdPrekazky = shm_R_GUI->id_prekazky;
+            shm_R_GUI->socket->sendJson(socketUtilClass::createNewIdPrekazky());
+            while (lastIdPrekazky==shm_R_GUI->id_prekazky && shm_R_GUI->ukonci_ulohu==false) {
+                //pockame kym nam pride nove
+                usleep(50*1000);
+            }
+            std::cout << "nove id prekazky: " << shm_R_GUI->id_prekazky << "\n";
+        } else {
+            //ak sme neni pripojení na server iba inkrementujeme
+            shm_R_GUI->id_prekazky++;
+            std::cout << "nove id prekazky: " << shm_R_GUI->id_prekazky << "\n";
+        }
+        shm_R_GUI->isIdPrekazkyValid = true;
+        //ulozime pociatocnu polohu
         uhol_0 = shm_odo->aktualny_uhol;
         x_0 = shm_odo->x_rel;
         y_0 = shm_odo->y_rel;
@@ -682,7 +689,7 @@ int CiCreate::Sledovanie_steny() {
             // kazde 2 metre tolerancia + 130mm
             tolerancia = (((shm_odo->prejdena_vzdialenost - prejdena_vzdial) / 2000) + 1) * 130;
             vzdial = sqrt(((abs(x_0 - shm_odo->x_rel)) * (abs(x_0 - shm_odo->x_rel))) + ((abs(y_0 - shm_odo->y_rel)) * (abs(y_0 - shm_odo->y_rel))));
-            std::cout << "vzdial: " << vzdial << "toler: " << tolerancia << "\n";
+            //std::cout << "vzdial: " << vzdial << "toler: " << tolerancia << "\n";
             // ukončí ak sa vráti do počiatočného bodu
             if (((shm_odo->prejdena_vzdialenost - prejdena_vzdial) > 1000) && (abs(shm_odo->aktualny_uhol - uhol_0) < 40) && (vzdial < tolerancia)) {
                 Pohyb(0, 0);
