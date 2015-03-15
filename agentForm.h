@@ -14,7 +14,7 @@
 #include <thread>
 
 #include "ui_agentForm.h"
-#include "agentClass.h"
+#include "Agent.h"
 #include "CiCreate.h"
 
 class agentForm : public QDialog {
@@ -37,7 +37,7 @@ public:
 private:
     Ui::agentForm widget;
     
-    agentClass *agent;
+    Agent *agent;
     komunikacia_shm *shm_R_GUI;
     
     pthread_t threadTest; // TODO vymazat

@@ -5,24 +5,24 @@
  * Created on Nedeľa, 2015, január 25, 19:09
  */
 
-#include "socketClass.h"
+#include "SocketConnector.h"
 
-socketClass::socketClass() {
+SocketConnector::SocketConnector() {
 }
 
-bool socketClass::getConnected() {
+bool SocketConnector::getConnected() {
     return this->connected;
 }
 
-const char * socketClass::getHostName() {
+const char * SocketConnector::getHostName() {
     return this->hostName;
 }
 
-int socketClass::getPortNumber() {
+int SocketConnector::getPortNumber() {
     return this->portNumber;
 }
 
-int socketClass::connectToServer(int portNum, const char *hostname) {
+int SocketConnector::connectToServer(int portNum, const char *hostname) {
     this->portNumber = portNum;
     std::strcpy(this->hostName, hostname);
     std::cout << "connecting to server IP: " << hostName << ":" << portNumber << "\n";
@@ -54,7 +54,7 @@ int socketClass::connectToServer(int portNum, const char *hostname) {
     return 0;
 }
 
-int socketClass::disconnect() {
+int SocketConnector::disconnect() {
     // odpojime zo socketu ak je pripojeny
     if (!connected) {
         return -1;
@@ -66,7 +66,7 @@ int socketClass::disconnect() {
     return 0;
 }
 
-int socketClass::sendJson(const char *jsonData) {
+int SocketConnector::sendJson(const char *jsonData) {
     std::string str2 = jsonData;
     if (!connected) {
         return -1;
@@ -93,7 +93,7 @@ int socketClass::sendJson(const char *jsonData) {
     return n; // vratime pocet poslanych
 }
 
-int socketClass::receiveJson(char *buffer, int bufSize) {
+int SocketConnector::receiveJson(char *buffer, int bufSize) {
     if (!connected) {
         return -1;
     }
@@ -109,7 +109,7 @@ int socketClass::receiveJson(char *buffer, int bufSize) {
     return n;
 }
 
-int socketClass::test() {
+int SocketConnector::test() {
     if (!connected) {
         return -1;
     }
@@ -121,7 +121,7 @@ int socketClass::test() {
     
 }
 
-socketClass::~socketClass() {
+SocketConnector::~SocketConnector() {
     std::cout << "destruktor socketClass\n";
     disconnect();
 }

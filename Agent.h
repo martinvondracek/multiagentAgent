@@ -13,12 +13,12 @@
 
 #include <mutex>
 
-#include "socketClass.h"
-#include "socketUtilClass.h"
-#include "agentClass.h"
+#include "SocketConnector.h"
+#include "SocketUtil.h"
+#include "Agent.h"
 #include "ui_agentForm.h"
-#include "polohaClass.h"
-#include "prekazkaClass.h"
+#include "Poloha.h"
+#include "Prekazka.h"
 //#include "agentForm.h"
 
 typedef short int WORD;
@@ -29,7 +29,7 @@ struct komunikacia_shm {
     int id_prekazky = 0;
     bool isIdPrekazkyValid = false;
     
-    socketClass *socket;
+    SocketConnector *socket;
     pthread_t *vlaknoMapovanie;
     void *agent; // (agentClass *)
     Ui::agentForm *widget;
@@ -43,10 +43,10 @@ struct komunikacia_shm {
 
 
 
-class agentClass {
+class Agent {
 public:
-    agentClass(komunikacia_shm *shm2);
-    virtual ~agentClass();
+    Agent(komunikacia_shm *shm2);
+    virtual ~Agent();
     
     const char * getComport();
     virtual int connectComport(const char * comport); // pripoji sa na robota
@@ -74,7 +74,7 @@ protected:
     bool connectedIp = false;
     bool mappingNow = false;
     komunikacia_shm *shm_R_GUI; //SHM pre komunikáciu medzi robtom a GUI - ukoncenie ulohy
-    socketClass *socket;
+    SocketConnector *socket;
     
     pthread_t vlaknoPrijimanie; //prijimanie sprav zo servera
     pthread_t vlaknoMapovanie;

@@ -15,10 +15,10 @@
 #include <unistd.h>
 #include <iostream>
 
-class socketUtilClass {
+class SocketUtil {
 public:
-    socketUtilClass();
-    virtual ~socketUtilClass();
+    SocketUtil();
+    virtual ~SocketUtil();
     
     static const char * createQuit(int idAgenta);
     static const char * createNewIdPrekazky();

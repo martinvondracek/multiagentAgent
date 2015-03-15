@@ -15,24 +15,24 @@
 #include <unistd.h>
 #include <iostream>
 
-#include "polohaClass.h"
+#include "Poloha.h"
 
 #define PI 3.14159265
 
-class prekazkaClass {
+class Prekazka {
 public:
-    prekazkaClass(int id, int id_spustenia, int prekazka, int robot, float x_rob,
+    Prekazka(int id, int id_spustenia, int prekazka, int robot, float x_rob,
             float y_rob, float fi_rob, float x_p, float y_p, bool naraz_vpravo,
             bool naraz_vlavo, bool naraz_vpredu);
-    prekazkaClass(int id, int id_spustenia, int prekazka, polohaClass *poloha, bool naraz_vpravo,
+    Prekazka(int id, int id_spustenia, int prekazka, Poloha *poloha, bool naraz_vpravo,
             bool naraz_vlavo, bool naraz_vpredu);
-    virtual ~prekazkaClass();
+    virtual ~Prekazka();
     
     const char * toJson();
-    static prekazkaClass * fromJson(const char *json);
+    static Prekazka * fromJson(const char *json);
     const char * toString();
     
-    float getVzdialenost(prekazkaClass *p2);
+    float getVzdialenost(Prekazka *p2);
     
     float GetFi_rob();
     void SetFi_rob(float fi_rob);

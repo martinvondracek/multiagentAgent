@@ -15,16 +15,16 @@
 #include <unistd.h>
 #include <iostream>
 
-class polohaClass {
+class Poloha {
 public:
-    polohaClass(int id, int id_spustenia, int robot, float x, float y, float fi);
-    virtual ~polohaClass();
+    Poloha(int id, int id_spustenia, int robot, float x, float y, float fi);
+    virtual ~Poloha();
     
     const char * toJson();
-    static polohaClass * fromJson(const char *json);
+    static Poloha * fromJson(const char *json);
     const char * toString();
     
-    float getVzdialenost(polohaClass *p2);
+    float getVzdialenost(Poloha *p2);
     
     float GetFi();
     void SetFi(float fi);

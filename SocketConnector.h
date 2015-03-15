@@ -20,10 +20,10 @@
 #include <netdb.h> 
 #include <mutex>
 
-class socketClass {
+class SocketConnector {
 public:
-    socketClass();
-    virtual ~socketClass();
+    SocketConnector();
+    virtual ~SocketConnector();
     
     int connectToServer(int portNum, const char *hostname); // pripoji sa na socket
     int disconnect(); // odpoji sa zo socketu

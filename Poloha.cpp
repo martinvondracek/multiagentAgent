@@ -5,9 +5,9 @@
  * Created on Sobota, 2015, január 24, 10:45
  */
 
-#include "polohaClass.h"
+#include "Poloha.h"
 
-polohaClass::polohaClass(int id, int id_spustenia, int robot, float x, float y, float fi) {
+Poloha::Poloha(int id, int id_spustenia, int robot, float x, float y, float fi) {
     this->id = id;
     this->id_spustenia = id_spustenia;
     this->robot = robot;
@@ -16,55 +16,55 @@ polohaClass::polohaClass(int id, int id_spustenia, int robot, float x, float y, 
     this->fi = fi;
 }
 
-float polohaClass::GetFi() {
+float Poloha::GetFi() {
     return fi;
 }
 
-void polohaClass::SetFi(float fi) {
+void Poloha::SetFi(float fi) {
     this->fi = fi;
 }
 
-int polohaClass::GetId() {
+int Poloha::GetId() {
     return id;
 }
 
-void polohaClass::SetId(int id) {
+void Poloha::SetId(int id) {
     this->id = id;
 }
 
-int polohaClass::GetId_spustenia() {
+int Poloha::GetId_spustenia() {
     return id_spustenia;
 }
 
-void polohaClass::SetId_spustenia(int id_spustenia) {
+void Poloha::SetId_spustenia(int id_spustenia) {
     this->id_spustenia = id_spustenia;
 }
 
-int polohaClass::GetRobot() {
+int Poloha::GetRobot() {
     return robot;
 }
 
-void polohaClass::SetRobot(int robot) {
+void Poloha::SetRobot(int robot) {
     this->robot = robot;
 }
 
-float polohaClass::GetX() {
+float Poloha::GetX() {
     return x;
 }
 
-void polohaClass::SetX(float x) {
+void Poloha::SetX(float x) {
     this->x = x;
 }
 
-float polohaClass::GetY() {
+float Poloha::GetY() {
     return y;
 }
 
-void polohaClass::SetY(float y) {
+void Poloha::SetY(float y) {
     this->y = y;
 }
 
-const char * polohaClass::toJson() {
+const char * Poloha::toJson() {
     std::string pom;
     
     std::string json = "{\n";
@@ -99,7 +99,7 @@ const char * polohaClass::toJson() {
     return json.c_str();
 }
 
-polohaClass * polohaClass::fromJson(const char *json) {
+Poloha * Poloha::fromJson(const char *json) {
     int id;
     int id_spustenia;
     int robot;
@@ -117,17 +117,17 @@ polohaClass * polohaClass::fromJson(const char *json) {
     y = document["Y"].GetDouble();
     fi = document["FI"].GetDouble();
     
-    return new polohaClass(id, id_spustenia, robot, x, y, fi);
+    return new Poloha(id, id_spustenia, robot, x, y, fi);
 }
 
-const char * polohaClass::toString() {
+const char * Poloha::toString() {
     return toJson();
 }
 
-float polohaClass::getVzdialenost(polohaClass *p2) {
+float Poloha::getVzdialenost(Poloha *p2) {
     return sqrt((x-p2->GetX())*(x-p2->GetX()) + (y-p2->GetY())*(y-p2->GetY()));
 }
 
-polohaClass::~polohaClass() {
+Poloha::~Poloha() {
 }
 

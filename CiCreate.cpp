@@ -113,16 +113,16 @@ void *teleriadenie(void *arg) {
 void posielaniePolohy(odometria_shm *shm_odo, komunikacia_shm *shm_R_GUI) {
     std::cout << "preskumaj prostredie\n";
     
-    polohaClass *poloha;
-    polohaClass *lastPoloha;
-    prekazkaClass *prekazka;
-    prekazkaClass *lastPrekazka;
+    Poloha *poloha;
+    Poloha *lastPoloha;
+    Prekazka *prekazka;
+    Prekazka *lastPrekazka;
     
     //inicializujeme
-    poloha = new polohaClass(0, shm_R_GUI->id_spustenia, shm_R_GUI->agent_id, shm_odo->x_rel, shm_odo->y_rel, shm_odo->aktualny_uhol);
+    poloha = new Poloha(0, shm_R_GUI->id_spustenia, shm_R_GUI->agent_id, shm_odo->x_rel, shm_odo->y_rel, shm_odo->aktualny_uhol);
     lastPoloha = poloha;
     shm_R_GUI->socket->sendJson(poloha->toJson());
-    prekazka = new prekazkaClass(0, shm_R_GUI->id_spustenia, 0, poloha, shm_odo->naraznik_vpravo, shm_odo->naraznik_vlavo, shm_odo->naraznik_vpredu);
+    prekazka = new Prekazka(0, shm_R_GUI->id_spustenia, 0, poloha, shm_odo->naraznik_vpravo, shm_odo->naraznik_vlavo, shm_odo->naraznik_vpredu);
     shm_R_GUI->socket->sendJson(prekazka->toJson());
     lastPrekazka = prekazka;
     
@@ -130,15 +130,15 @@ void posielaniePolohy(odometria_shm *shm_odo, komunikacia_shm *shm_R_GUI) {
         if (shm_R_GUI->ukonci_ulohu == true) {
             break;
         }
-        poloha = new polohaClass(0, shm_R_GUI->id_spustenia, shm_R_GUI->agent_id, shm_odo->x_rel, shm_odo->y_rel, shm_odo->aktualny_uhol);
+        poloha = new Poloha(0, shm_R_GUI->id_spustenia, shm_R_GUI->agent_id, shm_odo->x_rel, shm_odo->y_rel, shm_odo->aktualny_uhol);
         if (poloha->getVzdialenost(lastPoloha) >= VZDIAL_POLOHY_POSLANIE) {
             shm_R_GUI->socket->sendJson(poloha->toJson());
             lastPoloha = poloha;
         }
         
         // ak sme narazeny posleme suradnicu prekazky
-        if (((agentClass *)shm_R_GUI->agent)->isKolizia() && shm_R_GUI->isIdPrekazkyValid) {//aby bola pouzite dobre id prekazky
-            prekazkaClass *prekazka = new prekazkaClass(0, shm_R_GUI->id_spustenia, shm_R_GUI->id_prekazky, poloha, shm_odo->naraznik_vpravo, shm_odo->naraznik_vlavo, shm_odo->naraznik_vpredu);
+        if (((Agent *)shm_R_GUI->agent)->isKolizia() && shm_R_GUI->isIdPrekazkyValid) {//aby bola pouzite dobre id prekazky
+            Prekazka *prekazka = new Prekazka(0, shm_R_GUI->id_spustenia, shm_R_GUI->id_prekazky, poloha, shm_odo->naraznik_vpravo, shm_odo->naraznik_vlavo, shm_odo->naraznik_vpredu);
             if (prekazka->getVzdialenost(lastPrekazka) >= VZDIAL_PREKAZKY_POSLANIE) {
                 shm_R_GUI->socket->sendJson(prekazka->toJson());
                 lastPrekazka = prekazka;
@@ -151,7 +151,7 @@ void posielaniePolohy(odometria_shm *shm_odo, komunikacia_shm *shm_R_GUI) {
     return;
 }
 
-CiCreate::CiCreate(komunikacia_shm *shm2) : agentClass(shm2) {
+CiCreate::CiCreate(komunikacia_shm *shm2) : Agent(shm2) {
 }
 
 int CiCreate::Nastav_polohu(int x_0, int y_0, int uhol_0) {
@@ -640,7 +640,7 @@ int CiCreate::Sledovanie_steny() {
         shm_R_GUI->isIdPrekazkyValid = false;
         if (connectedIp) {
             int lastIdPrekazky = shm_R_GUI->id_prekazky;
-            shm_R_GUI->socket->sendJson(socketUtilClass::createNewIdPrekazky());
+            shm_R_GUI->socket->sendJson(SocketUtil::createNewIdPrekazky());
             while (lastIdPrekazky==shm_R_GUI->id_prekazky && shm_R_GUI->ukonci_ulohu==false) {
                 //pockame kym nam pride nove
                 usleep(50*1000);

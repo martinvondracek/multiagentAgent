@@ -9,7 +9,7 @@
 
 // TODO vymazat
 void *testClickedThread(void *agent) {
-    ((agentClass *)agent)->pokusy();
+    ((Agent *)agent)->pokusy();
 }
 
 agentForm::agentForm() {

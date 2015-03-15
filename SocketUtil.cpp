@@ -5,12 +5,12 @@
  * Created on Streda, 2015, január 28, 10:26
  */
 
-#include "socketUtilClass.h"
+#include "SocketUtil.h"
 
-socketUtilClass::socketUtilClass() {
+SocketUtil::SocketUtil() {
 }
 
-const char * socketUtilClass::createQuit(int idAgenta) {
+const char * SocketUtil::createQuit(int idAgenta) {
     std::string json = "{\n";
     json.append("\"CLASSTYPE\" : \"QUIT\"");
     
@@ -22,7 +22,7 @@ const char * socketUtilClass::createQuit(int idAgenta) {
     return json.c_str();
 }
 
-const char * socketUtilClass::createNewIdPrekazky() {
+const char * SocketUtil::createNewIdPrekazky() {
     std::string json = "{\n";
     json.append("\"CLASSTYPE\" : \"NEW_ID_PREKAZKY\"");
     
@@ -31,7 +31,7 @@ const char * socketUtilClass::createNewIdPrekazky() {
     return json.c_str();
 }
 
-int socketUtilClass::parseAgentIdFromJson(const char *json) {
+int SocketUtil::parseAgentIdFromJson(const char *json) {
     int id;
     
     rapidjson::Document document;
@@ -46,7 +46,7 @@ int socketUtilClass::parseAgentIdFromJson(const char *json) {
     }
 }
 
-int socketUtilClass::parseAgentIdSpusteniaFromJson(const char *json) {
+int SocketUtil::parseAgentIdSpusteniaFromJson(const char *json) {
     int id;
     
     rapidjson::Document document;
@@ -61,7 +61,7 @@ int socketUtilClass::parseAgentIdSpusteniaFromJson(const char *json) {
     }
 }
 
-int socketUtilClass::parseIdSpusteniaFromJson(const char *json) {
+int SocketUtil::parseIdSpusteniaFromJson(const char *json) {
     int id;
     
     rapidjson::Document document;
@@ -76,7 +76,7 @@ int socketUtilClass::parseIdSpusteniaFromJson(const char *json) {
     }
 }
 
-int socketUtilClass::parseNewIdPrekazkyFromJson(const char *json) {
+int SocketUtil::parseNewIdPrekazkyFromJson(const char *json) {
     int id;
     
     rapidjson::Document document;
@@ -91,7 +91,7 @@ int socketUtilClass::parseNewIdPrekazkyFromJson(const char *json) {
     }
 }
 
-std::string socketUtilClass::parseClassTypeFromJson(const char *json) {
+std::string SocketUtil::parseClassTypeFromJson(const char *json) {
     rapidjson::Document document;
     document.Parse<0>(json);
     
@@ -100,6 +100,6 @@ std::string socketUtilClass::parseClassTypeFromJson(const char *json) {
     return ctype;
 }
 
-socketUtilClass::~socketUtilClass() {
+SocketUtil::~SocketUtil() {
 }
 

@@ -11,7 +11,7 @@
 #include <mutex>
 
 #include "CiCreate.h"
-#include "agentClass.h"
+#include "Agent.h"
 #include "CiCreateDef.h"
 #include "agentForm.h"
 
@@ -48,7 +48,7 @@ struct odometria_shm {
     std::mutex mutCrdef;
 };
 
-class CiCreate : public agentClass {
+class CiCreate : public Agent {
 public:
     CiCreate(komunikacia_shm *shm2);
     virtual ~CiCreate();

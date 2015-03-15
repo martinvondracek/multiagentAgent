@@ -5,13 +5,13 @@
  * Created on Utorok, 2015, január 27, 9:02
  */
 
-#include "agentClass.h"
+#include "Agent.h"
 #include "agentForm.h"
 
 void *vlaknoMapovanie(void *arg) {
     std::cout << "vlakno mapovanie aaa\n";
     komunikacia_shm *shm_R_GUI = (komunikacia_shm *) arg;
-    agentClass *agent = (agentClass *) shm_R_GUI->agent;
+    Agent *agent = (Agent *) shm_R_GUI->agent;
     shm_R_GUI->prebieha_uloha = true;
     shm_R_GUI->ukonci_ulohu = false;
     shm_R_GUI->id_prekazky;
@@ -33,7 +33,7 @@ void *vlaknoPrijimanieDatServera(void *arg) {
     int n;
     
     komunikacia_shm *shm_R_GUI = (komunikacia_shm *) arg;
-    agentClass *agent = (agentClass *) shm_R_GUI->agent;
+    Agent *agent = (Agent *) shm_R_GUI->agent;
     
     while (1) {
         //std::cout << "vlakno prijimanie\n";
@@ -54,7 +54,7 @@ void *vlaknoPrijimanieDatServera(void *arg) {
                 //std::cout << "data token=" << token << "=KONIEC\n";
 
                 //rozparsovat a vyhodnotit
-                std::string ctype = socketUtilClass::parseClassTypeFromJson(token.c_str());
+                std::string ctype = SocketUtil::parseClassTypeFromJson(token.c_str());
                 //std::cout << "prislo ctype=" << ctype << "\n";
                 //ak treba pustit mapovanie tak pustime nove vlakno
                 if (ctype.compare("SPUSTIT_MAPOVANIE") == 0) {
@@ -94,7 +94,7 @@ void *vlaknoPrijimanieDatServera(void *arg) {
                 }
                 // ak pride nove ID spustenia
                 if (ctype.compare("ID_SPUSTENIA") == 0) {
-                    int id_p = socketUtilClass::parseIdSpusteniaFromJson(token.c_str());
+                    int id_p = SocketUtil::parseIdSpusteniaFromJson(token.c_str());
                     if (id_p > 0) {
                         shm_R_GUI->id_spustenia = id_p;
                         std::cout << "id spustenia=" << shm_R_GUI->id_spustenia << "\n";
@@ -102,7 +102,7 @@ void *vlaknoPrijimanieDatServera(void *arg) {
                 }
                 // ak pride nove ID prekazky
                 if (ctype.compare("NEW_ID_PREKAZKY") == 0) {
-                    int id_p = socketUtilClass::parseNewIdPrekazkyFromJson(token.c_str());
+                    int id_p = SocketUtil::parseNewIdPrekazkyFromJson(token.c_str());
                     shm_R_GUI->id_prekazky = id_p;
                 }
                 s.erase(0, pos + delimiter.length());
@@ -113,51 +113,51 @@ void *vlaknoPrijimanieDatServera(void *arg) {
     
 }
 
-agentClass::agentClass(komunikacia_shm *shm_R_GUI) {
+Agent::Agent(komunikacia_shm *shm_R_GUI) {
     this->shm_R_GUI = shm_R_GUI;
-    this->socket = new socketClass();    
+    this->socket = new SocketConnector();    
     this->shm_R_GUI->socket = this->socket;
     this->shm_R_GUI->vlaknoMapovanie = &(this->vlaknoMapovanie);
 }
 
-const char * agentClass::getComport() {
+const char * Agent::getComport() {
     return this->comport;
 }
 
-int agentClass::connectComport(const char * comport) {
+int Agent::connectComport(const char * comport) {
     this->comport = comport;
     this->connectedComport = true;
     return 0;
 }
 
-int agentClass::disConnectComport() {
+int Agent::disConnectComport() {
     if (connectedComport) {
         this->connectedComport = false;
     }
     return 0;
 }
 
-bool agentClass::getConnectedComport() {
+bool Agent::getConnectedComport() {
     return this->connectedComport;
 }
 
-int agentClass::startTeleriadenie(void *widget) {
+int Agent::startTeleriadenie(void *widget) {
     return 0;
 }
 
-int agentClass::stopTeleriadenie() {
+int Agent::stopTeleriadenie() {
     return 0;
 }
 
-const char * agentClass::getHostName() {
+const char * Agent::getHostName() {
     return this->hostName;
 }
 
-int agentClass::getPortNumber() {
+int Agent::getPortNumber() {
     return this->portNumber;
 }
 
-int agentClass::connectIp(int portNumber, const char *hostName) {
+int Agent::connectIp(int portNumber, const char *hostName) {
     this->portNumber = portNumber;
     std::strcpy(this->hostName, hostName);
     
@@ -174,8 +174,8 @@ int agentClass::connectIp(int portNumber, const char *hostName) {
         pos = s.find(delimiter);
         token = s.substr(0, pos);
         
-        int id = socketUtilClass::parseAgentIdFromJson(token.c_str());
-        int idSpustenia = socketUtilClass::parseAgentIdSpusteniaFromJson(token.c_str());
+        int id = SocketUtil::parseAgentIdFromJson(token.c_str());
+        int idSpustenia = SocketUtil::parseAgentIdSpusteniaFromJson(token.c_str());
         if (id>0 && idSpustenia>0) {
             shm_R_GUI->agent_id = id;
             shm_R_GUI->id_spustenia = idSpustenia;
@@ -199,7 +199,7 @@ int agentClass::connectIp(int portNumber, const char *hostName) {
     return -1;
 }
 
-int agentClass::disConnectIp() {
+int Agent::disConnectIp() {
     std::cout << "disConnectIp\n";
     // poposielat co treba
     // posleme serveru ze koncime
@@ -212,7 +212,7 @@ int agentClass::disConnectIp() {
             usleep(200 * 1000);
             pthread_cancel(vlaknoMapovanie);
         }
-        shm_R_GUI->socket->sendJson(socketUtilClass::createQuit(shm_R_GUI->agent_id));
+        shm_R_GUI->socket->sendJson(SocketUtil::createQuit(shm_R_GUI->agent_id));
         pthread_cancel(vlaknoPrijimanie);
     }
     
@@ -223,20 +223,20 @@ int agentClass::disConnectIp() {
     return 0;
 }
 
-bool agentClass::getConnectedIp() {
+bool Agent::getConnectedIp() {
     this->connectedIp = socket->getConnected();
     return this->connectedIp;
 }
 
-int agentClass::Nastav_polohu(int x_0, int y_0, int uhol_0) {
+int Agent::Nastav_polohu(int x_0, int y_0, int uhol_0) {
     return 0;
 }
 
-int agentClass::Pohyb(WORD p, WORD l) {
+int Agent::Pohyb(WORD p, WORD l) {
     return 0;
 }
 
-int agentClass::Preskumaj_prostredie() {
+int Agent::Preskumaj_prostredie() {
     while (1) {
         if (shm_R_GUI->ukonci_ulohu == true) {
             break;
@@ -247,15 +247,15 @@ int agentClass::Preskumaj_prostredie() {
     return 0;
 }
 
-void agentClass::pokusy() {
+void Agent::pokusy() {
     
 }
 
-bool agentClass::isKolizia() {
+bool Agent::isKolizia() {
     return false;
 }
 
-agentClass::~agentClass() {
+Agent::~Agent() {
     std::cout << "destruktor agentClass\n";
     disConnectIp();
     disConnectComport();
