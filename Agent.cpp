@@ -14,7 +14,7 @@ void *vlaknoMapovanie(void *arg) {
     Agent *agent = (Agent *) shm_R_GUI->agent;
     shm_R_GUI->prebieha_uloha = true;
     shm_R_GUI->ukonci_ulohu = false;
-    shm_R_GUI->id_prekazky;
+    shm_R_GUI->id_prekazky = 0;
     shm_R_GUI->isIdPrekazkyValid = false;
     agent->Preskumaj_prostredie();
     shm_R_GUI->prebieha_uloha = false;

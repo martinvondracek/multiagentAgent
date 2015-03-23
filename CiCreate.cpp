@@ -140,6 +140,7 @@ void posielaniePolohy(odometria_shm *shm_odo, komunikacia_shm *shm_R_GUI) {
         if (((Agent *)shm_R_GUI->agent)->isKolizia() && shm_R_GUI->isIdPrekazkyValid) {//aby bola pouzite dobre id prekazky
             Prekazka *prekazka = new Prekazka(0, shm_R_GUI->id_spustenia, shm_R_GUI->id_prekazky, poloha, shm_odo->naraznik_vpravo, shm_odo->naraznik_vlavo, shm_odo->naraznik_vpredu);
             if (prekazka->getVzdialenost(lastPrekazka) >= VZDIAL_PREKAZKY_POSLANIE) {
+                shm_R_GUI->prekazky->addPrekazka(prekazka);
                 shm_R_GUI->socket->sendJson(prekazka->toJson());
                 lastPrekazka = prekazka;
             }
@@ -264,6 +265,7 @@ int CiCreate::stopTeleriadenie() {
 
 int CiCreate::Preskumaj_prostredie() {
     std::cout << "preskumaj prostredie\n";
+    shm_R_GUI->prekazky = new Prekazky();
     
     // najskor spustime vlakno pre pravidelne posielanie polohy a prekazok
     posielanieThread = std::thread(posielaniePolohy, shm_odo, shm_R_GUI);
@@ -274,6 +276,7 @@ int CiCreate::Preskumaj_prostredie() {
     //ukoncime odosielanie polohy a prekazok
     usleep (500*1000);
     posielanieThread.detach();
+    //std::cout << shm_R_GUI->prekazky->toString();
     
     return 0;
 }
@@ -292,8 +295,27 @@ int CiCreate::getPolohaUhol() {
 
 void CiCreate::pokusy() {
     //Dopredu_po_naraz();
-    shm_R_GUI->id_prekazky = 0;
+    //shm_R_GUI->id_prekazky = 0;
     Sledovanie_steny();
+    //Otocenie_o_uhol_reg(359,0);
+    
+//    Dopredu_o_vzdialenost_reg(1000);
+//    Otocenie_o_uhol_reg(90,1);
+//    Dopredu_o_vzdialenost_reg(1000);
+//    Otocenie_o_uhol_reg(90,1);
+//    Dopredu_o_vzdialenost_reg(1000);
+//    Otocenie_o_uhol_reg(90,1);
+//    Dopredu_o_vzdialenost_reg(1000);
+//    Otocenie_o_uhol_reg(90,1);
+    
+//    Dopredu_o_vzdialenost(1000);
+//    Otocenie_o_uhol(90,1);
+//    Dopredu_o_vzdialenost(1000);
+//    Otocenie_o_uhol(90,1);
+//    Dopredu_o_vzdialenost(1000);
+//    Otocenie_o_uhol(90,1);
+//    Dopredu_o_vzdialenost(1000);
+//    Otocenie_o_uhol(90,1);
 }
 
 int CiCreate::Dopredu_po_naraz() {

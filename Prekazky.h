@@ -8,13 +8,35 @@
 #ifndef PREKAZKY_H
 #define	PREKAZKY_H
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <list>
+#include <mutex>
+
+#include "Prekazka.h"
+
+#define MIN_DISTANCE 50
+
 class Prekazky {
 public:
     Prekazky();
-    Prekazky(const Prekazky& orig);
+    
+    //int newIdPrekazky(komunikacia_shm *shm_R_GUI); // zo serveru zisti nove id prekazky
+                        // ak neni pripojeny tak len inkrementuje
+    int addPrekazka(Prekazka *prekazka); //ulozi prekazku
+    bool isNearOtherWithId(Prekazka *prekazka, int tolerancia);
+        //zisti ci sa k zadanej prekazke nachadza v urcitej vzdialenosti ina s rovnakym id
+    bool isNearAnyOther(Prekazka *prekazka, int tolerancia);
+        //zisti ci sa k zadanej prekazke nachadza v urcitej vzdialenosti ina s lubovolnym id
+    
+    std::string toString();
+    
     virtual ~Prekazky();
 private:
-
+    std::list<Prekazka*> prekazkyList;
+    Prekazka *lastPrekazka = nullptr;
+    
+    std::mutex m;
 };
 
 #endif	/* PREKAZKY_H */

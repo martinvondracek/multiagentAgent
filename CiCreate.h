@@ -14,14 +14,15 @@
 #include "Agent.h"
 #include "CiCreateDef.h"
 #include "agentForm.h"
+#include "shm.h"
 
 #define LEFT_WHEEL_MAX_POS_SPEED 250
 #define LEFT_WHEEL_MAX_NEG_SPEED -250
 #define RIGHT_WHEEL_MAX_POS_SPEED 250
 #define RIGHT_WHEEL_MAX_NEG_SPEED -250
 
-#define VZDIAL_POLOHY_POSLANIE 100
-#define VZDIAL_PREKAZKY_POSLANIE 100
+#define VZDIAL_POLOHY_POSLANIE 50
+#define VZDIAL_PREKAZKY_POSLANIE 50
 
 struct odometria_shm {
     int bateriaNapatie;

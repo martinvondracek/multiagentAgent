@@ -7,12 +7,91 @@
 
 #include "Prekazky.h"
 
-Prekazky::Prekazky() {
+Prekazky::Prekazky() {}
+
+/*int Prekazky::newIdPrekazky(komunikacia_shm *shm_R_GUI) {
+    m.lock();
+    shm_R_GUI->isIdPrekazkyValid = false;
+        if (shm_R_GUI->socket->getConnected()) {
+            int lastIdPrekazky = shm_R_GUI->id_prekazky;
+            shm_R_GUI->socket->sendJson(SocketUtil::createNewIdPrekazky());
+            while (lastIdPrekazky==shm_R_GUI->id_prekazky && shm_R_GUI->ukonci_ulohu==false) {
+                //pockame kym nam pride nove
+                usleep(50*1000);
+            }
+            std::cout << "nove id prekazky: " << shm_R_GUI->id_prekazky << "\n";
+        } else {
+            //ak sme neni pripojení na server iba inkrementujeme
+            shm_R_GUI->id_prekazky++;
+            std::cout << "nove id prekazky: " << shm_R_GUI->id_prekazky << "\n";
+        }
+        shm_R_GUI->isIdPrekazkyValid = true;
+    
+    m.unlock();
+    return shm_R_GUI->id_prekazky;
+}*/
+
+int Prekazky::addPrekazka(Prekazka *prekazka) {
+    m.lock();
+    // todo vytvorit clone
+    if (lastPrekazka == nullptr) {
+        lastPrekazka = prekazka;
+        prekazkyList.push_back(prekazka);
+    } else {
+        // ukladame vzdy v niakej minimalnej vzdialenosti
+        if (lastPrekazka->getVzdialenost(prekazka) > MIN_DISTANCE) {
+            lastPrekazka = prekazka;
+            prekazkyList.push_back(prekazka);
+        }
+    }
+    
+    m.unlock();
+    return 1;
 }
 
-Prekazky::Prekazky(const Prekazky& orig) {
+bool Prekazky::isNearOtherWithId(Prekazka *prekazka, int tolerancia) {
+    m.lock();
+    std::list<Prekazka*>::iterator i;
+        for (i = prekazkyList.begin(); i != prekazkyList.end(); ++i) {
+            if ((*i)->getVzdialenost(prekazka)<=tolerancia && (*i)->GetId()==prekazka->GetId()) {
+                m.unlock();
+                return true;
+            }
+        }
+    m.unlock();
+    return false;
+}
+
+bool Prekazky::isNearAnyOther(Prekazka *prekazka, int tolerancia) {
+    m.lock();
+    std::list<Prekazka*>::iterator i;
+        for (i = prekazkyList.begin(); i != prekazkyList.end(); ++i) {
+            if ((*i)->getVzdialenost(prekazka)<=tolerancia) {
+                m.unlock();
+                return true;
+            }
+        }
+    m.unlock();
+    return false;
+}
+    
+std::string Prekazky::toString() {
+    std::string str = "{\n";
+    
+    m.lock();
+    std::list<Prekazka*>::iterator i;
+    for (i = prekazkyList.begin(); i != prekazkyList.end(); ++i) {
+        str.append((*i)->toString());
+        str.append("\n");
+    }
+    str.append("}\n");
+    m.unlock();
+        
+    return str;
 }
 
 Prekazky::~Prekazky() {
+    m.lock();
+    m.unlock();
 }
 

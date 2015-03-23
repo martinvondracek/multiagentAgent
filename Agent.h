@@ -19,6 +19,8 @@
 #include "ui_agentForm.h"
 #include "Poloha.h"
 #include "Prekazka.h"
+#include "Prekazky.h"
+#include "shm.h"
 //#include "agentForm.h"
 
 typedef short int WORD;
@@ -28,6 +30,7 @@ struct komunikacia_shm {
     int id_spustenia;
     int id_prekazky = 0;
     bool isIdPrekazkyValid = false;
+    Prekazky *prekazky;
     
     SocketConnector *socket;
     pthread_t *vlaknoMapovanie;
@@ -40,8 +43,6 @@ struct komunikacia_shm {
     
     std::mutex mutSocket;
 };
-
-
 
 class Agent {
 public:
