@@ -14,7 +14,6 @@
 #include "Agent.h"
 #include "CiCreateDef.h"
 #include "agentForm.h"
-#include "shm.h"
 
 #define LEFT_WHEEL_MAX_POS_SPEED 250
 #define LEFT_WHEEL_MAX_NEG_SPEED -250

@@ -20,7 +20,6 @@
 #include "Poloha.h"
 #include "Prekazka.h"
 #include "Prekazky.h"
-#include "shm.h"
 //#include "agentForm.h"
 
 typedef short int WORD;

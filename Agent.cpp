@@ -105,6 +105,12 @@ void *vlaknoPrijimanieDatServera(void *arg) {
                     int id_p = SocketUtil::parseNewIdPrekazkyFromJson(token.c_str());
                     shm_R_GUI->id_prekazky = id_p;
                 }
+                // ak pride prekazka ulozime ju k ostatnym
+                if (ctype.compare("PREKAZKACLASS") == 0) {
+                    Prekazka *prekazka = Prekazka::fromJson(token.c_str());
+                    shm_R_GUI->prekazky->addPrekazka(prekazka);
+                    //std::cout << "prisla prekazka od:" <<  prekazka->GetRobot() << "\n";
+                }
                 s.erase(0, pos + delimiter.length());
             }
         }
