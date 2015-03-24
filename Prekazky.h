@@ -25,9 +25,11 @@ public:
                         // ak neni pripojeny tak len inkrementuje
     int addPrekazka(Prekazka *prekazka); //ulozi prekazku
     bool isNearOtherWithId(Prekazka *prekazka, int tolerancia);
-        //zisti ci sa k zadanej prekazke nachadza v urcitej vzdialenosti ina s rovnakym id
+        //zisti ci sa k zadanej prekazke nachadza v urcitej vzdialenosti ina s rovnakym id robota
+    bool isNearOtherExceptId(Prekazka *prekazka, int tolerancia);
+        //zisti ci sa k zadanej prekazke nachadza v urcitej vzdialenosti ina s odlisnym id robota
     bool isNearAnyOther(Prekazka *prekazka, int tolerancia);
-        //zisti ci sa k zadanej prekazke nachadza v urcitej vzdialenosti ina s lubovolnym id
+        //zisti ci sa k zadanej prekazke nachadza v urcitej vzdialenosti ina s lubovolnym id robota
     
     std::string toString();
     

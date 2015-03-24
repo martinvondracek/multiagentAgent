@@ -272,6 +272,7 @@ int CiCreate::Preskumaj_prostredie() {
     
     while (shm_R_GUI->ukonci_ulohu == false) {
         Sledovanie_steny();
+        Otocenie_o_uhol(70, 0);
     }
     //ukoncime odosielanie polohy a prekazok
     usleep (500*1000);
@@ -717,11 +718,13 @@ int CiCreate::Sledovanie_steny() {
                 Pohyb(0, 0);
                 break;
             }
-            // TODO ukončí ak tu už bol iný robot
-//            if (shm2->prekazky->HladajSuradnicu(shm->x_rel, shm->y_rel, id_prekazky)) {
-//                Pohyb(0, 0);
-//                return 1;
-//            }
+            // ukončí ak tu už bol iný robot
+            Poloha *aktPoloha = new Poloha(0, shm_R_GUI->id_spustenia, shm_R_GUI->agent_id, shm_odo->x_rel, shm_odo->y_rel, shm_odo->aktualny_uhol);
+            Prekazka *aktPrekazka = new Prekazka(0, shm_R_GUI->id_spustenia, shm_R_GUI->id_prekazky, aktPoloha, shm_odo->naraznik_vpravo, shm_odo->naraznik_vlavo, shm_odo->naraznik_vpredu);
+            if (shm_R_GUI->prekazky->isNearOtherExceptId(aktPrekazka, tolerancia)) {
+                Pohyb(0, 0);
+                return 1;
+            }
             usleep(40 * 1000);
         }
         shm_odo->wallFollowing = false;
