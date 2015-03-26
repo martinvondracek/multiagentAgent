@@ -67,6 +67,7 @@ bool Prekazky::isNearOtherExceptId(Prekazka *prekazka, int tolerancia) {
     std::list<Prekazka*>::iterator i;
         for (i = prekazkyList.begin(); i != prekazkyList.end(); ++i) {
             if ((*i)->getVzdialenost(prekazka)<=tolerancia && (*i)->GetPrekazka()!=prekazka->GetPrekazka()) {
+                std::cout << (*i)->GetPrekazka() << " " << prekazka->GetPrekazka() << " " << (*i)->getVzdialenost(prekazka)-tolerancia << "\n";
                 m.unlock();
                 return true;
             }

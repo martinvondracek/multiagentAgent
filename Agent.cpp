@@ -111,6 +111,12 @@ void *vlaknoPrijimanieDatServera(void *arg) {
                     shm_R_GUI->prekazky->addPrekazka(prekazka);
                     //std::cout << "prisla prekazka od:" <<  prekazka->GetRobot() << "\n";
                 }
+                // ak pride poloha ulozime ju k ostatnym
+                if (ctype.compare("POLOHACLASS") == 0) {
+                    Poloha *poloha = Poloha::fromJson(token.c_str());
+                    // todo ulozime polohu ineho robota
+                    //std::cout << "prisla poloha od:" <<  poloha->GetRobot() << "\n";
+                }
                 s.erase(0, pos + delimiter.length());
             }
         }
