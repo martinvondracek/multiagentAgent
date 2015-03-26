@@ -266,6 +266,8 @@ int CiCreate::stopTeleriadenie() {
 int CiCreate::Preskumaj_prostredie() {
     std::cout << "preskumaj prostredie\n";
     shm_R_GUI->prekazky = new Prekazky();
+    int iddd = shm_R_GUI->agent_id;
+    shm_R_GUI->polohy = new PolohyAgentov(iddd);
     
     // najskor spustime vlakno pre pravidelne posielanie polohy a prekazok
     posielanieThread = std::thread(posielaniePolohy, shm_odo, shm_R_GUI);
@@ -278,6 +280,7 @@ int CiCreate::Preskumaj_prostredie() {
     usleep (500*1000);
     posielanieThread.detach();
     //std::cout << shm_R_GUI->prekazky->toString();
+    std::cout << shm_R_GUI->polohy->toString();
     
     return 0;
 }

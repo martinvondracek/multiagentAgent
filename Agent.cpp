@@ -114,7 +114,7 @@ void *vlaknoPrijimanieDatServera(void *arg) {
                 // ak pride poloha ulozime ju k ostatnym
                 if (ctype.compare("POLOHACLASS") == 0) {
                     Poloha *poloha = Poloha::fromJson(token.c_str());
-                    // todo ulozime polohu ineho robota
+                    shm_R_GUI->polohy->addOrUpdatePoloha(poloha);
                     //std::cout << "prisla poloha od:" <<  poloha->GetRobot() << "\n";
                 }
                 s.erase(0, pos + delimiter.length());
@@ -130,6 +130,8 @@ Agent::Agent(komunikacia_shm *shm_R_GUI) {
     this->socket = new SocketConnector();    
     this->shm_R_GUI->socket = this->socket;
     this->shm_R_GUI->vlaknoMapovanie = &(this->vlaknoMapovanie);
+    this->shm_R_GUI->prekazky = new Prekazky();
+    this->shm_R_GUI->polohy = new PolohyAgentov(shm_R_GUI->agent_id);
 }
 
 const char * Agent::getComport() {

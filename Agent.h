@@ -20,6 +20,7 @@
 #include "Poloha.h"
 #include "Prekazka.h"
 #include "Prekazky.h"
+#include "PolohyAgentov.h"
 //#include "agentForm.h"
 
 typedef short int WORD;
@@ -30,6 +31,7 @@ struct komunikacia_shm {
     int id_prekazky = 0;
     bool isIdPrekazkyValid = false;
     Prekazky *prekazky;
+    PolohyAgentov *polohy;
     
     SocketConnector *socket;
     pthread_t *vlaknoMapovanie;
