@@ -23,14 +23,6 @@ void PolohyAgentov::addOrUpdatePoloha(Poloha *poloha) {
             }
         }
         polohyList.push_back(poloha);
-        /*if (!exists) {
-            //Poloha* newPoloha = new Poloha(0, poloha->GetId_spustenia(), poloha->GetRobot(), poloha->GetX(), poloha->GetY(), poloha->GetFi());
-            // pridame novu
-            polohyList.push_back(poloha);
-        } else {
-            //inak updatneme
-            
-        }*/
     }
     m.unlock();
 }
