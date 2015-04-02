@@ -6,11 +6,13 @@
                    projectFiles="true">
       <logicalFolder name="f1" displayName="Agent" projectFiles="true">
         <itemPath>Agent.h</itemPath>
+        <itemPath>AkcnyZasah.h</itemPath>
         <itemPath>CComport.h</itemPath>
         <itemPath>CiCreate.h</itemPath>
         <itemPath>CiCreateDef.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f3" displayName="PrekazkyPolohy" projectFiles="true">
+        <itemPath>KoordinacnaSur.h</itemPath>
         <itemPath>Poloha.h</itemPath>
         <itemPath>PolohyAgentov.h</itemPath>
         <itemPath>Prekazka.h</itemPath>
@@ -32,11 +34,13 @@
                    projectFiles="true">
       <logicalFolder name="f1" displayName="Agent" projectFiles="true">
         <itemPath>Agent.cpp</itemPath>
+        <itemPath>AkcnyZasah.cpp</itemPath>
         <itemPath>CComport.cpp</itemPath>
         <itemPath>CiCreate.cpp</itemPath>
         <itemPath>CiCreateDef.cpp</itemPath>
       </logicalFolder>
       <logicalFolder name="f2" displayName="PrekazkyPolohy" projectFiles="true">
+        <itemPath>KoordinacnaSur.cpp</itemPath>
         <itemPath>Poloha.cpp</itemPath>
         <itemPath>PolohyAgentov.cpp</itemPath>
         <itemPath>Prekazka.cpp</itemPath>
@@ -87,6 +91,10 @@
       </item>
       <item path="Agent.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="AkcnyZasah.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="AkcnyZasah.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="CComport.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="CComport.h" ex="false" tool="3" flavor2="0">
@@ -98,6 +106,10 @@
       <item path="CiCreateDef.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="CiCreateDef.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="KoordinacnaSur.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="KoordinacnaSur.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Poloha.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -160,6 +172,10 @@
       </item>
       <item path="Agent.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="AkcnyZasah.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="AkcnyZasah.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="CComport.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="CComport.h" ex="false" tool="3" flavor2="0">
@@ -171,6 +187,10 @@
       <item path="CiCreateDef.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="CiCreateDef.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="KoordinacnaSur.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="KoordinacnaSur.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Poloha.cpp" ex="false" tool="1" flavor2="0">
       </item>

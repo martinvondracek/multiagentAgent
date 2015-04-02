@@ -70,7 +70,7 @@ void *vlaknoPrijimanieDatServera(void *arg) {
                     }
                 }
                 //todo ak pride koordinacna suradnica pre mapovanie
-                if (ctype.compare("KOORDINACNA_SURADNICA") == 0) {
+                if (ctype.compare("KOORDINACNA_SUR") == 0) {
                     // TODO implementovat
                 }
                 //ak pride poziadavka na ukoncenie mapovania

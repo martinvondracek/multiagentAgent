@@ -280,7 +280,7 @@ int CiCreate::Preskumaj_prostredie() {
     usleep (500*1000);
     posielanieThread.detach();
     //std::cout << shm_R_GUI->prekazky->toString();
-    std::cout << shm_R_GUI->polohy->toString();
+    //std::cout << shm_R_GUI->polohy->toString();
     
     return 0;
 }
