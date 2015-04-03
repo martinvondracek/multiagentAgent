@@ -10,22 +10,29 @@
 KoordinacnaSur::KoordinacnaSur(int x, int y) {
     this->x = x;
     this->y = y;
+    this->valid = true;
+}
+
+KoordinacnaSur::KoordinacnaSur(int x, int y, bool valid) {
+    this->x = x;
+    this->y = y;
+    this->valid = false;
 }
 
 int KoordinacnaSur::GetX() {
     return x;
 }
 
-void KoordinacnaSur::SetX(int x) {
-    this->x = x;
-}
-
 int KoordinacnaSur::GetY() {
     return y;
 }
 
-void KoordinacnaSur::SetY(int y) {
-    this->y = y;
+bool KoordinacnaSur::isValid() {
+    return valid;
+}
+
+KoordinacnaSur* KoordinacnaSur::newInvalid() {
+    return new KoordinacnaSur(0, 0, false);
 }
 
 std::string KoordinacnaSur::toJson(){
@@ -40,6 +47,9 @@ std::string KoordinacnaSur::toJson(){
     json.append(",\n\"Y\" : ");
     json.append(std::to_string(y));
     
+    json.append(",\n\"VALID\" : ");
+    json.append(valid ? "true" : "false");
+    
     json.append("\n}\n");
         
     return json;
@@ -48,14 +58,16 @@ std::string KoordinacnaSur::toJson(){
 KoordinacnaSur* KoordinacnaSur::fromJson(std::string json) {
     int x;
     int y;
+    int valid;
     
     rapidjson::Document document;
     document.Parse<0>(json.c_str());
     
     x = document["X"].GetInt();
     y = document["Y"].GetInt();
+    valid = document["VALID"].GetBool();
     
-    return new KoordinacnaSur(x, y);
+    return new KoordinacnaSur(x, y, valid);
 }
 
 std::string KoordinacnaSur::toString(){

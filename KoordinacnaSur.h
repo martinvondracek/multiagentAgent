@@ -20,9 +20,10 @@ public:
     KoordinacnaSur(int x, int y);
     
     int GetX();
-    void SetX(int x);
-    int GetY();
-    void SetY(int y);
+    int GetY();    
+    bool isValid();
+    
+    static KoordinacnaSur* newInvalid();
     
     std::string toJson();
     static KoordinacnaSur* fromJson(std::string json);
@@ -32,7 +33,9 @@ public:
 private:
     int x;
     int y;
-
+    bool valid;
+    
+    KoordinacnaSur(int x, int y, bool valid);
 };
 
 #endif	/* KOORDINACNASUR_H */

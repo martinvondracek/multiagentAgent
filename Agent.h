@@ -21,6 +21,7 @@
 #include "Prekazka.h"
 #include "Prekazky.h"
 #include "PolohyAgentov.h"
+#include "KoordinacnaSur.h"
 //#include "agentForm.h"
 
 typedef short int WORD;
@@ -32,6 +33,7 @@ struct komunikacia_shm {
     bool isIdPrekazkyValid = false;
     Prekazky *prekazky;
     PolohyAgentov *polohy;
+    KoordinacnaSur *koorSur;
     
     SocketConnector *socket;
     pthread_t *vlaknoMapovanie;
