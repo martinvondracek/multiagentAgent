@@ -14,7 +14,6 @@ void *vlaknoMapovanie(void *arg) {
     Agent *agent = (Agent *) shm_R_GUI->agent;
     shm_R_GUI->prebieha_uloha = true;
     shm_R_GUI->ukonci_ulohu = false;
-    shm_R_GUI->koorSur = KoordinacnaSur::newInvalid();
     shm_R_GUI->id_prekazky = 0;
     shm_R_GUI->isIdPrekazkyValid = false;
     agent->Preskumaj_prostredie();
@@ -72,9 +71,9 @@ void *vlaknoPrijimanieDatServera(void *arg) {
                 }
                 //todo ak pride koordinacna suradnica pre mapovanie
                 if (ctype.compare("KOORDINACNA_SUR") == 0) {
-                    // TODO implementovat
                     KoordinacnaSur *koorSur = KoordinacnaSur::fromJson(token);
                     shm_R_GUI->koorSur = koorSur;
+                    std::cout << "prisla koorSur" <<  koorSur->toString() << "\n";
                 }
                 //ak pride poziadavka na ukoncenie mapovania
                 if (ctype.compare("STOP_MAPOVANIE") == 0) {
@@ -135,6 +134,7 @@ Agent::Agent(komunikacia_shm *shm_R_GUI) {
     this->shm_R_GUI->vlaknoMapovanie = &(this->vlaknoMapovanie);
     this->shm_R_GUI->prekazky = new Prekazky();
     this->shm_R_GUI->polohy = new PolohyAgentov(shm_R_GUI->agent_id);
+    this->shm_R_GUI->koorSur = KoordinacnaSur::newInvalid();
 }
 
 const char * Agent::getComport() {

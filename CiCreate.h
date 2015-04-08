@@ -14,6 +14,7 @@
 #include "Agent.h"
 #include "CiCreateDef.h"
 #include "agentForm.h"
+#include "AkcnyZasah.h"
 
 #define LEFT_WHEEL_MAX_POS_SPEED 250
 #define LEFT_WHEEL_MAX_NEG_SPEED -250
@@ -83,7 +84,13 @@ private:
     int Dopredu_o_vzdialenost_reg(int ziad_vzdial); // regulatorom prejde rovno o zadanú vzdialenosť
     int Otocenie_o_uhol(int ziad_uhol, int smer); //otočí sa o zadaný uhol 0 doprava 1 dolava
     int Otocenie_o_uhol_reg(int ziad_uhol, int smer); //regulatorovo - otočí sa o zadaný uhol 0 doprava 1 dolava
-    int Sledovanie_steny(); //obíde krabicu alebo prekážku
+    int Sledovanie_steny(); //ide rovno po náraz, obíde krabicu alebo prekážku
+    int Chyt_stenu();
+    int Sledovanie_steny_ciste(); //obíde krabicu alebo prekážku
+    
+    AkcnyZasah * obchadzanie(AkcnyZasah *zasah);
+    AkcnyZasah * skumanie(AkcnyZasah *zasah);
+    int Pohyb(AkcnyZasah *zasah);
 };
 
 struct param_tele {

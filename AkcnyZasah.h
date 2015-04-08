@@ -10,21 +10,25 @@
 
 class AkcnyZasah {
 public:
-    AkcnyZasah(int rightWheel, int leftWheel, bool obchadzanie);
+    AkcnyZasah(int rightWheel, int leftWheel, bool obchadzanie, int obchadzanieStav);
     
     int GetLeftWheel();
     void SetLeftWheel(int leftWheel);
     bool IsObchadzanie();
     void SetObchadzanie(bool obchadzanie);
+    int GetObchadzanieStav();
+    void SetObchadzanieStav(int obchadzanieStav);
     int GetRightWheel();
     void SetRightWheel(int rightWheel);
 
-    static AkcnyZasah* stopWithObchadzanie();
+    static AkcnyZasah* stopWithObchadzanie(int obchadzanieStav);
     static AkcnyZasah* stopNotObchadzanie();
     
     virtual ~AkcnyZasah();
 private:
     bool obchadzanie;
+    int obchadzanieStav;
+    
     int rightWheel;
     int leftWheel;
 };

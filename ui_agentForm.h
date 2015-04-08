@@ -91,7 +91,7 @@ public:
         label_14->setGeometry(QRect(110, 180, 111, 26));
         label_15 = new QLabel(agentForm);
         label_15->setObjectName(QString::fromUtf8("label_15"));
-        label_15->setGeometry(QRect(360, 200, 111, 26));
+        label_15->setGeometry(QRect(360, 200, 131, 26));
         layoutWidget = new QWidget(agentForm);
         layoutWidget->setObjectName(QString::fromUtf8("layoutWidget"));
         layoutWidget->setGeometry(QRect(20, 80, 222, 60));
