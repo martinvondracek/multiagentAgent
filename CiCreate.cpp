@@ -272,11 +272,6 @@ int CiCreate::Preskumaj_prostredie() {
     // najskor spustime vlakno pre pravidelne posielanie polohy a prekazok
     posielanieThread = std::thread(posielaniePolohy, shm_odo, shm_R_GUI);
     
-    /*while (shm_R_GUI->ukonci_ulohu == false) {
-        Sledovanie_steny();
-        Otocenie_o_uhol(90, 1);
-    }*/
-    
     AkcnyZasah *akcnyZasah = AkcnyZasah::stopNotObchadzanie();
     while (shm_R_GUI->ukonci_ulohu == false) {
         obchadzanie(akcnyZasah);
@@ -286,6 +281,7 @@ int CiCreate::Preskumaj_prostredie() {
         usleep(10 * 1000);
     }
     
+    Pohyb(0, 0);
     shm_odo->wallFollowing = false;
     shm_R_GUI->isIdPrekazkyValid = false;
     
