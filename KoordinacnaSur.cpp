@@ -16,7 +16,7 @@ KoordinacnaSur::KoordinacnaSur(int x, int y) {
 KoordinacnaSur::KoordinacnaSur(int x, int y, bool valid) {
     this->x = x;
     this->y = y;
-    this->valid = false;
+    this->valid = valid;
 }
 
 int KoordinacnaSur::GetX() {
