@@ -31,6 +31,10 @@ bool KoordinacnaSur::isValid() {
     return valid;
 }
 
+void KoordinacnaSur::setInvalid() {
+    this->valid = false;
+}
+
 KoordinacnaSur* KoordinacnaSur::newInvalid() {
     return new KoordinacnaSur(0, 0, false);
 }

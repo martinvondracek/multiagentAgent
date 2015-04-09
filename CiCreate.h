@@ -79,6 +79,7 @@ private:
     std::thread posielanieThread;
     bool stopTele = false;
     
+    int uholKBodu(int x, int y);
     int Dopredu_po_naraz(); //pošle robot rovno až pokial nenarazí nárazníkom
     int Dopredu_o_vzdialenost(int ziad_vzdial); //prejde rovno o zadanú vzdialenosť
     int Dopredu_o_vzdialenost_reg(int ziad_vzdial); // regulatorom prejde rovno o zadanú vzdialenosť

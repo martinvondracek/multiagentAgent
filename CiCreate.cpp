@@ -430,14 +430,14 @@ int CiCreate::Sledovanie_steny_ciste() {
                 Pohyb(180, 200);
             }
         } else {
-            if ((shm_odo->stena == 0) && (shm_odo->naraznik_vpravo == 1)) {
-                if (shm_odo->signalSteny < 20) {
-                    Pohyb(150, -90);
+            if (shm_odo->naraznik_vpravo == 1) {
+                if (shm_odo->signalSteny < 70) {
+                    Pohyb(150, -150);
                 } else {
-                    Pohyb(200, 160);
+                    Pohyb(200, 0);
                 }
             } else {
-                Pohyb(190, 170);
+                Pohyb(190, 160);
             }
         }
         // ukončenie na základe požiadavky zo SHM
@@ -470,7 +470,86 @@ int CiCreate::Sledovanie_steny_ciste() {
 }
 
 AkcnyZasah * CiCreate::skumanie(AkcnyZasah *zasah) {
+    //ak sme blizko bodu, dame ho ako neaktivny
+    if (shm_R_GUI->koorSur->isValid() && !zasah->IsObchadzanie()) {
+        if (sqrt(((shm_R_GUI->koorSur->GetY() - shm_odo->y_rel)*(shm_R_GUI->koorSur->GetY() - shm_odo->y_rel))
+                + ((shm_R_GUI->koorSur->GetX() - shm_odo->x_rel)*(shm_R_GUI->koorSur->GetX() - shm_odo->x_rel))) < 200) {
+            shm_R_GUI->koorSur->setInvalid();
+            std::cout << "set invalid --------------- \n";
+        }
+    }
+        
+    if (shm_R_GUI->koorSur->isValid() && !zasah->IsObchadzanie()) {
+        int uhol = uholKBodu(shm_R_GUI->koorSur->GetX(), shm_R_GUI->koorSur->GetY());
+        std::cout << "uhol k bodu " << uhol << "\n";
+        
+        if (uhol > 3) {
+            if (uhol > 30) {
+                zasah->SetRightWheel(zasah->GetRightWheel() + 15);
+            } else {
+                zasah->SetRightWheel(zasah->GetRightWheel() + 5);
+            }
+            std::cout << "left\n";
+        } else if (uhol < 3) {
+            if (uhol < -30) {
+                zasah->SetLeftWheel(zasah->GetLeftWheel() + 15);
+            } else {
+                zasah->SetLeftWheel(zasah->GetLeftWheel() + 5);
+            }
+            std::cout << "right\n";
+        } else {
+            //obe dame na tu mensiu rychlost
+            if (zasah->GetRightWheel() > zasah->GetLeftWheel()) {
+                zasah->SetRightWheel(zasah->GetLeftWheel());
+                zasah->SetLeftWheel(zasah->GetLeftWheel());
+            } else {
+                zasah->SetRightWheel(zasah->GetRightWheel());
+                zasah->SetLeftWheel(zasah->GetRightWheel());
+            }
+        }
+        
+    }
     return zasah;
+}
+
+int CiCreate::uholKBodu(int x, int y) {
+    int uhol; //otoc sa o uhol k cielu
+
+    int x_0; //vychodzia poloha
+    int y_0;
+    int uhol_0;
+
+    float z1;
+    float z2;
+    float a2;
+    float a1;
+
+    float skal_sucin;
+    float vek_sucin_z;
+    float abs_a;
+    float abs_z;
+    float pom;
+
+    x_0 = shm_odo->x_rel;
+    y_0 = shm_odo->y_rel;
+    uhol_0 = shm_odo->aktualny_uhol;
+
+    z1 = x - x_0; //vektor ku zelanej polohe
+    z2 = y - y_0;
+    pom = uhol_0 + 90;
+    if (pom > 360) pom = pom - 360;
+    a1 = cos((pom) / 180 * PI); //y //vektor aktualneho natocenia
+    a2 = sin((pom) / 180 * PI); //x
+
+    skal_sucin = a1 * z1 + a2*z2;
+    vek_sucin_z = a1 * z2 - a2*z1;
+    abs_a = sqrt(a1 * a1 + a2 * a2);
+    abs_z = sqrt(z1 * z1 + z2 * z2);
+
+    uhol = acos(skal_sucin / abs_a / abs_z)*180 / PI;
+    (vek_sucin_z > 0) ? uhol = uhol : uhol = uhol*(-1);
+
+    return uhol;
 }
 
 int CiCreate::Pohyb(AkcnyZasah *zasah) {

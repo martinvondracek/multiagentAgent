@@ -22,6 +22,7 @@ public:
     int GetX();
     int GetY();    
     bool isValid();
+    void setInvalid();
     
     static KoordinacnaSur* newInvalid();
     
