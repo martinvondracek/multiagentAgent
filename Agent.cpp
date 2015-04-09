@@ -181,8 +181,9 @@ int Agent::connectIp(int portNumber, const char *hostName) {
     socket->connectToServer(this->portNumber, this->hostName);
     if (socket->getConnected()) {
         char jsonData[1001];
+        usleep(100*1000);
         socket->receiveJson(jsonData, 1000);
-        //std::cout << jsonData << "\n";
+        //std::cout << "json data" << jsonData << "\n";
         
         std::string s = jsonData;
         std::string delimiter = "KKK";
@@ -190,6 +191,7 @@ int Agent::connectIp(int portNumber, const char *hostName) {
         std::string token;
         pos = s.find(delimiter);
         token = s.substr(0, pos);
+        //std::cout << "json token" << token << "\n";
         
         int id = SocketUtil::parseAgentIdFromJson(token.c_str());
         int idSpustenia = SocketUtil::parseAgentIdSpusteniaFromJson(token.c_str());

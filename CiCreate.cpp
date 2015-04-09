@@ -122,7 +122,7 @@ void posielaniePolohy(odometria_shm *shm_odo, komunikacia_shm *shm_R_GUI) {
     poloha = new Poloha(0, shm_R_GUI->id_spustenia, shm_R_GUI->agent_id, shm_odo->x_rel, shm_odo->y_rel, shm_odo->aktualny_uhol);
     lastPoloha = poloha;
     shm_R_GUI->socket->sendJson(poloha->toJson());
-    prekazka = new Prekazka(0, shm_R_GUI->id_spustenia, 0, poloha, shm_odo->naraznik_vpravo, shm_odo->naraznik_vlavo, shm_odo->naraznik_vpredu);
+    prekazka = new Prekazka(0, shm_R_GUI->id_spustenia, shm_R_GUI->id_prekazky, poloha, shm_odo->naraznik_vpravo, shm_odo->naraznik_vlavo, shm_odo->naraznik_vpredu);
     shm_R_GUI->socket->sendJson(prekazka->toJson());
     lastPrekazka = prekazka;
     
@@ -275,7 +275,7 @@ int CiCreate::Preskumaj_prostredie() {
     AkcnyZasah *akcnyZasah = AkcnyZasah::stopNotObchadzanie();
     while (shm_R_GUI->ukonci_ulohu == false) {
         obchadzanie(akcnyZasah);
-        skumanie(akcnyZasah);
+        //skumanie(akcnyZasah);
         Pohyb(akcnyZasah);
         
         usleep(10 * 1000);
@@ -422,6 +422,10 @@ int CiCreate::Sledovanie_steny_ciste() {
         if (shm_odo->naraznik_vpredu) {
             Otocenie_o_uhol(70, 1);
         }
+        //ak narazí na stenu pred sebou otočí sa dolava        
+        if (shm_odo->naraznik_vlavo) {
+            Otocenie_o_uhol(90, 1);
+        }
         //mení zakrivenie pohybu podla pozície k stene
         if ((shm_odo->stena == 0) && (shm_odo->naraznik_vpravo == 0)) {
             if (shm_odo->signalSteny < 20) {
@@ -446,21 +450,30 @@ int CiCreate::Sledovanie_steny_ciste() {
             break;
         }
         // kazde 2 metre tolerancia + 130mm
-        tolerancia = (((shm_odo->prejdena_vzdialenost - prejdena_vzdial) / 2000) + 1) * 130;
+        tolerancia = (((shm_odo->prejdena_vzdialenost - prejdena_vzdial) / 2000) ) * 50 + 130;
+        if (tolerancia > 500) {
+            tolerancia = 500;
+        }
         vzdial = sqrt(((abs(x_0 - shm_odo->x_rel)) * (abs(x_0 - shm_odo->x_rel))) + ((abs(y_0 - shm_odo->y_rel)) * (abs(y_0 - shm_odo->y_rel))));
         //std::cout << "vzdial: " << vzdial << "toler: " << tolerancia << "\n";
         // ukončí ak sa vráti do počiatočného bodu
-        if (((shm_odo->prejdena_vzdialenost - prejdena_vzdial) > 1000) && (abs(shm_odo->aktualny_uhol - uhol_0) < 40) && (vzdial < tolerancia)) {
+        if (((shm_odo->prejdena_vzdialenost - prejdena_vzdial) > 1000) && (abs(shm_odo->aktualny_uhol - uhol_0) < 35) && (vzdial < tolerancia)) {
             Pohyb(0, 0);
+            Poloha *poloha = new Poloha(0, shm_R_GUI->id_spustenia, shm_R_GUI->agent_id, x_0, y_0, uhol_0);
+            Prekazka *prekazka = new Prekazka(0, shm_R_GUI->id_spustenia, shm_R_GUI->id_prekazky, poloha, 1, 0, 0);
+            shm_R_GUI->socket->sendJson(prekazka->toJson());
+            std::cout << "prekazka obidena dookola\n";
             break;
         }
         // ukončí ak tu už bol iný robot
         Poloha *aktPoloha = new Poloha(0, shm_R_GUI->id_spustenia, shm_R_GUI->agent_id, shm_odo->x_rel, shm_odo->y_rel, shm_odo->aktualny_uhol);
         Prekazka *aktPrekazka = new Prekazka(0, shm_R_GUI->id_spustenia, shm_R_GUI->id_prekazky, aktPoloha, shm_odo->naraznik_vpravo, shm_odo->naraznik_vlavo, shm_odo->naraznik_vpredu);
-        if (shm_R_GUI->prekazky->isNearOtherExceptId(aktPrekazka, (tolerancia + 300))) {
+        if (shm_R_GUI->prekazky->isNearOtherExceptId(aktPrekazka, (tolerancia))) {
             Pohyb(0, 0);
+            std::cout << "bol tu iny robot\n";
             break;
         }
+        
         usleep(20 * 1000);
     }
     shm_odo->wallFollowing = false;
