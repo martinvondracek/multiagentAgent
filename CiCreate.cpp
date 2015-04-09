@@ -275,7 +275,7 @@ int CiCreate::Preskumaj_prostredie() {
     AkcnyZasah *akcnyZasah = AkcnyZasah::stopNotObchadzanie();
     while (shm_R_GUI->ukonci_ulohu == false) {
         obchadzanie(akcnyZasah);
-        //skumanie(akcnyZasah);
+        skumanie(akcnyZasah);
         Pohyb(akcnyZasah);
         
         usleep(10 * 1000);

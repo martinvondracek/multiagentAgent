@@ -66,6 +66,33 @@ int SocketConnector::disconnect() {
     return 0;
 }
 
+int SocketConnector::sendJson(std::string jsonData) {
+    std::string str2 = jsonData;
+    if (!connected) {
+        return -1;
+    }
+    
+    int n;
+    
+    std::string str = "";
+    str.append(str2);
+    str.append("KKK");
+    const char *data = str.c_str();
+    //std::cout << "posielam" << str << "\n" << data << "json" << jsonData << "\n";
+    
+    //m.lock();
+    //n = write(sockfd, " ", strlen(" "));
+    n = write(sockfd, data, strlen(data));
+    usleep(10*1000);
+    //m.unlock();
+    
+    if (n < 0) {
+        std::cout << "ERROR writing to socket\n";
+        return -1;
+    }
+    return n; // vratime pocet poslanych
+}
+
 int SocketConnector::sendJson(const char *jsonData) {
     std::string str2 = jsonData;
     if (!connected) {

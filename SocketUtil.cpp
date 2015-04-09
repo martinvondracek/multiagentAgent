@@ -10,7 +10,7 @@
 SocketUtil::SocketUtil() {
 }
 
-const char * SocketUtil::createQuit(int idAgenta) {
+std::string SocketUtil::createQuit(int idAgenta) {
     std::string json = "{\n";
     json.append("\"CLASSTYPE\" : \"QUIT\"");
     
@@ -19,16 +19,16 @@ const char * SocketUtil::createQuit(int idAgenta) {
     
     json.append("\n}\n");
         
-    return json.c_str();
+    return json;
 }
 
-const char * SocketUtil::createNewIdPrekazky() {
+std::string SocketUtil::createNewIdPrekazky() {
     std::string json = "{\n";
     json.append("\"CLASSTYPE\" : \"NEW_ID_PREKAZKY\"");
     
     json.append("\n}\n");
         
-    return json.c_str();
+    return json;
 }
 
 int SocketUtil::parseAgentIdFromJson(const char *json) {

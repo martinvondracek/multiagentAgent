@@ -20,8 +20,8 @@ public:
     SocketUtil();
     virtual ~SocketUtil();
     
-    static const char * createQuit(int idAgenta);
-    static const char * createNewIdPrekazky();
+    static std::string createQuit(int idAgenta);
+    static std::string createNewIdPrekazky();
     
     static int parseAgentIdFromJson(const char *json);
     static int parseAgentIdSpusteniaFromJson(const char *json);

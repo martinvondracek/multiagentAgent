@@ -27,6 +27,7 @@ public:
     
     int connectToServer(int portNum, const char *hostname); // pripoji sa na socket
     int disconnect(); // odpoji sa zo socketu
+    int sendJson(std::string jsonData);
     int sendJson(const char *jsonData);
     int receiveJson(char *buffer, int bufSize);
     
