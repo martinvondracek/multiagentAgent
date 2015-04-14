@@ -21,6 +21,7 @@ public:
     virtual ~SocketUtil();
     
     static std::string createQuit(int idAgenta);
+    static std::string createInvalidKoorSur(int idAgenta);
     static std::string createNewIdPrekazky();
     
     static int parseAgentIdFromJson(const char *json);

@@ -22,6 +22,18 @@ std::string SocketUtil::createQuit(int idAgenta) {
     return json;
 }
 
+std::string SocketUtil::createInvalidKoorSur(int idAgenta) {
+    std::string json = "{\n";
+    json.append("\"CLASSTYPE\" : \"INVALID_KOOR_SUR\"");
+    
+    json.append(",\n\"AGENTID\" : ");
+    json.append(std::to_string(idAgenta));
+    
+    json.append("\n}\n");
+        
+    return json;
+}
+
 std::string SocketUtil::createNewIdPrekazky() {
     std::string json = "{\n";
     json.append("\"CLASSTYPE\" : \"NEW_ID_PREKAZKY\"");

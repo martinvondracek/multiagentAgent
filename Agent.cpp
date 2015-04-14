@@ -256,6 +256,23 @@ int Agent::Pohyb(WORD p, WORD l) {
 }
 
 int Agent::Preskumaj_prostredie() {
+    Poloha *poloha = new Poloha(0, shm_R_GUI->id_spustenia, shm_R_GUI->agent_id, 0, 0, 0);
+    switch (shm_R_GUI->agent_id) {
+        case 1:
+            poloha = new Poloha(0, shm_R_GUI->id_spustenia, shm_R_GUI->agent_id, 0, -3000, 0);
+            break;
+        case 2:
+            poloha = new Poloha(0, shm_R_GUI->id_spustenia, shm_R_GUI->agent_id, 0, 3000, 0);
+            break;
+        case 3:
+            poloha = new Poloha(0, shm_R_GUI->id_spustenia, shm_R_GUI->agent_id, 3000, 0, 0);
+            break;
+        case 4:
+            poloha = new Poloha(0, shm_R_GUI->id_spustenia, shm_R_GUI->agent_id, -3000, 0, 0);
+            break;
+    }
+    shm_R_GUI->socket->sendJson(poloha->toJson());
+    
     while (1) {
         if (shm_R_GUI->ukonci_ulohu == true) {
             break;
