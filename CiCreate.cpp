@@ -319,7 +319,7 @@ AkcnyZasah * CiCreate::obchadzanie(AkcnyZasah *zasah) {
             }
             zasah->SetLeftWheel(120);
             zasah->SetRightWheel(120);
-            zasah->SetObchadzanieStav(3);
+            zasah->SetObchadzanieStav(4);
             break;
         case 3: //cakame kym nenarazi do prekazky
             if (shm_odo->naraznik_vpredu || shm_odo->naraznik_vlavo || shm_odo->naraznik_vpravo) {
@@ -407,6 +407,9 @@ int CiCreate::Sledovanie_steny_ciste() {
     int prejdena_vzdial;
     int vzdial = 0;
     int tolerancia;
+    
+    int minulyUhol = shm_odo->aktualny_uhol;
+    int vzdialenostRovno = shm_odo->prejdena_vzdialenost;
 
     // ulozime ze sledujeme stenu koli posielaniu suradnic prekazok
     shm_odo->wallFollowing = true;
@@ -452,22 +455,26 @@ int CiCreate::Sledovanie_steny_ciste() {
             }
         }*/
         if ((shm_odo->stena == 0) && (shm_odo->naraznik_vpravo == 0)) {
+            if (shm_odo->signalSteny < 20) {
+                Pohyb(30, 230);
+            } else {
+                Pohyb(180, 200);
+            }
+        } else {
+            if ((shm_odo->stena == 0) && (shm_odo->naraznik_vpravo == 1)) {
                 if (shm_odo->signalSteny < 20) {
-                    Pohyb(30, 230);
+                    Pohyb(150, -90);
                 } else {
-                    Pohyb(180, 200);
+                    Pohyb(200, 160);
                 }
             } else {
-                if ((shm_odo->stena == 0) && (shm_odo->naraznik_vpravo == 1)) {
-                    if (shm_odo->signalSteny < 20) {
-                        Pohyb(150, -90);
-                    } else {
-                        Pohyb(200, 160);
-                    }
+                if ((shm_odo->stena == 1) && (shm_odo->naraznik_vpravo == 1)) {
+                    Pohyb(190, 150);
                 } else {
-                    Pohyb(190, 165);
+                    Pohyb(190, 170);
                 }
             }
+        }
         // ukončenie na základe požiadavky zo SHM
         if (shm_R_GUI->ukonci_ulohu) {
             Pohyb(0, 0);
@@ -496,6 +503,39 @@ int CiCreate::Sledovanie_steny_ciste() {
             Pohyb(0, 0);
             std::cout << "bol tu iny robot\n";
             break;
+        }
+        
+        // korekcia ak ide dlhsie rovno, nastavi sa natocenie na nasobok 90 stupnov
+        int aktualnyUhol = shm_odo->aktualny_uhol;
+        
+        if (abs(minulyUhol - aktualnyUhol) > 10) {
+            minulyUhol = shm_odo->aktualny_uhol;
+            vzdialenostRovno = shm_odo->prejdena_vzdialenost;
+            std::cout << "resetujeme uhol\n";
+        }
+        
+        if (shm_odo->prejdena_vzdialenost - vzdialenostRovno > 400) {
+            //vyrovname uhol
+            std::cout << "Korigujeme uhol z " << shm_odo->aktualny_uhol;
+            if (shm_odo->aktualny_uhol>315 && shm_odo->aktualny_uhol<45) {
+                shm_odo->aktualny_uhol = 0;
+                std::cout << " na 0\n";
+            }
+            if (shm_odo->aktualny_uhol>45 && shm_odo->aktualny_uhol<135) {
+                shm_odo->aktualny_uhol = 90;
+                std::cout << " na 90\n";
+            }
+            if (shm_odo->aktualny_uhol>135 && shm_odo->aktualny_uhol<225) {
+                shm_odo->aktualny_uhol = 180;
+                std::cout << " na 180\n";
+            }
+            if (shm_odo->aktualny_uhol>225 && shm_odo->aktualny_uhol<315) {
+                shm_odo->aktualny_uhol = 270;
+                std::cout << " na 270\n";
+            }
+            minulyUhol = shm_odo->aktualny_uhol;
+            vzdialenostRovno = shm_odo->prejdena_vzdialenost;
+            
         }
         
         usleep(20 * 1000);
@@ -637,7 +677,7 @@ void CiCreate::pokusy() {
 
 int CiCreate::Dopredu_po_naraz() {
     if (connectedComport && shm_R_GUI->ukonci_ulohu==false) {
-        Pohyb(120, 120);
+        Pohyb(100, 100);
         while (1) {
             if (shm_odo->naraznik_vpredu || shm_odo->naraznik_vlavo || shm_odo->naraznik_vpravo) {
                 Pohyb(0, 0);
@@ -786,9 +826,9 @@ int CiCreate::Otocenie_o_uhol(int ziad_uhol, int smer) {
         if (ziad_uhol > 30) {
             ziad_uhol += shm_odo->prejdeny_uhol;
             if (smer) {
-                Pohyb(100, -100);
+                Pohyb(70, -70);
             } else {
-                Pohyb(-100, 100);
+                Pohyb(-70, 70);
             }
             while (1) {
                 if (abs(shm_odo->prejdeny_uhol - pociatocny_uhol) > 4) {
@@ -801,9 +841,9 @@ int CiCreate::Otocenie_o_uhol(int ziad_uhol, int smer) {
                 usleep(10 * 1000);
             }
             if (smer) {
-                Pohyb(220, -220);
+                Pohyb(150, -150);
             } else {
-                Pohyb(-220, 220);
+                Pohyb(-150, 150);
             }
         } else {
             ziad_uhol += shm_odo->prejdeny_uhol;
@@ -817,9 +857,9 @@ int CiCreate::Otocenie_o_uhol(int ziad_uhol, int smer) {
         while (1) {
             if (abs((shm_odo->prejdeny_uhol) - (ziad_uhol)) < 30) {
                 if (smer) {
-                    Pohyb(100, -100);
+                    Pohyb(80, -80);
                 } else {
-                    Pohyb(-100, 100);
+                    Pohyb(-80, 80);
                 }
                 break;
             }
