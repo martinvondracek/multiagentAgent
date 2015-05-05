@@ -63,6 +63,21 @@ int CComport::PollComport(unsigned char *buf, int size) {
     return (n);
 }
 
+int CComport::ReadNBytes(unsigned char *buf, int size) {
+    int n = 0;
+    auto t_start = std::chrono::high_resolution_clock::now();
+    double duration = 0;
+    
+    while (n<size && duration<300) {
+        n += read(Cport, buf+n, 1);
+        auto t_end = std::chrono::high_resolution_clock::now();
+        duration = std::chrono::duration<double, std::milli>(t_end-t_start).count();
+    }
+    //std::cout << "Wall clock time passed: " << duration << " ms\n";
+    
+    return n;
+}
+
 int CComport::SendByte(unsigned char byte) {
     int n;
 

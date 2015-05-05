@@ -68,6 +68,8 @@ public:
     int getPolohaY();
     int getPolohaUhol();
     
+    int getSnimacSteny();
+    bool isStena();
     bool isKolizia(); // vrati 1 ak je v kolizii (naraz) 0 ak neni
     
     void pokusy();

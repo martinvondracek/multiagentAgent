@@ -18,6 +18,9 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <limits.h>
+#include <ctime>
+#include <ratio>
+#include <chrono>
 
 class CComport {
     int Cport,   //identifikátor pre komunikáciu
@@ -33,6 +36,8 @@ public:
     CComport(const char *cp, int bd);
     int OpenComport(); // pripojí sa na port
     int PollComport(unsigned char *buf, int size); //číta z portu
+    int ReadNBytes(unsigned char *buf, int size); //precita n bytov, caka kym ich neni taky pocet
+                                                    // alebo neprejde 1 sekunda
     int SendByte(unsigned char byte); // pošle byte
     int SendnBytes(unsigned char * byte, int size); //pošle n bytov
     int SendBuf(unsigned char *buf, int size); //pošle buffer

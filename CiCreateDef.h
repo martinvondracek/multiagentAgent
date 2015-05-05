@@ -11,6 +11,10 @@
 #include <string>
 #include <cstdlib>
 #include <iostream>
+#include <ctime>
+#include <ratio>
+#include <chrono>
+
 #include "CComport.h"
 
 typedef short int WORD;
@@ -275,6 +279,7 @@ public:
     CiCreateDef(const char *cp, int bd);
     int ConnectToPort(); //pripojí sa na robota
     int SendToCreate(unsigned char OI_code); //pošle robotu príkaz
+    int SendToGyro(unsigned char OI_code);
     int SendToCreate(unsigned char OI_code, unsigned char data);//pošle robotu príkaz
     int SendToCreate(unsigned char OI_code, WORD data);//pošle robotu príkaz
     int SendToCreate(unsigned char OI_code, WORD data1, WORD data2);//pošle robotu príkaz
@@ -316,6 +321,8 @@ public:
     void DecodeRequestedRightVelocityFromPacket(CreateSensors &IO_SENSORS_CREATE, unsigned char *data);//dekoduje žiadanú rýchlosť pravého kolesa
     void DecodeRequestedLeftVelocityFromPacket(CreateSensors &IO_SENSORS_CREATE, unsigned char *data);//dekoduje žiadanú rýchlosť lavého kolesa
     void UpdateSensorsStates(); //vyžiada stav senzorov robota a uloži do premennej
+    void InitGyroscope();
+    void UpdateGyroscope();
     void UpdateSomeSensorsStates();
     int getLastDistance(); //vráti poslendú prejdenú vzdialenosť
     int getLastAngle(); //vráti posledný prejdený uhol

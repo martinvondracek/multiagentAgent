@@ -14,11 +14,25 @@ CiCreateDef::CiCreateDef(const char *cp, int bd) : CComport(cp, bd) {
 }
 
 int CiCreateDef::ConnectToPort() {
-    return OpenComport();
+    int pom = OpenComport();
+    
+    if (pom == 0) {
+        // precitame co tam caka
+        unsigned char *dataR;
+        dataR = (unsigned char*) malloc(500);
+        PollComport(dataR, 500);
+    }
+    
+    return pom;
 }
 
 int CiCreateDef::SendToCreate(unsigned char OI_code) {
-    //SendByte(COMMAND_CREATE);
+    SendByte(COMMAND_CREATE);
+    return SendByte(OI_code);
+}
+
+int CiCreateDef::SendToGyro(unsigned char OI_code) {
+    SendByte(COMMAND_GYRO);
     return SendByte(OI_code);
 }
 
@@ -27,7 +41,7 @@ int CiCreateDef::SendToCreate(unsigned char OI_code, unsigned char data1) {
 
     data[0] = OI_code;
     data[1] = data1;
-    //SendByte(COMMAND_CREATE);
+    SendByte(COMMAND_CREATE);
     return SendnBytes(&(data[0]), 2);
 }
 
@@ -45,7 +59,7 @@ int CiCreateDef::SendToCreate(unsigned char OI_code, WORD data1) {
     data[1] = pomoc1.datab[1];
     data[2] = pomoc1.datab[0];
 
-    //SendByte(COMMAND_CREATE);
+    SendByte(COMMAND_CREATE);
     return SendnBytes(&(data[0]), 3);
 
 }
@@ -68,14 +82,14 @@ int CiCreateDef::SendToCreate(unsigned char OI_code, WORD data1, WORD data2) {
     data[3] = pomoc1.datab[1];
     data[4] = pomoc1.datab[0];
 
-    //SendByte(COMMAND_CREATE);
+    SendByte(COMMAND_CREATE);
     return SendnBytes(&(data[0]), 5);
 }
 
 int CiCreateDef::SendToCreate(unsigned char OI_code, int NumOfBytes, unsigned char *data) {
     int pocet;
 
-    //SendByte(COMMAND_CREATE);
+    SendByte(COMMAND_CREATE);
     pocet = SendByte(OI_code);
     pocet += SendBuf(data, NumOfBytes);
     return pocet;
@@ -84,10 +98,11 @@ int CiCreateDef::SendToCreate(unsigned char OI_code, int NumOfBytes, unsigned ch
 int CiCreateDef::ReceivePacketFromCreate(CreateSensors &IO_SENSORS_CREATE, unsigned char packet) {
     unsigned char *dataR;
     DWORD pocet;
-    dataR = (unsigned char*) malloc(100);
-    pocet = PollComport(dataR, 100);
+    dataR = (unsigned char*) malloc(500);
+    //pocet = PollComport(dataR, 500);
+    pocet = ReadNBytes(dataR, OI_PacketSize[packet]+COMMAND_CREATE_SIZE);
     
-    //std::cout << "ma byt" << OI_PacketSize[packet]+COMMAND_CREATE_SYZE << " prislo" << pocet << "\n";
+    //std::cout << "ma byt" << OI_PacketSize[packet]+COMMAND_CREATE_SIZE << " prislo" << pocet << "\n";
     /*union pomoc_t {
         WORD data;
         unsigned char datab[2];
@@ -97,9 +112,9 @@ int CiCreateDef::ReceivePacketFromCreate(CreateSensors &IO_SENSORS_CREATE, unsig
     std::cout << "zmena polohy" << pomoc1.data << "\n";*/
     
     
-    if (pocet == OI_PacketSize[packet]) {
+    if (pocet == OI_PacketSize[packet] + 1) {
         //std::cout << "prvy" << static_cast<int>(*(dataR)) << "\n";
-        DecodeSensorsFromPacket(IO_SENSORS_CREATE, packet, dataR);
+        DecodeSensorsFromPacket(IO_SENSORS_CREATE, packet, dataR+1);
         return pocet;
     } else {
         std::cout << "došiel chybný packet\n";
@@ -601,7 +616,57 @@ void CiCreateDef::DecodeRequestedLeftVelocityFromPacket(CreateSensors &IO_SENSOR
 void CiCreateDef::UpdateSensorsStates() {
     //vyžiada packet so všetkými informáciami
     SendToCreate(OI_SENSORS, (unsigned char) 6);
+    //usleep(120 * 1000);
     ReceivePacketFromCreate(sensors, (unsigned char) 6);
+    if (sensors.WallSignal > 30) {
+        sensors.Wall = 1;
+    }
+}
+
+void CiCreateDef::InitGyroscope() {
+    SendToGyro(0x01);
+    SendToGyro(0x16);
+    SendToGyro(0x19);
+}
+
+void CiCreateDef::UpdateGyroscope() {
+    unsigned char *dataR;
+    int pocet;
+    dataR = (unsigned char*) malloc(500);
+    
+    SendToGyro(0x6F);
+    SendToGyro(0x03);
+    pocet = ReadNBytes(dataR, 9);
+    
+    std::cout << "ma byt" << "9" << " prislo" << pocet << "\n";
+    
+    
+    union pomoc_t {
+        WORD data;
+        unsigned char datab[2];
+    } pomoc1;
+    pomoc1.datab[1] = *(dataR + 1);
+    pomoc1.datab[0] = *(dataR + 2);
+    std::cout << pomoc1.data << " ";
+    pomoc1.datab[1] = *(dataR + 3);
+    pomoc1.datab[0] = *(dataR + 4);
+    std::cout << pomoc1.data << " ";
+    pomoc1.datab[1] = *(dataR + 5);
+    pomoc1.datab[1] = *(dataR + 6);
+    std::cout << pomoc1.data << " ";
+    pomoc1.datab[1] = *(dataR + 7);
+    pomoc1.datab[0] = *(dataR + 8);
+    std::cout << pomoc1.data << "\n";
+    
+    
+    if (pocet == 9 && static_cast<int>(*(dataR))==112) {
+        std::cout << "prvy" << static_cast<int>(*(dataR)) << "\n";
+        return;
+    } else {
+        std::cout << "došiel chybný packet\n";
+        pocet = ReadNBytes(dataR, 20);
+    }
+    return;
 }
 
 void CiCreateDef::UpdateSomeSensorsStates() {
@@ -634,19 +699,21 @@ void CiCreateDef::UpdateSomeSensorsStates() {
 }
 
 int CiCreateDef::getLastDistance() {
-    if ((sensors.Distance < 50) && (sensors.Distance > -50)) {
+    /*if ((sensors.Distance < 50) && (sensors.Distance > -50)) {
         return sensors.Distance;
     } else {
         return 0;
-    }
+    }*/
+    return sensors.Distance;
 }
 
 int CiCreateDef::getLastAngle() {
-    if ((sensors.Angle < 30) && (sensors.Angle > -30)) {
+    /*if ((sensors.Angle < 30) && (sensors.Angle > -30)) {
         return sensors.Angle;
     } else {
         return 0;
-    }
+    }*/
+    return sensors.Angle;
 }
 
 int CiCreateDef::getBumpLeft() {

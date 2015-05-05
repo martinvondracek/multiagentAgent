@@ -275,7 +275,7 @@ int CiCreate::Preskumaj_prostredie() {
     AkcnyZasah *akcnyZasah = AkcnyZasah::stopNotObchadzanie();
     while (shm_R_GUI->ukonci_ulohu == false) {
         obchadzanie(akcnyZasah);
-        skumanie(akcnyZasah);
+        //skumanie(akcnyZasah);
         Pohyb(akcnyZasah);
         
         usleep(10 * 1000);
@@ -427,23 +427,47 @@ int CiCreate::Sledovanie_steny_ciste() {
             Otocenie_o_uhol(90, 1);
         }
         //mení zakrivenie pohybu podla pozície k stene
-        if ((shm_odo->stena == 0) && (shm_odo->naraznik_vpravo == 0)) {
-            if (shm_odo->signalSteny < 20) {
+        /*if ((shm_odo->stena == 0) && (shm_odo->naraznik_vpravo == 0)) {
+            if (shm_odo->signalSteny < 15) {
                 Pohyb(30, 230);
-            } else {
-                Pohyb(180, 200);
+            } else if (shm_odo->signalSteny>15 && shm_odo->signalSteny<60) {
+                Pohyb(190, 140);
+            }else {
+                Pohyb(160, 200);
             }
         } else {
             if (shm_odo->naraznik_vpravo == 1) {
-                if (shm_odo->signalSteny < 70) {
+                if (shm_odo->signalSteny < 10) {
                     Pohyb(150, -150);
                 } else {
                     Pohyb(200, 0);
                 }
             } else {
-                Pohyb(190, 160);
+                if (shm_odo->signalSteny < 25) {
+                    Pohyb(16, 190);
+                } else {
+                    Pohyb(190, 160);
+                }
+                
             }
-        }
+        }*/
+        if ((shm_odo->stena == 0) && (shm_odo->naraznik_vpravo == 0)) {
+                if (shm_odo->signalSteny < 20) {
+                    Pohyb(30, 230);
+                } else {
+                    Pohyb(180, 200);
+                }
+            } else {
+                if ((shm_odo->stena == 0) && (shm_odo->naraznik_vpravo == 1)) {
+                    if (shm_odo->signalSteny < 20) {
+                        Pohyb(150, -90);
+                    } else {
+                        Pohyb(200, 160);
+                    }
+                } else {
+                    Pohyb(190, 165);
+                }
+            }
         // ukončenie na základe požiadavky zo SHM
         if (shm_R_GUI->ukonci_ulohu) {
             Pohyb(0, 0);
@@ -495,7 +519,7 @@ AkcnyZasah * CiCreate::skumanie(AkcnyZasah *zasah) {
         
     if (shm_R_GUI->koorSur->isValid() && !zasah->IsObchadzanie()) {
         int uhol = uholKBodu(shm_R_GUI->koorSur->GetX(), shm_R_GUI->koorSur->GetY());
-        std::cout << "uhol k bodu " << uhol << "\n";
+        //std::cout << "uhol k bodu " << uhol << "\n";
         
         if (uhol > 3) {
             if (uhol > 30) {
@@ -503,14 +527,14 @@ AkcnyZasah * CiCreate::skumanie(AkcnyZasah *zasah) {
             } else {
                 zasah->SetRightWheel(zasah->GetRightWheel() + 5);
             }
-            std::cout << "left\n";
+            //std::cout << "left\n";
         } else if (uhol < 3) {
             if (uhol < -30) {
                 zasah->SetLeftWheel(zasah->GetLeftWheel() + 15);
             } else {
                 zasah->SetLeftWheel(zasah->GetLeftWheel() + 5);
             }
-            std::cout << "right\n";
+            //std::cout << "right\n";
         } else {
             //obe dame na tu mensiu rychlost
             if (zasah->GetRightWheel() > zasah->GetLeftWheel()) {
@@ -1028,6 +1052,15 @@ int CiCreate::Sledovanie_steny() {
         shm_odo->wallFollowing = false;
         return -1;
     }
+}
+
+int CiCreate::getSnimacSteny() {
+    int pom = shm_odo->signalSteny;
+    return pom;
+}
+
+bool CiCreate::isStena() {
+    return shm_odo->stena==1 ? true : false;
 }
 
 bool CiCreate::isKolizia() {
