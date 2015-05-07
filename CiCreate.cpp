@@ -275,7 +275,7 @@ int CiCreate::Preskumaj_prostredie() {
     AkcnyZasah *akcnyZasah = AkcnyZasah::stopNotObchadzanie();
     while (shm_R_GUI->ukonci_ulohu == false) {
         obchadzanie(akcnyZasah);
-        //skumanie(akcnyZasah);
+        skumanie(akcnyZasah);
         Pohyb(akcnyZasah);
         
         usleep(10 * 1000);
@@ -359,6 +359,8 @@ AkcnyZasah * CiCreate::obchadzanie(AkcnyZasah *zasah) {
             Sledovanie_steny_ciste();
             zasah->SetObchadzanieStav(0);
             zasah->SetObchadzanie(false);
+            //zasah->SetLeftWheel(0);
+            //zasah->SetRightWheel(0);
             break;
         case 7:
             break;
@@ -410,6 +412,8 @@ int CiCreate::Sledovanie_steny_ciste() {
     
     int minulyUhol = shm_odo->aktualny_uhol;
     int vzdialenostRovno = shm_odo->prejdena_vzdialenost;
+    
+    int vzdialPoslSoStenou = shm_odo->prejdena_vzdialenost;
 
     // ulozime ze sledujeme stenu koli posielaniu suradnic prekazok
     shm_odo->wallFollowing = true;
@@ -455,10 +459,14 @@ int CiCreate::Sledovanie_steny_ciste() {
             }
         }*/
         if ((shm_odo->stena == 0) && (shm_odo->naraznik_vpravo == 0)) {
-            if (shm_odo->signalSteny < 20) {
-                Pohyb(30, 230);
-            } else {
+            if (shm_odo->signalSteny > 10) {
                 Pohyb(180, 200);
+            } else {
+                if (abs(vzdialPoslSoStenou-shm_odo->prejdena_vzdialenost) > 80) {
+                    Pohyb(30, 230);
+                } else {
+                    Pohyb(180, 200);
+                }
             }
         } else {
             if ((shm_odo->stena == 0) && (shm_odo->naraznik_vpravo == 1)) {
@@ -475,6 +483,10 @@ int CiCreate::Sledovanie_steny_ciste() {
                 }
             }
         }
+        if (shm_odo->signalSteny > 10) {
+            vzdialPoslSoStenou = shm_odo->prejdena_vzdialenost;
+        }
+        
         // ukončenie na základe požiadavky zo SHM
         if (shm_R_GUI->ukonci_ulohu) {
             Pohyb(0, 0);
@@ -511,27 +523,27 @@ int CiCreate::Sledovanie_steny_ciste() {
         if (abs(minulyUhol - aktualnyUhol) > 10) {
             minulyUhol = shm_odo->aktualny_uhol;
             vzdialenostRovno = shm_odo->prejdena_vzdialenost;
-            std::cout << "resetujeme uhol\n";
+            //std::cout << "resetujeme uhol\n";
         }
         
-        if (shm_odo->prejdena_vzdialenost - vzdialenostRovno > 400) {
+        if (shm_odo->prejdena_vzdialenost - vzdialenostRovno > 350) {
             //vyrovname uhol
-            std::cout << "Korigujeme uhol z " << shm_odo->aktualny_uhol;
-            if (shm_odo->aktualny_uhol>315 && shm_odo->aktualny_uhol<45) {
+            //std::cout << "Korigujeme uhol z \n" << shm_odo->aktualny_uhol;
+            if ((shm_odo->aktualny_uhol>315 && shm_odo->aktualny_uhol<360) || (shm_odo->aktualny_uhol>0 && shm_odo->aktualny_uhol<45)) {
                 shm_odo->aktualny_uhol = 0;
-                std::cout << " na 0\n";
+                std::cout << "tu\n";
             }
             if (shm_odo->aktualny_uhol>45 && shm_odo->aktualny_uhol<135) {
                 shm_odo->aktualny_uhol = 90;
-                std::cout << " na 90\n";
+                //std::cout << " na 90\n";
             }
             if (shm_odo->aktualny_uhol>135 && shm_odo->aktualny_uhol<225) {
                 shm_odo->aktualny_uhol = 180;
-                std::cout << " na 180\n";
+                //std::cout << " na 180\n";
             }
             if (shm_odo->aktualny_uhol>225 && shm_odo->aktualny_uhol<315) {
                 shm_odo->aktualny_uhol = 270;
-                std::cout << " na 270\n";
+                //std::cout << " na 270\n";
             }
             minulyUhol = shm_odo->aktualny_uhol;
             vzdialenostRovno = shm_odo->prejdena_vzdialenost;
@@ -558,6 +570,12 @@ AkcnyZasah * CiCreate::skumanie(AkcnyZasah *zasah) {
     }
         
     if (shm_R_GUI->koorSur->isValid() && !zasah->IsObchadzanie()) {
+        // ak stoji treba ho poslat
+        if (zasah->GetRightWheel() < 50 && zasah->GetLeftWheel() < 50) {
+            zasah->SetRightWheel(100);
+            zasah->SetLeftWheel(100);
+        }
+        
         int uhol = uholKBodu(shm_R_GUI->koorSur->GetX(), shm_R_GUI->koorSur->GetY());
         //std::cout << "uhol k bodu " << uhol << "\n";
         

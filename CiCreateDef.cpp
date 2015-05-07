@@ -618,7 +618,7 @@ void CiCreateDef::UpdateSensorsStates() {
     SendToCreate(OI_SENSORS, (unsigned char) 6);
     //usleep(120 * 1000);
     ReceivePacketFromCreate(sensors, (unsigned char) 6);
-    if (sensors.WallSignal > 60) {
+    if (sensors.WallSignal > 40) {
         sensors.Wall = 1;
     }
 }
