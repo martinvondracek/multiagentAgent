@@ -565,7 +565,7 @@ AkcnyZasah * CiCreate::skumanie(AkcnyZasah *zasah) {
                 + ((shm_R_GUI->koorSur->GetX() - shm_odo->x_rel)*(shm_R_GUI->koorSur->GetX() - shm_odo->x_rel))) < 200) {
             shm_R_GUI->koorSur->setInvalid();
             shm_R_GUI->socket->sendJson(SocketUtil::createInvalidKoorSur(shm_R_GUI->agent_id));
-            std::cout << "set invalid --------------- \n";
+            std::cout << "-------set invalid --------------- \n";
         }
     }
         
