@@ -73,7 +73,7 @@ void *vlaknoPrijimanieDatServera(void *arg) {
                 if (ctype.compare("KOORDINACNA_SUR") == 0) {
                     KoordinacnaSur *koorSur = KoordinacnaSur::fromJson(token);
                     shm_R_GUI->koorSur = koorSur;
-                    std::cout << "prisla koorSur" <<  koorSur->toString() << "\n";
+                    //std::cout << "prisla koorSur" <<  koorSur->toString() << "\n";
                 }
                 //ak pride poziadavka na ukoncenie mapovania
                 if (ctype.compare("STOP_MAPOVANIE") == 0) {
