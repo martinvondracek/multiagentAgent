@@ -580,28 +580,34 @@ AkcnyZasah * CiCreate::skumanie(AkcnyZasah *zasah) {
         //std::cout << "uhol k bodu " << uhol << "\n";
         
         if (uhol > 3) {
-            if (uhol > 30) {
+            /*if (uhol > 30) {
                 zasah->SetRightWheel(zasah->GetRightWheel() + 15);
             } else {
                 zasah->SetRightWheel(zasah->GetRightWheel() + 5);
-            }
+            }*/
+            zasah->SetRightWheel(200);
+            zasah->SetLeftWheel(50);
             //std::cout << "left\n";
-        } else if (uhol < 3) {
-            if (uhol < -30) {
+        } else if (uhol < -3) {
+            /*if (uhol < -30) {
                 zasah->SetLeftWheel(zasah->GetLeftWheel() + 15);
             } else {
                 zasah->SetLeftWheel(zasah->GetLeftWheel() + 5);
-            }
+            }*/
+            zasah->SetRightWheel(50);
+            zasah->SetLeftWheel(200);
             //std::cout << "right\n";
         } else {
             //obe dame na tu mensiu rychlost
-            if (zasah->GetRightWheel() > zasah->GetLeftWheel()) {
+            /*if (zasah->GetRightWheel() > zasah->GetLeftWheel()) {
                 zasah->SetRightWheel(zasah->GetLeftWheel());
                 zasah->SetLeftWheel(zasah->GetLeftWheel());
             } else {
                 zasah->SetRightWheel(zasah->GetRightWheel());
                 zasah->SetLeftWheel(zasah->GetRightWheel());
-            }
+            }*/
+            zasah->SetRightWheel(150);
+            zasah->SetLeftWheel(150);
         }
         
     }
