@@ -399,7 +399,7 @@ int CiCreate::Chyt_stenu() {
     celk_uhol_0 = shm_odo->prejdeny_uhol;
 
     Pohyb(100, -100);
-    while (shm_odo->signalSteny < 100) {
+    while (shm_odo->signalSteny < 50) {
         if (shm_R_GUI->ukonci_ulohu) {
             Pohyb(0, 0);
             return 0;
