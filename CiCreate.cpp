@@ -560,6 +560,7 @@ int CiCreate::Sledovanie_steny_ciste() {
 }
 
 AkcnyZasah * CiCreate::skumanie(AkcnyZasah *zasah) {
+    // updatneme koor suradnicu
     //ak sme blizko bodu, dame ho ako neaktivny
     if (shm_R_GUI->koorSur->isValid() && !zasah->IsObchadzanie()) {
         if (sqrt(((shm_R_GUI->koorSur->GetY() - shm_odo->y_rel)*(shm_R_GUI->koorSur->GetY() - shm_odo->y_rel))
@@ -569,14 +570,22 @@ AkcnyZasah * CiCreate::skumanie(AkcnyZasah *zasah) {
             std::cout << "-------set invalid --------------- \n";
         }
     }
-        
-    if (shm_R_GUI->koorSur->isValid() && !zasah->IsObchadzanie()) {
-        // ak stoji treba ho poslat
+    
+    // ak je invalid suradnica stojime
+    if (!shm_R_GUI->koorSur->isValid()) {
+        zasah->SetRightWheel(0);
+        zasah->SetLeftWheel(0);
+        std::cout << "-------tu --------------- \n";
+        return zasah;
+    } else {
+        // ak je validna suradnica a stoji, posleme ho dopredu
         if (zasah->GetRightWheel() < 50 && zasah->GetLeftWheel() < 50) {
             zasah->SetRightWheel(100);
             zasah->SetLeftWheel(100);
         }
+    }
         
+    if (shm_R_GUI->koorSur->isValid() && !zasah->IsObchadzanie()) {        
         int uhol = uholKBodu(shm_R_GUI->koorSur->GetX(), shm_R_GUI->koorSur->GetY());
         //std::cout << "uhol k bodu " << uhol << "\n";
         
