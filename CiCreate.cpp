@@ -492,10 +492,10 @@ int CiCreate::Sledovanie_steny_ciste() {
             Pohyb(0, 0);
             break;
         }
-        // kazde 2 metre tolerancia + 130mm
-        tolerancia = (((shm_odo->prejdena_vzdialenost - prejdena_vzdial) / 2000) ) * 50 + 130;
-        if (tolerancia > 500) {
-            tolerancia = 500;
+        // kazdy 1 meter tolerancia + 130mm
+        tolerancia = (((shm_odo->prejdena_vzdialenost - prejdena_vzdial) / 1000) ) * 35 + 130;
+        if (tolerancia > 700) {
+            tolerancia = 700;
         }
         vzdial = sqrt(((abs(x_0 - shm_odo->x_rel)) * (abs(x_0 - shm_odo->x_rel))) + ((abs(y_0 - shm_odo->y_rel)) * (abs(y_0 - shm_odo->y_rel))));
         //std::cout << "vzdial: " << vzdial << "toler: " << tolerancia << "\n";
@@ -526,6 +526,7 @@ int CiCreate::Sledovanie_steny_ciste() {
             //std::cout << "resetujeme uhol\n";
         }
         
+        // korigujeme aktualne natocenie ak ideme popri stene
         if (shm_odo->prejdena_vzdialenost - vzdialenostRovno > 350) {
             //vyrovname uhol
             //std::cout << "Korigujeme uhol z \n" << shm_odo->aktualny_uhol;
