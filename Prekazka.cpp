@@ -273,6 +273,12 @@ float Prekazka::getVzdialenost(Prekazka *p2) {
     return sqrt((x_p-p2->GetX_p())*(x_p-p2->GetX_p()) + (y_p-p2->GetY_p())*(y_p-p2->GetY_p()));
 }
 
+float Prekazka::getVzdialenost(Poloha *p2) {
+    return sqrt((x_p-p2->GetX())*(x_p-p2->GetX()) + (y_p-p2->GetY())*(y_p-p2->GetY()));
+}
+
+
+
 Prekazka::~Prekazka() {
 }
 

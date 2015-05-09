@@ -88,6 +88,19 @@ bool Prekazky::isNearAnyOther(Prekazka *prekazka, int tolerancia) {
     m.unlock();
     return false;
 }
+
+bool Prekazky::isNearAny(Poloha *poloha, int tolerancia) {
+    m.lock();
+    std::list<Prekazka*>::iterator i;
+        for (i = prekazkyList.begin(); i != prekazkyList.end(); ++i) {
+            if ((*i)->getVzdialenost(poloha)<=tolerancia) {
+                m.unlock();
+                return true;
+            }
+        }
+    m.unlock();
+    return false;
+}
     
 std::string Prekazky::toString() {
     std::string str = "{\n";

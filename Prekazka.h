@@ -33,6 +33,7 @@ public:
     const char * toString();
     
     float getVzdialenost(Prekazka *p2);
+    float getVzdialenost(Poloha *p2);
     
     float GetFi_rob();
     void SetFi_rob(float fi_rob);
