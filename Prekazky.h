@@ -26,6 +26,7 @@ public:
     int addPrekazka(Prekazka *prekazka); //ulozi prekazku
     bool isNearOtherWithId(Prekazka *prekazka, int tolerancia); //zisti ci sa k zadanej prekazke nachadza v urcitej vzdialenosti ina s rovnakym id robota
     bool isNearOtherExceptId(Prekazka *prekazka, int tolerancia); //zisti ci sa k zadanej prekazke nachadza v urcitej vzdialenosti ina s odlisnym id robota
+    Prekazka* nearestPrekazkaExceptId(Prekazka *prekazka);
     bool isNearAnyOther(Prekazka *prekazka, int tolerancia); //zisti ci sa k zadanej prekazke nachadza v urcitej vzdialenosti ina s lubovolnym id robota
     bool isNearAny(Poloha *poloha, int tolerancia);
     Prekazka* findNearest(Poloha *poloha); //najde najblizsiu prekazku k zadanej polohe

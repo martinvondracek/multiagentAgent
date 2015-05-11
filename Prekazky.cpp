@@ -76,6 +76,22 @@ bool Prekazky::isNearOtherExceptId(Prekazka *prekazka, int tolerancia) {
     return false;
 }
 
+Prekazka* Prekazky::nearestPrekazkaExceptId(Prekazka *prekazka) {
+    m.lock();
+    std::list<Prekazka*>::iterator i;
+    Prekazka *nearest = *prekazkyList.begin();
+    float vzdial = nearest->getVzdialenost(prekazka);
+    
+        for (i = prekazkyList.begin(); i != prekazkyList.end(); ++i) {
+            if ((*i)->getVzdialenost(prekazka)<vzdial && (*i)->GetPrekazka()!=prekazka->GetPrekazka()) {
+                nearest = (*i);
+                vzdial = (*i)->getVzdialenost(prekazka);
+            }
+        }
+    m.unlock();
+    return nearest;
+}
+
 bool Prekazky::isNearAnyOther(Prekazka *prekazka, int tolerancia) {
     m.lock();
     std::list<Prekazka*>::iterator i;

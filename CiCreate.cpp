@@ -275,7 +275,7 @@ int CiCreate::Preskumaj_prostredie() {
     AkcnyZasah *akcnyZasah = AkcnyZasah::stopNotObchadzanie();
     while (shm_R_GUI->ukonci_ulohu == false) {
         obchadzanie(akcnyZasah);
-        skumanie(akcnyZasah);
+        //skumanie(akcnyZasah);
         Pohyb(akcnyZasah);
 
         usleep(10 * 1000);
@@ -494,9 +494,9 @@ int CiCreate::Sledovanie_steny_ciste() {
         // ukončí ak sa vráti do počiatočného bodu
         if (((shm_odo->prejdena_vzdialenost - prejdena_vzdial) > 1000) && (abs(shm_odo->aktualny_uhol - uhol_0) < 35) && (vzdial < tolerancia)) {
             Pohyb(0, 0);
-            Poloha *poloha = new Poloha(0, shm_R_GUI->id_spustenia, shm_R_GUI->agent_id, x_0, y_0, uhol_0);
-            Prekazka *prekazka = new Prekazka(0, shm_R_GUI->id_spustenia, shm_R_GUI->id_prekazky, poloha, 1, 0, 0);
-            shm_R_GUI->socket->sendJson(prekazka->toJson());
+            Poloha *poloha0 = new Poloha(0, shm_R_GUI->id_spustenia, shm_R_GUI->agent_id, x_0, y_0, uhol_0);
+            Prekazka *prekazka0 = new Prekazka(0, shm_R_GUI->id_spustenia, shm_R_GUI->id_prekazky, poloha0, 1, 0, 0);
+            shm_R_GUI->socket->sendJson(prekazka0->toJson());
             std::cout << "prekazka obidena dookola\n";
             break;
         }
@@ -505,7 +505,13 @@ int CiCreate::Sledovanie_steny_ciste() {
         Prekazka *aktPrekazka = new Prekazka(0, shm_R_GUI->id_spustenia, shm_R_GUI->id_prekazky, aktPoloha, shm_odo->naraznik_vpravo, shm_odo->naraznik_vlavo, shm_odo->naraznik_vpredu);
         if (shm_R_GUI->prekazky->isNearOtherExceptId(aktPrekazka, (tolerancia))) {
             Pohyb(0, 0);
+            Prekazka *prekazka1 = shm_R_GUI->prekazky->nearestPrekazkaExceptId(aktPrekazka);
+            prekazka1->SetRobot(shm_R_GUI->agent_id);
+            prekazka1->SetPrekazka(shm_R_GUI->id_prekazky);
+            shm_R_GUI->socket->sendJson(prekazka1->toJson());
             std::cout << "bol tu iny robot\n";
+            std::cout << "aktualna " << aktPrekazka->toString() << "\n";
+            std::cout << "dopocitana " << prekazka1->toString() << "\n";
             break;
         }
 
