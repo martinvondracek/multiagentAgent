@@ -101,6 +101,22 @@ bool Prekazky::isNearAny(Poloha *poloha, int tolerancia) {
     m.unlock();
     return false;
 }
+
+Prekazka* Prekazky::findNearest(Poloha *poloha) {
+    m.lock();
+    std::list<Prekazka*>::iterator i;
+    Prekazka *nearest = *prekazkyList.begin();
+    float vzdial = nearest->getVzdialenost(poloha);
+    
+        for (i = prekazkyList.begin(); i != prekazkyList.end(); ++i) {
+            if ((*i)->getVzdialenost(poloha)<vzdial) {
+                nearest = (*i);
+                vzdial = (*i)->getVzdialenost(poloha);
+            }
+        }
+    m.unlock();
+    return nearest;
+}
     
 std::string Prekazky::toString() {
     std::string str = "{\n";

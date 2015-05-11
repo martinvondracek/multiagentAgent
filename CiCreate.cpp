@@ -335,8 +335,15 @@ AkcnyZasah * CiCreate::obchadzanie(AkcnyZasah *zasah) {
                 zasah->SetObchadzanie(false);
                 zasah->SetObchadzanieStav(0);
             } else {
-                if (shm_R_GUI->prekazky->isNearAny(new Poloha(0, shm_R_GUI->id_spustenia, shm_R_GUI->agent_id, shm_odo->x_rel, shm_odo->y_rel, shm_odo->aktualny_uhol), 500)) {
+                Poloha *aktPoloha = new Poloha(0, shm_R_GUI->id_spustenia, shm_R_GUI->agent_id, shm_odo->x_rel, shm_odo->y_rel, shm_odo->aktualny_uhol);
+                if (shm_R_GUI->prekazky->isNearAny(aktPoloha, 1500)) {
                     std::cout << "obchadzanie - bol tu iny robot\n";
+                    // najdeme najblizsiu prekazku a skorigujeme aktualnu polohu podla nej
+                    Prekazka *nearestPrekazka = shm_R_GUI->prekazky->findNearest(aktPoloha);
+                    shm_odo->x_rel = nearestPrekazka->GetX_rob();
+                    shm_odo->y_rel = nearestPrekazka->GetY_rob();
+                    
+                    //resetujeme stav obchadzania
                     zasah->SetObchadzanie(false);
                     zasah->SetObchadzanieStav(0);
                 } else {
@@ -505,7 +512,7 @@ int CiCreate::Sledovanie_steny_ciste() {
         // korekcia ak ide dlhsie rovno, nastavi sa natocenie na nasobok 90 stupnov
         int aktualnyUhol = shm_odo->prejdeny_uhol;
 
-        if (abs(minulyUhol - aktualnyUhol) > 5) {
+        if (abs(minulyUhol - aktualnyUhol) > 3) {
             minulyUhol = shm_odo->prejdeny_uhol;
             vzdialenostRovno = shm_odo->prejdena_vzdialenost;
             //std::cout << "resetujeme vzdialenost\n";
