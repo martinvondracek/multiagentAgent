@@ -373,7 +373,7 @@ AkcnyZasah * CiCreate::obchadzanie(AkcnyZasah *zasah) {
                 zasah->SetObchadzanieStav(0);
             } else {
                 Poloha *aktPoloha = new Poloha(0, shm_R_GUI->id_spustenia, shm_R_GUI->agent_id, shm_odo->x_rel, shm_odo->y_rel, shm_odo->aktualny_uhol);
-                if (shm_R_GUI->prekazky->isNearAny(aktPoloha, 1500)) {
+                if (shm_R_GUI->prekazky->isNearAny(aktPoloha, 500)) {
                     std::cout << "obchadzanie - bol tu iny robot\n";
                     // najdeme najblizsiu prekazku a skorigujeme aktualnu polohu podla nej
                     Prekazka *nearestPrekazka = shm_R_GUI->prekazky->findNearest(aktPoloha);
@@ -540,7 +540,7 @@ int CiCreate::Sledovanie_steny_ciste() {
         // ukončí ak tu už bol iný robot
         Poloha *aktPoloha = new Poloha(0, shm_R_GUI->id_spustenia, shm_R_GUI->agent_id, shm_odo->x_rel, shm_odo->y_rel, shm_odo->aktualny_uhol);
         Prekazka *aktPrekazka = new Prekazka(0, shm_R_GUI->id_spustenia, shm_R_GUI->id_prekazky, aktPoloha, shm_odo->naraznik_vpravo, shm_odo->naraznik_vlavo, shm_odo->naraznik_vpredu);
-        if (shm_R_GUI->prekazky->isNearOtherExceptId(aktPrekazka, (tolerancia))) {
+        if (shm_R_GUI->prekazky->isNearOtherExceptId(aktPrekazka, (tolerancia*0.7))) {
             Pohyb(0, 0);
             Prekazka *prekazka1 = shm_R_GUI->prekazky->nearestPrekazkaExceptId(aktPrekazka);
             prekazka1->SetRobot(shm_R_GUI->agent_id);
