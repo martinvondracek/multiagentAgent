@@ -63,6 +63,18 @@ int CComport::PollComport(unsigned char *buf, int size) {
     return (n);
 }
 
+int CComport::ReadByte(unsigned char *buf) {
+    //std::cout << "readByte\n";
+    int pocet = 0;
+    
+    while (pocet == 0) {
+        pocet = read(Cport, buf, 1);
+        //std::cout << "data=" << buf << "\n";
+    }
+    
+    return pocet;
+}
+
 int CComport::ReadNBytes(unsigned char *buf, int size) {
     int n = 0;
     auto t_start = std::chrono::high_resolution_clock::now();
@@ -76,6 +88,31 @@ int CComport::ReadNBytes(unsigned char *buf, int size) {
     //std::cout << "Wall clock time passed: " << duration << " ms\n";
     
     return n;
+}
+
+int CComport::ReadGyro() {
+    //std::cout << "readGyro\n";
+    int uhol;
+    unsigned char *dataR;
+    dataR = (unsigned char*) malloc(10);
+    int index = 0;
+    
+    dataR[0] = 0;
+    while (dataR[0] != '@') {
+        ReadByte(dataR);
+    }
+    
+    while (dataR[index] != '#') {
+        index++;
+        ReadByte(dataR + index);
+    }
+    
+    dataR[index] = 0;
+    
+    //std::cout << dataR+1 << "\n";
+    
+    std::string s = (const char *) dataR+1;
+    return std::stoi(s);
 }
 
 int CComport::SendByte(unsigned char byte) {

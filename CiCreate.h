@@ -35,6 +35,7 @@ struct odometria_shm {
     int x_rel = 0; //[mm]
     int y_rel = 0; //[mm]
     CiCreateDef *crDef; //objekt na komunikáciu s iRobot Create
+    CComport *gyroComport;
     int ukonci_vlakno = 0; //či má ukončiť vlákno pri rušení objektu
     int naraznik_vpredu = 0;
     int naraznik_vpravo = 0;
@@ -77,6 +78,7 @@ private:
     CiCreateDef *crDef;
     odometria_shm *shm_odo;
     pthread_t vlaknoOdometria;
+    pthread_t vlaknoGyro;
     pthread_t vlaknoTeleriadenie;
     std::thread posielanieThread;
     bool stopTele = false;

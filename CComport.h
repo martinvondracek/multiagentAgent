@@ -36,8 +36,10 @@ public:
     CComport(const char *cp, int bd);
     int OpenComport(); // pripojí sa na port
     int PollComport(unsigned char *buf, int size); //číta z portu
+    int ReadByte(unsigned char *buf);
     int ReadNBytes(unsigned char *buf, int size); //precita n bytov, caka kym ich neni taky pocet
                                                     // alebo neprejde 1 sekunda
+    int ReadGyro();
     int SendByte(unsigned char byte); // pošle byte
     int SendnBytes(unsigned char * byte, int size); //pošle n bytov
     int SendBuf(unsigned char *buf, int size); //pošle buffer
