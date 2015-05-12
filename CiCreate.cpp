@@ -25,12 +25,12 @@ void *Odometria(void *arg) {
         auto t_start = std::chrono::high_resolution_clock::now();
         shmO->crDef->UpdateSensorsStates();
         shmO->prejdena_vzdialenost += abs(shmO->crDef->getLastDistance());
-        /*shmO->prejdeny_uhol += abs(shmO->crDef->getLastAngle());
+        shmO->prejdeny_uhol += abs(shmO->crDef->getLastAngle());
         shmO->aktualny_uhol += shmO->crDef->getLastAngle();
         shmO->aktualny_uhol = shmO->aktualny_uhol % 360;
         if (shmO->aktualny_uhol < 0) {
             shmO->aktualny_uhol += 360;
-        }*/
+        }
         shmO->x_rel += shmO->crDef->getLastDistance() * sin(shmO->aktualny_uhol * PI / 180) * -1;
         shmO->y_rel += shmO->crDef->getLastDistance() * cos(shmO->aktualny_uhol * PI / 180);
         if (shmO->crDef->getWall()) {
@@ -246,12 +246,13 @@ int CiCreate::connectComport(const char * comport) {
         if (pthread_create(&vlaknoOdometria, &parametre, Odometria, (void*) shm_odo)) return -1;
         
         // vytvorí vlákno pre gyro
-        shm_odo->gyroComport = new CComport("/dev/rfcomm0", B9600);
+        /*shm_odo->gyroComport = new CComport("/dev/rfcomm0", B9600);
         shm_odo->gyroComport->OpenComport();
         pthread_attr_t parametre2;
         if (pthread_attr_init(&parametre2)) return -1;
         pthread_attr_setdetachstate(&parametre2, PTHREAD_CREATE_DETACHED);
-        if (pthread_create(&vlaknoGyro, &parametre2, Gyro, (void*) shm_odo)) return -1;
+        if (pthread_create(&vlaknoGyro, &parametre2, Gyro, (void*) shm_odo)) return -1;*/
+        
         return 0;
     } else {
         return -1;
