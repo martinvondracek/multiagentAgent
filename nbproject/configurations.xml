@@ -44,7 +44,7 @@
         <itemPath>Obstacle.cpp</itemPath>
         <itemPath>Obstacles.cpp</itemPath>
         <itemPath>Position.cpp</itemPath>
-        <itemPath>Positions.cpp</itemPath>
+        <itemPath>PositionsOfAgents.cpp</itemPath>
       </logicalFolder>
       <logicalFolder name="f3" displayName="Socket" projectFiles="true">
         <itemPath>SocketConnector.cpp</itemPath>
@@ -123,7 +123,7 @@
       </item>
       <item path="Position.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="Positions.cpp" ex="false" tool="1" flavor2="0">
+      <item path="PositionsOfAgents.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="PositionsOfAgents.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -204,7 +204,7 @@
       </item>
       <item path="Position.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="Positions.cpp" ex="false" tool="1" flavor2="0">
+      <item path="PositionsOfAgents.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="PositionsOfAgents.h" ex="false" tool="3" flavor2="0">
       </item>
