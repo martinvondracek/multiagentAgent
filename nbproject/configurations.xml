@@ -40,11 +40,11 @@
         <itemPath>CiCreateDef.cpp</itemPath>
       </logicalFolder>
       <logicalFolder name="f2" displayName="PrekazkyPolohy" projectFiles="true">
-        <itemPath>KoordinacnaSur.cpp</itemPath>
-        <itemPath>Poloha.cpp</itemPath>
-        <itemPath>PolohyAgentov.cpp</itemPath>
-        <itemPath>Prekazka.cpp</itemPath>
-        <itemPath>Prekazky.cpp</itemPath>
+        <itemPath>CoordinationPosition.cpp</itemPath>
+        <itemPath>Obstacle.cpp</itemPath>
+        <itemPath>Obstacles.cpp</itemPath>
+        <itemPath>Position.cpp</itemPath>
+        <itemPath>Positions.cpp</itemPath>
       </logicalFolder>
       <logicalFolder name="f3" displayName="Socket" projectFiles="true">
         <itemPath>SocketConnector.cpp</itemPath>
@@ -107,25 +107,25 @@
       </item>
       <item path="CiCreateDef.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="CoordinationPosition.cpp" ex="false" tool="1" flavor2="0">
+      </item>
       <item path="CoordinationPosition.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="KoordinacnaSur.cpp" ex="false" tool="1" flavor2="0">
+      <item path="Obstacle.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Obstacle.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="Obstacles.cpp" ex="false" tool="1" flavor2="0">
+      </item>
       <item path="Obstacles.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="Poloha.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="PolohyAgentov.cpp" ex="false" tool="1" flavor2="0">
+      <item path="Position.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Position.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="Positions.cpp" ex="false" tool="1" flavor2="0">
+      </item>
       <item path="PositionsOfAgents.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Prekazka.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="Prekazky.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="SocketConnector.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -188,25 +188,25 @@
       </item>
       <item path="CiCreateDef.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="CoordinationPosition.cpp" ex="false" tool="1" flavor2="0">
+      </item>
       <item path="CoordinationPosition.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="KoordinacnaSur.cpp" ex="false" tool="1" flavor2="0">
+      <item path="Obstacle.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Obstacle.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="Obstacles.cpp" ex="false" tool="1" flavor2="0">
+      </item>
       <item path="Obstacles.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="Poloha.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="PolohyAgentov.cpp" ex="false" tool="1" flavor2="0">
+      <item path="Position.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="Position.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="Positions.cpp" ex="false" tool="1" flavor2="0">
+      </item>
       <item path="PositionsOfAgents.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Prekazka.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="Prekazky.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="SocketConnector.cpp" ex="false" tool="1" flavor2="0">
       </item>
