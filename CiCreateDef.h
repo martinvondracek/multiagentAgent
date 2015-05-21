@@ -1,8 +1,10 @@
 /* 
  * File:   CiCreateDef.h
- * Author: martin
+ * Author: unknown
  *
  * Created on Sobota, 2013, február 23, 13:47
+ * 
+ * for using iRobot Create
  */
 
 #ifndef CICREATEDEF_H

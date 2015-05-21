@@ -3,6 +3,8 @@
  * Author: root
  *
  * Created on Utorok, 2015, január 27, 16:45
+ * 
+ * extends agent for controlling iRobot Create
  */
 
 #ifndef CICREATE_H
@@ -24,6 +26,7 @@
 #define VZDIAL_POLOHY_POSLANIE 50
 #define VZDIAL_PREKAZKY_POSLANIE 50
 
+//shm between create and odometry thread
 struct odometria_shm {
     int bateriaNapatie;
     char bateriaTeplota;
@@ -61,17 +64,17 @@ public:
     int startTeleriadenie(void *widget);
     int stopTeleriadenie();
     
-    int Nastav_polohu(int x_0, int y_0, int uhol_0);
-    int Pohyb(WORD p, WORD l);
-    int Preskumaj_prostredie();
+    int set_position(int x_0, int y_0, int uhol_0);
+    int move(WORD p, WORD l);
+    int explore_environment();
     
-    int getPolohaX();
-    int getPolohaY();
-    int getPolohaUhol();
+    int getPositionX();
+    int getPositionY();
+    int getPositionAngle();
     
-    int getSnimacSteny();
-    bool isStena();
-    bool isKolizia(); // vrati 1 ak je v kolizii (naraz) 0 ak neni
+    int getWallSensor();
+    bool isWall();
+    bool isInColision(); // vrati 1 ak je v kolizii (naraz) 0 ak neni
     
     void pokusy();
 private:
@@ -83,19 +86,19 @@ private:
     std::thread posielanieThread;
     bool stopTele = false;
     
-    int uholKBodu(int x, int y);
-    int Dopredu_po_naraz(); //pošle robot rovno až pokial nenarazí nárazníkom
-    int Dopredu_o_vzdialenost(int ziad_vzdial); //prejde rovno o zadanú vzdialenosť
-    int Dopredu_o_vzdialenost_reg(int ziad_vzdial); // regulatorom prejde rovno o zadanú vzdialenosť
-    int Otocenie_o_uhol(int ziad_uhol, int smer); //otočí sa o zadaný uhol 0 doprava 1 dolava
-    int Otocenie_o_uhol_reg(int ziad_uhol, int smer); //regulatorovo - otočí sa o zadaný uhol 0 doprava 1 dolava
-    int Sledovanie_steny(); //ide rovno po náraz, obíde krabicu alebo prekážku
-    int Chyt_stenu();
-    int Sledovanie_steny_ciste(); //obíde krabicu alebo prekážku
+    int angleToPosition(int x, int y); // angle to som point - position
+    int moveForwardTillHit(); //moves directly forward till hits bumper
+    int forwardDistance(int ziad_vzdial); //moves forward a distance
+    int forwardDistanceReg(int ziad_vzdial); // moves forward a distance with controller
+    int rotateAngle(int ziad_uhol, int smer); //rotates an angle, 0 right 1 left
+    int rotateAngleReg(int ziad_uhol, int smer); //rotates an angle with controller
+    int wallFollowing(); //follows wall
+    int catchWall(); // chatches wall with wall sensor
+    int wallFollowingPure(); //obíde krabicu alebo prekážku
     
     AkcnyZasah * obchadzanie(AkcnyZasah *zasah);
     AkcnyZasah * skumanie(AkcnyZasah *zasah);
-    int Pohyb(AkcnyZasah *zasah);
+    int move(AkcnyZasah *zasah);
 };
 
 struct param_tele {

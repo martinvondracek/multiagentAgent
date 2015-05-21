@@ -5,9 +5,9 @@
  * Created on Sobota, 2015, január 24, 10:45
  */
 
-#include "Prekazka.h"
+#include "Obstacle.h"
 
-Prekazka::Prekazka(int id, int id_spustenia, int prekazka, int robot,
+Obstacle::Obstacle(int id, int id_spustenia, int prekazka, int robot,
         float x_rob, float y_rob, float fi_rob, float x_p, float y_p,
         bool naraz_vpravo, bool naraz_vlavo, bool naraz_vpredu) {
     this->id = id;
@@ -24,7 +24,7 @@ Prekazka::Prekazka(int id, int id_spustenia, int prekazka, int robot,
     this->naraz_vpredu = naraz_vpredu;
 }
 
-Prekazka::Prekazka(int id, int id_spustenia, int prekazka, Poloha *poloha, bool naraz_vpravo,
+Obstacle::Obstacle(int id, int id_spustenia, int prekazka, Position *poloha, bool naraz_vpravo,
             bool naraz_vlavo, bool naraz_vpredu) {
     this->id = id;
     this->id_spustenia = id_spustenia;
@@ -79,103 +79,103 @@ Prekazka::Prekazka(int id, int id_spustenia, int prekazka, Poloha *poloha, bool 
     this->naraz_vpredu = naraz_vpredu;
 }
 
-float Prekazka::GetFi_rob() {
+float Obstacle::GetFi_rob() {
     return fi_rob;
 }
 
-void Prekazka::SetFi_rob(float fi_rob) {
+void Obstacle::SetFi_rob(float fi_rob) {
     this->fi_rob = fi_rob;
 }
 
-int Prekazka::GetId() {
+int Obstacle::GetId() {
     return id;
 }
 
-void Prekazka::SetId(int id) {
+void Obstacle::SetId(int id) {
     this->id = id;
 }
 
-int Prekazka::GetId_spustenia() {
+int Obstacle::GetId_mapping() {
     return id_spustenia;
 }
 
-void Prekazka::SetId_spustenia(int id_spustenia) {
+void Obstacle::SetId_mapping(int id_spustenia) {
     this->id_spustenia = id_spustenia;
 }
 
-bool Prekazka::IsNaraz_vlavo() {
+bool Obstacle::IsHitLeft() {
     return naraz_vlavo;
 }
 
-void Prekazka::SetNaraz_vlavo(bool naraz_vlavo) {
+void Obstacle::SethitLeft(bool naraz_vlavo) {
     this->naraz_vlavo = naraz_vlavo;
 }
 
-bool Prekazka::IsNaraz_vpravo() {
+bool Obstacle::IsHitRight() {
     return naraz_vpravo;
 }
 
-void Prekazka::SetNaraz_vpravo(bool naraz_vpravo) {
+void Obstacle::SethitRight(bool naraz_vpravo) {
     this->naraz_vpravo = naraz_vpravo;
 }
 
-bool Prekazka::IsNaraz_vpredu() {
+bool Obstacle::IsHitFront() {
     return naraz_vpredu;
 }
 
-void Prekazka::SetNaraz_vpredu(bool naraz_vpredu) {
+void Obstacle::SetHitFront(bool naraz_vpredu) {
     this->naraz_vpredu = naraz_vpredu;
 }
 
-int Prekazka::GetPrekazka() {
+int Obstacle::GetObstacle() {
     return prekazka;
 }
 
-void Prekazka::SetPrekazka(int prekazka) {
+void Obstacle::SetObstacle(int prekazka) {
     this->prekazka = prekazka;
 }
 
-int Prekazka::GetRobot() {
+int Obstacle::GetRobot() {
     return robot;
 }
 
-void Prekazka::SetRobot(int robot) {
+void Obstacle::SetRobot(int robot) {
     this->robot = robot;
 }
 
-float Prekazka::GetX_p() {
+float Obstacle::GetX_p() {
     return x_p;
 }
 
-void Prekazka::SetX_p(float x_p) {
+void Obstacle::SetX_p(float x_p) {
     this->x_p = x_p;
 }
 
-float Prekazka::GetX_rob() {
+float Obstacle::GetX_rob() {
     return x_rob;
 }
 
-void Prekazka::SetX_rob(float x_rob) {
+void Obstacle::SetX_rob(float x_rob) {
     this->x_rob = x_rob;
 }
 
-float Prekazka::GetY_p() {
+float Obstacle::GetY_p() {
     return y_p;
 }
 
-void Prekazka::SetY_p(float y_p) {
+void Obstacle::SetY_p(float y_p) {
     this->y_p = y_p;
 }
 
-float Prekazka::GetY_rob() {
+float Obstacle::GetY_rob() {
     return y_rob;
 }
 
-void Prekazka::SetY_rob(float y_rob) {
+void Obstacle::SetY_rob(float y_rob) {
     this->y_rob = y_rob;
 }
 
-const char * Prekazka::toJson() {
+const char * Obstacle::toJson() {
     std::string pom;
     
     std::string json = "{\n";
@@ -232,7 +232,7 @@ const char * Prekazka::toJson() {
     return json.c_str();
 }
 
-Prekazka * Prekazka::fromJson(const char *json) {
+Obstacle * Obstacle::fromJson(const char *json) {
     int id;
     int id_spustenia;
     int prekazka;
@@ -262,23 +262,23 @@ Prekazka * Prekazka::fromJson(const char *json) {
     naraz_vlavo = document["NARAZ_VLAVO"].GetBool();
     naraz_vpredu = document["NARAZ_VPREDU"].GetBool();
     
-    return new Prekazka(id, id_spustenia, prekazka, robot, x_rob, y_rob, fi_rob, x_p, y_p, naraz_vpravo, naraz_vlavo, naraz_vpredu);
+    return new Obstacle(id, id_spustenia, prekazka, robot, x_rob, y_rob, fi_rob, x_p, y_p, naraz_vpravo, naraz_vlavo, naraz_vpredu);
 }
 
-const char * Prekazka::toString() {
+const char * Obstacle::toString() {
     return toJson();
 }
 
-float Prekazka::getVzdialenost(Prekazka *p2) {
+float Obstacle::getDistance(Obstacle *p2) {
     return sqrt((x_p-p2->GetX_p())*(x_p-p2->GetX_p()) + (y_p-p2->GetY_p())*(y_p-p2->GetY_p()));
 }
 
-float Prekazka::getVzdialenost(Poloha *p2) {
+float Obstacle::getDistance(Position *p2) {
     return sqrt((x_p-p2->GetX())*(x_p-p2->GetX()) + (y_p-p2->GetY())*(y_p-p2->GetY()));
 }
 
 
 
-Prekazka::~Prekazka() {
+Obstacle::~Obstacle() {
 }
 

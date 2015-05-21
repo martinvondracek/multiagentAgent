@@ -22,7 +22,7 @@ std::string SocketUtil::createQuit(int idAgenta) {
     return json;
 }
 
-std::string SocketUtil::createInvalidKoorSur(int idAgenta) {
+std::string SocketUtil::createInvalidCoorPosition(int idAgenta) {
     std::string json = "{\n";
     json.append("\"CLASSTYPE\" : \"INVALID_KOOR_SUR\"");
     
@@ -34,7 +34,7 @@ std::string SocketUtil::createInvalidKoorSur(int idAgenta) {
     return json;
 }
 
-std::string SocketUtil::createInAccesibleKoorSur(int idAgenta) {
+std::string SocketUtil::createInAccesibleCoorPosition(int idAgenta) {
     std::string json = "{\n";
     json.append("\"CLASSTYPE\" : \"INACCESIBLE_KOOR_SUR\"");
     
@@ -46,7 +46,7 @@ std::string SocketUtil::createInAccesibleKoorSur(int idAgenta) {
     return json;
 }
 
-std::string SocketUtil::createNewIdPrekazky() {
+std::string SocketUtil::createNewIdOfObstacle() {
     std::string json = "{\n";
     json.append("\"CLASSTYPE\" : \"NEW_ID_PREKAZKY\"");
     
@@ -70,7 +70,7 @@ int SocketUtil::parseAgentIdFromJson(const char *json) {
     }
 }
 
-int SocketUtil::parseAgentIdSpusteniaFromJson(const char *json) {
+int SocketUtil::parseAgentIdMappingFromJson(const char *json) {
     int id;
     
     rapidjson::Document document;
@@ -85,7 +85,7 @@ int SocketUtil::parseAgentIdSpusteniaFromJson(const char *json) {
     }
 }
 
-int SocketUtil::parseIdSpusteniaFromJson(const char *json) {
+int SocketUtil::parseIdMappingFromJson(const char *json) {
     int id;
     
     rapidjson::Document document;
@@ -100,7 +100,7 @@ int SocketUtil::parseIdSpusteniaFromJson(const char *json) {
     }
 }
 
-int SocketUtil::parseNewIdPrekazkyFromJson(const char *json) {
+int SocketUtil::parseNewIdObstacleFromJson(const char *json) {
     int id;
     
     rapidjson::Document document;

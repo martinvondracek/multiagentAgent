@@ -22,7 +22,9 @@ public:
     void SetRightWheel(int rightWheel);
 
     static AkcnyZasah* stopWithObchadzanie(int obchadzanieStav);
+    //creates akcny zasah that stops robot but is in state obchadzanie
     static AkcnyZasah* stopNotObchadzanie();
+    //creates akcny zasah that stops robot but is not in state obchadzanie
     
     virtual ~AkcnyZasah();
 private:

@@ -5,9 +5,9 @@
  * Created on Nedeľa, 2015, marec 15, 13:07
  */
 
-#include "Prekazky.h"
+#include "Obstacles.h"
 
-Prekazky::Prekazky() {}
+Obstacles::Obstacles() {}
 
 /*int Prekazky::newIdPrekazky(komunikacia_shm *shm_R_GUI) {
     m.lock();
@@ -31,7 +31,7 @@ Prekazky::Prekazky() {}
     return shm_R_GUI->id_prekazky;
 }*/
 
-int Prekazky::addPrekazka(Prekazka *prekazka) {
+int Obstacles::addObstacle(Obstacle *prekazka) {
     m.lock();
     // todo vytvorit clone
     if (lastPrekazka == nullptr) {
@@ -39,7 +39,7 @@ int Prekazky::addPrekazka(Prekazka *prekazka) {
         prekazkyList.push_back(prekazka);
     } else {
         // ukladame vzdy v niakej minimalnej vzdialenosti
-        if (lastPrekazka->getVzdialenost(prekazka) > MIN_DISTANCE) {
+        if (lastPrekazka->getDistance(prekazka) > MIN_DISTANCE) {
             lastPrekazka = prekazka;
             prekazkyList.push_back(prekazka);
         }
@@ -49,11 +49,11 @@ int Prekazky::addPrekazka(Prekazka *prekazka) {
     return 1;
 }
 
-bool Prekazky::isNearOtherWithId(Prekazka *prekazka, int tolerancia) {
+bool Obstacles::isNearOtherWithId(Obstacle *prekazka, int tolerancia) {
     m.lock();
-    std::list<Prekazka*>::iterator i;
+    std::list<Obstacle*>::iterator i;
         for (i = prekazkyList.begin(); i != prekazkyList.end(); ++i) {
-            if ((*i)->getVzdialenost(prekazka)<=tolerancia && (*i)->GetPrekazka()==prekazka->GetPrekazka()) {
+            if ((*i)->getDistance(prekazka)<=tolerancia && (*i)->GetObstacle()==prekazka->GetObstacle()) {
                 m.unlock();
                 return true;
             }
@@ -62,12 +62,12 @@ bool Prekazky::isNearOtherWithId(Prekazka *prekazka, int tolerancia) {
     return false;
 }
 
-bool Prekazky::isNearOtherExceptId(Prekazka *prekazka, int tolerancia) {
+bool Obstacles::isNearOtherExceptId(Obstacle *prekazka, int tolerancia) {
     m.lock();
-    std::list<Prekazka*>::iterator i;
+    std::list<Obstacle*>::iterator i;
         for (i = prekazkyList.begin(); i != prekazkyList.end(); ++i) {
-            if ((*i)->getVzdialenost(prekazka)<=tolerancia && (*i)->GetPrekazka()!=prekazka->GetPrekazka()) {
-                std::cout << (*i)->GetPrekazka() << " " << prekazka->GetPrekazka() << " " << (*i)->getVzdialenost(prekazka)-tolerancia << "\n";
+            if ((*i)->getDistance(prekazka)<=tolerancia && (*i)->GetObstacle()!=prekazka->GetObstacle()) {
+                std::cout << (*i)->GetObstacle() << " " << prekazka->GetObstacle() << " " << (*i)->getDistance(prekazka)-tolerancia << "\n";
                 m.unlock();
                 return true;
             }
@@ -76,27 +76,27 @@ bool Prekazky::isNearOtherExceptId(Prekazka *prekazka, int tolerancia) {
     return false;
 }
 
-Prekazka* Prekazky::nearestPrekazkaExceptId(Prekazka *prekazka) {
+Obstacle* Obstacles::nearestObstacleExceptId(Obstacle *prekazka) {
     m.lock();
-    std::list<Prekazka*>::iterator i;
-    Prekazka *nearest = *prekazkyList.begin();
-    float vzdial = nearest->getVzdialenost(prekazka);
+    std::list<Obstacle*>::iterator i;
+    Obstacle *nearest = *prekazkyList.begin();
+    float vzdial = nearest->getDistance(prekazka);
     
         for (i = prekazkyList.begin(); i != prekazkyList.end(); ++i) {
-            if ((*i)->getVzdialenost(prekazka)<vzdial && (*i)->GetPrekazka()!=prekazka->GetPrekazka()) {
+            if ((*i)->getDistance(prekazka)<vzdial && (*i)->GetObstacle()!=prekazka->GetObstacle()) {
                 nearest = (*i);
-                vzdial = (*i)->getVzdialenost(prekazka);
+                vzdial = (*i)->getDistance(prekazka);
             }
         }
     m.unlock();
     return nearest;
 }
 
-bool Prekazky::isNearAnyOther(Prekazka *prekazka, int tolerancia) {
+bool Obstacles::isNearAnyOther(Obstacle *prekazka, int tolerancia) {
     m.lock();
-    std::list<Prekazka*>::iterator i;
+    std::list<Obstacle*>::iterator i;
         for (i = prekazkyList.begin(); i != prekazkyList.end(); ++i) {
-            if ((*i)->getVzdialenost(prekazka)<=tolerancia) {
+            if ((*i)->getDistance(prekazka)<=tolerancia) {
                 m.unlock();
                 return true;
             }
@@ -105,11 +105,11 @@ bool Prekazky::isNearAnyOther(Prekazka *prekazka, int tolerancia) {
     return false;
 }
 
-bool Prekazky::isNearAny(Poloha *poloha, int tolerancia) {
+bool Obstacles::isNearAny(Position *poloha, int tolerancia) {
     m.lock();
-    std::list<Prekazka*>::iterator i;
+    std::list<Obstacle*>::iterator i;
         for (i = prekazkyList.begin(); i != prekazkyList.end(); ++i) {
-            if ((*i)->getVzdialenost(poloha)<=tolerancia) {
+            if ((*i)->getDistance(poloha)<=tolerancia) {
                 m.unlock();
                 return true;
             }
@@ -118,27 +118,27 @@ bool Prekazky::isNearAny(Poloha *poloha, int tolerancia) {
     return false;
 }
 
-Prekazka* Prekazky::findNearest(Poloha *poloha) {
+Obstacle* Obstacles::findNearest(Position *poloha) {
     m.lock();
-    std::list<Prekazka*>::iterator i;
-    Prekazka *nearest = *prekazkyList.begin();
-    float vzdial = nearest->getVzdialenost(poloha);
+    std::list<Obstacle*>::iterator i;
+    Obstacle *nearest = *prekazkyList.begin();
+    float vzdial = nearest->getDistance(poloha);
     
         for (i = prekazkyList.begin(); i != prekazkyList.end(); ++i) {
-            if ((*i)->getVzdialenost(poloha)<vzdial) {
+            if ((*i)->getDistance(poloha)<vzdial) {
                 nearest = (*i);
-                vzdial = (*i)->getVzdialenost(poloha);
+                vzdial = (*i)->getDistance(poloha);
             }
         }
     m.unlock();
     return nearest;
 }
     
-std::string Prekazky::toString() {
+std::string Obstacles::toString() {
     std::string str = "{\n";
     
     m.lock();
-    std::list<Prekazka*>::iterator i;
+    std::list<Obstacle*>::iterator i;
     for (i = prekazkyList.begin(); i != prekazkyList.end(); ++i) {
         str.append((*i)->toString());
         str.append("\n");
@@ -149,7 +149,7 @@ std::string Prekazky::toString() {
     return str;
 }
 
-Prekazky::~Prekazky() {
+Obstacles::~Obstacles() {
     m.lock();
     m.unlock();
 }

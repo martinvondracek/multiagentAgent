@@ -20,15 +20,15 @@ public:
     SocketUtil();
     virtual ~SocketUtil();
     
-    static std::string createQuit(int idAgenta);
-    static std::string createInvalidKoorSur(int idAgenta);
-    static std::string createInAccesibleKoorSur(int idAgenta);
-    static std::string createNewIdPrekazky();
+    static std::string createQuit(int idAgenta); //crate json that this agent quits
+    static std::string createInvalidCoorPosition(int idAgenta); // creates json that coor position is invalid
+    static std::string createInAccesibleCoorPosition(int idAgenta); // creates json that coor position is inaccesible
+    static std::string createNewIdOfObstacle(); //creates json that agent wants new id of obstacle
     
     static int parseAgentIdFromJson(const char *json);
-    static int parseAgentIdSpusteniaFromJson(const char *json);
-    static int parseIdSpusteniaFromJson(const char *json);
-    static int parseNewIdPrekazkyFromJson(const char *json);
+    static int parseAgentIdMappingFromJson(const char *json);
+    static int parseIdMappingFromJson(const char *json);
+    static int parseNewIdObstacleFromJson(const char *json);
     static std::string parseClassTypeFromJson(const char *json);
 private:
 

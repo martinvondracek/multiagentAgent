@@ -3,6 +3,8 @@
  * Author: root
  *
  * Created on Nedeľa, 2015, január 25, 19:09
+ * 
+ * connector to socket
  */
 
 #ifndef SOCKETCLASS_H
@@ -25,8 +27,8 @@ public:
     SocketConnector();
     virtual ~SocketConnector();
     
-    int connectToServer(int portNum, const char *hostname); // pripoji sa na socket
-    int disconnect(); // odpoji sa zo socketu
+    int connectToServer(int portNum, const char *hostname); // connects to tcp/ip socket
+    int disconnect(); // disocnnects from socket
     int sendJson(std::string jsonData);
     int sendJson(const char *jsonData);
     int receiveJson(char *buffer, int bufSize);

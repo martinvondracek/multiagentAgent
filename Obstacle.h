@@ -15,41 +15,41 @@
 #include <unistd.h>
 #include <iostream>
 
-#include "Poloha.h"
+#include "Position.h"
 
 #define PI 3.14159265
 
-class Prekazka {
+class Obstacle {
 public:
-    Prekazka(int id, int id_spustenia, int prekazka, int robot, float x_rob,
+    Obstacle(int id, int id_spustenia, int prekazka, int robot, float x_rob,
             float y_rob, float fi_rob, float x_p, float y_p, bool naraz_vpravo,
             bool naraz_vlavo, bool naraz_vpredu);
-    Prekazka(int id, int id_spustenia, int prekazka, Poloha *poloha, bool naraz_vpravo,
+    Obstacle(int id, int id_spustenia, int prekazka, Position *poloha, bool naraz_vpravo,
             bool naraz_vlavo, bool naraz_vpredu);
-    virtual ~Prekazka();
+    virtual ~Obstacle();
     
     const char * toJson();
-    static Prekazka * fromJson(const char *json);
+    static Obstacle * fromJson(const char *json);
     const char * toString();
     
-    float getVzdialenost(Prekazka *p2);
-    float getVzdialenost(Poloha *p2);
+    float getDistance(Obstacle *p2);
+    float getDistance(Position *p2);
     
     float GetFi_rob();
     void SetFi_rob(float fi_rob);
     int GetId();
     void SetId(int id);
-    int GetId_spustenia();
-    void SetId_spustenia(int id_spustenia);
-    bool IsNaraz_vlavo();
-    void SetNaraz_vlavo(bool naraz_vlavo);
-    bool IsNaraz_vpravo();
-    void SetNaraz_vpravo(bool naraz_vpravo);
-    bool IsNaraz_vpredu();
-    void SetNaraz_vpredu(bool naraz_vpredu);
-    int GetPrekazka();
-    void SetPrekazka(int prekazka);
-    int GetRobot();
+    int GetId_mapping();
+    void SetId_mapping(int id_spustenia);
+    bool IsHitLeft();
+    void SethitLeft(bool naraz_vlavo);
+    bool IsHitRight();
+    void SethitRight(bool naraz_vpravo);
+    bool IsHitFront();
+    void SetHitFront(bool naraz_vpredu);
+    int GetObstacle(); // gets id of obstacle
+    void SetObstacle(int prekazka);
+    int GetRobot(); // gets id of agent
     void SetRobot(int robot);
     float GetX_p();
     void SetX_p(float x_p);

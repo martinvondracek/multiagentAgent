@@ -5,17 +5,17 @@
  * Created on Štvrtok, 2015, marec 26, 16:39
  */
 
-#include "PolohyAgentov.h"
+#include "PositionsOfAgents.h"
 
-PolohyAgentov::PolohyAgentov(int myId) {
+PositionsOfAgents::PositionsOfAgents(int myId) {
     this->myId = myId;
 }
 
-void PolohyAgentov::addOrUpdatePoloha(Poloha *poloha) {
+void PositionsOfAgents::addOrUpdatePoloha(Position *poloha) {
     m.lock();
     if (myId != poloha->GetRobot()) {
         //vymazeme stare a pridame nove
-        std::list<Poloha*>::iterator i;
+        std::list<Position*>::iterator i;
         for (i = polohyList.begin(); i != polohyList.end(); ++i) {
             if ((*i)->GetRobot() == poloha->GetRobot()) {
                 polohyList.erase(i);
@@ -27,12 +27,12 @@ void PolohyAgentov::addOrUpdatePoloha(Poloha *poloha) {
     m.unlock();
 }
 
-bool PolohyAgentov::isNearOhterAgent(Poloha *mojaPoloha) {
+bool PositionsOfAgents::isNearOhterAgent(Position *mojaPoloha) {
     m.lock();
     bool isNear = false;
-    std::list<Poloha*>::iterator i;
+    std::list<Position*>::iterator i;
     for (i = polohyList.begin(); i != polohyList.end(); ++i) {
-        if ((*i)->GetRobot()!=mojaPoloha->GetRobot() && (*i)->getVzdialenost(mojaPoloha)<TOLERANCIA) {
+        if ((*i)->GetRobot()!=mojaPoloha->GetRobot() && (*i)->getDistance(mojaPoloha)<TOLERANCIA) {
             isNear = true;
             break;
         }
@@ -41,16 +41,16 @@ bool PolohyAgentov::isNearOhterAgent(Poloha *mojaPoloha) {
     return isNear;
 }
 
-bool PolohyAgentov::isNearOhterAgent(Prekazka *mojaPrekazka) {
+bool PositionsOfAgents::isNearOhterAgent(Obstacle *mojaPrekazka) {
     m.lock();
     bool isNear = false;
-    std::list<Poloha*>::iterator i;
+    std::list<Position*>::iterator i;
     for (i = polohyList.begin(); i != polohyList.end(); ++i) {
         //pouzijeme suradnice prekazky
-        Poloha *pomPoloha = new Poloha(0, mojaPrekazka->GetId_spustenia(),
+        Position *pomPoloha = new Position(0, mojaPrekazka->GetId_mapping(),
                 mojaPrekazka->GetRobot(), mojaPrekazka->GetX_p(),
                 mojaPrekazka->GetY_p(), mojaPrekazka->GetFi_rob());
-        if ((*i)->GetRobot()!=mojaPrekazka->GetRobot() && (*i)->getVzdialenost(pomPoloha)<TOLERANCIA) {
+        if ((*i)->GetRobot()!=mojaPrekazka->GetRobot() && (*i)->getDistance(pomPoloha)<TOLERANCIA) {
             isNear = true;
             break;
         }
@@ -59,11 +59,11 @@ bool PolohyAgentov::isNearOhterAgent(Prekazka *mojaPrekazka) {
     return isNear;
 }
 
-std::string PolohyAgentov::toString() {
+std::string PositionsOfAgents::toString() {
     std::string str = "{\n";
     
     m.lock();
-    std::list<Poloha*>::iterator i;
+    std::list<Position*>::iterator i;
     for (i = polohyList.begin(); i != polohyList.end(); ++i) {
         str.append((*i)->toString());
         str.append("\n");
@@ -74,7 +74,7 @@ std::string PolohyAgentov::toString() {
     return str;
 }
 
-PolohyAgentov::~PolohyAgentov() {
+PositionsOfAgents::~PositionsOfAgents() {
     m.lock();
     m.unlock();
 }

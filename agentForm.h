@@ -3,6 +3,8 @@
  * Author: root
  *
  * Created on Pondelok, 2015, január 5, 23:36
+ * 
+ * GUI for agent
  */
 
 #ifndef _AGENTFORM_H

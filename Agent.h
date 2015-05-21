@@ -3,6 +3,8 @@
  * Author: root
  *
  * Created on Utorok, 2015, január 27, 9:02
+ * 
+ * for agent functionality
  */
 
 #ifndef AGENTCLASS_H
@@ -17,11 +19,11 @@
 #include "SocketUtil.h"
 #include "Agent.h"
 #include "ui_agentForm.h"
-#include "Poloha.h"
-#include "Prekazka.h"
-#include "Prekazky.h"
-#include "PolohyAgentov.h"
-#include "KoordinacnaSur.h"
+#include "Position.h"
+#include "Obstacle.h"
+#include "Obstacles.h"
+#include "PositionsOfAgents.h"
+#include "CoordinationPosition.h"
 //#include "agentForm.h"
 
 typedef short int WORD;
@@ -31,9 +33,9 @@ struct komunikacia_shm {
     int id_spustenia;
     int id_prekazky = 0;
     bool isIdPrekazkyValid = false;
-    Prekazky *prekazky;
-    PolohyAgentov *polohy;
-    KoordinacnaSur *koorSur;
+    Obstacles *prekazky;
+    PositionsOfAgents *polohy;
+    CoordinationPosition *koorSur;
     
     SocketConnector *socket;
     pthread_t *vlaknoMapovanie;
@@ -53,23 +55,23 @@ public:
     virtual ~Agent();
     
     const char * getComport();
-    virtual int connectComport(const char * comport); // pripoji sa na robota
+    virtual int connectComport(const char * comport); // connects to iRobot Create
     virtual int disConnectComport();
     virtual bool getConnectedComport();
-    virtual int startTeleriadenie(void *widget);
+    virtual int startTeleriadenie(void *widget); //starts telecontrol - showing position in gui
     virtual int stopTeleriadenie();
     
     const char *getHostName();
     int getPortNumber();
-    int connectIp(int portNumber, const char *hostName); // pripoji sa k serveru
+    int connectIp(int portNumber, const char *hostName); // connects to server
     int disConnectIp();
     bool getConnectedIp();
     
-    virtual int Nastav_polohu(int x_0, int y_0, int uhol_0);
-    virtual int Pohyb(WORD p, WORD l);
-    virtual int Preskumaj_prostredie();
+    virtual int set_position(int x_0, int y_0, int uhol_0); // sets actual position of agent
+    virtual int move(WORD p, WORD l); // moves agent with welocities p, l
+    virtual int explore_environment(); // explores unknown environment
     
-    virtual bool isKolizia();
+    virtual bool isInColision(); // if agent is in colision - bumper, cliff, wheel drop 
     
     virtual void pokusy();
     

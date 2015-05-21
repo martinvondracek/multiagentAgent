@@ -127,11 +127,11 @@ void *teleriadenie(void *arg) {
 
     while (!(*(param->ukonci)) && (param->create->getConnectedComport())) {
         //vypiseme stavy snimacov
-        sprintf(buf, "%d", param->create->getPolohaX());
+        sprintf(buf, "%d", param->create->getPositionX());
         param->widget->xLabel->setText(buf);
-        sprintf(buf, "%d", param->create->getPolohaY());
+        sprintf(buf, "%d", param->create->getPositionY());
         param->widget->yLabel->setText(buf);
-        sprintf(buf, "%d", param->create->getPolohaUhol());
+        sprintf(buf, "%d", param->create->getPositionAngle());
         param->widget->zLabel->setText(buf);
         usleep(100 * 1000);
     }
@@ -142,16 +142,16 @@ void *teleriadenie(void *arg) {
 void posielaniePolohy(odometria_shm *shm_odo, komunikacia_shm *shm_R_GUI) {
     std::cout << "preskumaj prostredie\n";
 
-    Poloha *poloha;
-    Poloha *lastPoloha;
-    Prekazka *prekazka;
-    Prekazka *lastPrekazka;
+    Position *poloha;
+    Position *lastPoloha;
+    Obstacle *prekazka;
+    Obstacle *lastPrekazka;
 
     //inicializujeme
-    poloha = new Poloha(0, shm_R_GUI->id_spustenia, shm_R_GUI->agent_id, shm_odo->x_rel, shm_odo->y_rel, shm_odo->aktualny_uhol);
+    poloha = new Position(0, shm_R_GUI->id_spustenia, shm_R_GUI->agent_id, shm_odo->x_rel, shm_odo->y_rel, shm_odo->aktualny_uhol);
     lastPoloha = poloha;
     shm_R_GUI->socket->sendJson(poloha->toJson());
-    prekazka = new Prekazka(0, shm_R_GUI->id_spustenia, shm_R_GUI->id_prekazky, poloha, shm_odo->naraznik_vpravo, shm_odo->naraznik_vlavo, shm_odo->naraznik_vpredu);
+    prekazka = new Obstacle(0, shm_R_GUI->id_spustenia, shm_R_GUI->id_prekazky, poloha, shm_odo->naraznik_vpravo, shm_odo->naraznik_vlavo, shm_odo->naraznik_vpredu);
     shm_R_GUI->socket->sendJson(prekazka->toJson());
     lastPrekazka = prekazka;
 
@@ -159,17 +159,17 @@ void posielaniePolohy(odometria_shm *shm_odo, komunikacia_shm *shm_R_GUI) {
         if (shm_R_GUI->ukonci_ulohu == true) {
             break;
         }
-        poloha = new Poloha(0, shm_R_GUI->id_spustenia, shm_R_GUI->agent_id, shm_odo->x_rel, shm_odo->y_rel, shm_odo->aktualny_uhol);
-        if (poloha->getVzdialenost(lastPoloha) >= VZDIAL_POLOHY_POSLANIE) {
+        poloha = new Position(0, shm_R_GUI->id_spustenia, shm_R_GUI->agent_id, shm_odo->x_rel, shm_odo->y_rel, shm_odo->aktualny_uhol);
+        if (poloha->getDistance(lastPoloha) >= VZDIAL_POLOHY_POSLANIE) {
             shm_R_GUI->socket->sendJson(poloha->toJson());
             lastPoloha = poloha;
         }
 
         // ak sme narazeny posleme suradnicu prekazky
-        if (((Agent *) shm_R_GUI->agent)->isKolizia() && shm_R_GUI->isIdPrekazkyValid) {//aby bola pouzite dobre id prekazky
-            Prekazka *prekazka = new Prekazka(0, shm_R_GUI->id_spustenia, shm_R_GUI->id_prekazky, poloha, shm_odo->naraznik_vpravo, shm_odo->naraznik_vlavo, shm_odo->naraznik_vpredu);
-            if (prekazka->getVzdialenost(lastPrekazka) >= VZDIAL_PREKAZKY_POSLANIE) {
-                shm_R_GUI->prekazky->addPrekazka(prekazka);
+        if (((Agent *) shm_R_GUI->agent)->isInColision() && shm_R_GUI->isIdPrekazkyValid) {//aby bola pouzite dobre id prekazky
+            Obstacle *prekazka = new Obstacle(0, shm_R_GUI->id_spustenia, shm_R_GUI->id_prekazky, poloha, shm_odo->naraznik_vpravo, shm_odo->naraznik_vlavo, shm_odo->naraznik_vpredu);
+            if (prekazka->getDistance(lastPrekazka) >= VZDIAL_PREKAZKY_POSLANIE) {
+                shm_R_GUI->prekazky->addObstacle(prekazka);
                 shm_R_GUI->socket->sendJson(prekazka->toJson());
                 lastPrekazka = prekazka;
             }
@@ -184,7 +184,7 @@ void posielaniePolohy(odometria_shm *shm_odo, komunikacia_shm *shm_R_GUI) {
 CiCreate::CiCreate(komunikacia_shm *shm2) : Agent(shm2) {
 }
 
-int CiCreate::Nastav_polohu(int x_0, int y_0, int uhol_0) {
+int CiCreate::set_position(int x_0, int y_0, int uhol_0) {
     shm_odo->x_rel = x_0;
     shm_odo->y_rel = y_0;
     shm_odo->aktualny_uhol = uhol_0;
@@ -192,7 +192,7 @@ int CiCreate::Nastav_polohu(int x_0, int y_0, int uhol_0) {
     return 0;
 }
 
-int CiCreate::Pohyb(WORD p, WORD l) {
+int CiCreate::move(WORD p, WORD l) {
     //std::cout << "pohyb\n";
 
     if (connectedComport) {
@@ -262,7 +262,7 @@ int CiCreate::connectComport(const char * comport) {
 
 int CiCreate::disConnectComport() {
     if (connectedComport) {
-        Pohyb((WORD) 0, (WORD) 0);
+        move((WORD) 0, (WORD) 0);
         shm_odo->ukonci_vlakno = 1;
         usleep(100 * 1000);
         delete crDef;
@@ -301,11 +301,11 @@ int CiCreate::stopTeleriadenie() {
     //pthread_cancel(vlaknoTeleriadenie);
 }
 
-int CiCreate::Preskumaj_prostredie() {
+int CiCreate::explore_environment() {
     std::cout << "preskumaj prostredie\n";
-    shm_R_GUI->prekazky = new Prekazky();
+    shm_R_GUI->prekazky = new Obstacles();
     int iddd = shm_R_GUI->agent_id;
-    shm_R_GUI->polohy = new PolohyAgentov(iddd);
+    shm_R_GUI->polohy = new PositionsOfAgents(iddd);
 
     // najskor spustime vlakno pre pravidelne posielanie polohy a prekazok
     posielanieThread = std::thread(posielaniePolohy, shm_odo, shm_R_GUI);
@@ -314,12 +314,12 @@ int CiCreate::Preskumaj_prostredie() {
     while (shm_R_GUI->ukonci_ulohu == false) {
         obchadzanie(akcnyZasah);
         skumanie(akcnyZasah);
-        Pohyb(akcnyZasah);
+        move(akcnyZasah);
 
         usleep(10 * 1000);
     }
 
-    Pohyb(0, 0);
+    move(0, 0);
     shm_odo->wallFollowing = false;
     shm_R_GUI->isIdPrekazkyValid = false;
 
@@ -342,7 +342,7 @@ AkcnyZasah * CiCreate::obchadzanie(AkcnyZasah *zasah) {
             break;
         case 1: //cakame kym nenarazi do prekazky
             if (shm_odo->naraznik_vpredu || shm_odo->naraznik_vlavo || shm_odo->naraznik_vpravo) {
-                Pohyb(0, 0);
+                move(0, 0);
                 zasah->SetLeftWheel(0);
                 zasah->SetRightWheel(0);
                 //zasah->SetObchadzanie(true);
@@ -351,10 +351,10 @@ AkcnyZasah * CiCreate::obchadzanie(AkcnyZasah *zasah) {
             break;
         case 2: //natocime robot lepsie k prekazke
             if (shm_odo->naraznik_vlavo) {
-                Otocenie_o_uhol(60, 1);
+                rotateAngle(60, 1);
             }
             if (shm_odo->naraznik_vpredu) {
-                Otocenie_o_uhol(30, 1);
+                rotateAngle(30, 1);
             }
             zasah->SetLeftWheel(120);
             zasah->SetRightWheel(120);
@@ -362,22 +362,22 @@ AkcnyZasah * CiCreate::obchadzanie(AkcnyZasah *zasah) {
             break;
         case 3: //cakame kym nenarazi do prekazky
             if (shm_odo->naraznik_vpredu || shm_odo->naraznik_vlavo || shm_odo->naraznik_vpravo) {
-                Pohyb(0, 0);
+                move(0, 0);
                 zasah->SetLeftWheel(0);
                 zasah->SetRightWheel(0);
                 zasah->SetObchadzanieStav(4);
             }
             break;
         case 4: //chytime sa prekazky IR senzorom
-            if (Chyt_stenu() == -1) {
+            if (catchWall() == -1) {
                 zasah->SetObchadzanie(false);
                 zasah->SetObchadzanieStav(0);
             } else {
-                Poloha *aktPoloha = new Poloha(0, shm_R_GUI->id_spustenia, shm_R_GUI->agent_id, shm_odo->x_rel, shm_odo->y_rel, shm_odo->aktualny_uhol);
+                Position *aktPoloha = new Position(0, shm_R_GUI->id_spustenia, shm_R_GUI->agent_id, shm_odo->x_rel, shm_odo->y_rel, shm_odo->aktualny_uhol);
                 if (shm_R_GUI->prekazky->isNearAny(aktPoloha, 500)) {
                     std::cout << "obchadzanie - bol tu iny robot\n";
                     // najdeme najblizsiu prekazku a skorigujeme aktualnu polohu podla nej
-                    Prekazka *nearestPrekazka = shm_R_GUI->prekazky->findNearest(aktPoloha);
+                    Obstacle *nearestPrekazka = shm_R_GUI->prekazky->findNearest(aktPoloha);
                     shm_odo->x_rel = nearestPrekazka->GetX_rob();
                     shm_odo->y_rel = nearestPrekazka->GetY_rob();
                     
@@ -386,7 +386,7 @@ AkcnyZasah * CiCreate::obchadzanie(AkcnyZasah *zasah) {
                     zasah->SetObchadzanieStav(0);
                 } else {
                     shm_R_GUI->koorSur->setInvalid();
-                    shm_R_GUI->socket->sendJson(SocketUtil::createInAccesibleKoorSur(shm_R_GUI->agent_id));
+                    shm_R_GUI->socket->sendJson(SocketUtil::createInAccesibleCoorPosition(shm_R_GUI->agent_id));
                     zasah->SetObchadzanie(true);
                     zasah->SetObchadzanieStav(5);
                 }
@@ -396,7 +396,7 @@ AkcnyZasah * CiCreate::obchadzanie(AkcnyZasah *zasah) {
             shm_R_GUI->isIdPrekazkyValid = false;
             if (connectedIp) {
                 int lastIdPrekazky = shm_R_GUI->id_prekazky;
-                shm_R_GUI->socket->sendJson(SocketUtil::createNewIdPrekazky());
+                shm_R_GUI->socket->sendJson(SocketUtil::createNewIdOfObstacle());
                 while (lastIdPrekazky == shm_R_GUI->id_prekazky && shm_R_GUI->ukonci_ulohu == false) {
                     //pockame kym nam pride nove
                     usleep(50 * 1000);
@@ -411,7 +411,7 @@ AkcnyZasah * CiCreate::obchadzanie(AkcnyZasah *zasah) {
             zasah->SetObchadzanieStav(6);
             break;
         case 6: //sledujeme stenu
-            Sledovanie_steny_ciste();
+            wallFollowingPure();
             zasah->SetObchadzanie(false);
             zasah->SetObchadzanieStav(0);
             //zasah->SetLeftWheel(0);
@@ -438,26 +438,26 @@ AkcnyZasah * CiCreate::obchadzanie(AkcnyZasah *zasah) {
 
 }
 
-int CiCreate::Chyt_stenu() {
+int CiCreate::catchWall() {
     int celk_uhol_0;
 
     celk_uhol_0 = shm_odo->prejdeny_uhol;
 
-    Pohyb(100, -100);
+    move(100, -100);
     while (shm_odo->signalSteny < 50) {
         if (shm_R_GUI->ukonci_ulohu) {
-            Pohyb(0, 0);
+            move(0, 0);
             return 0;
         }
         if (abs(celk_uhol_0 - shm_odo->prejdeny_uhol) > 200) {
-            Pohyb(0, 0);
+            move(0, 0);
             return -1;
         }
         usleep(35 * 1000);
     }
 }
 
-int CiCreate::Sledovanie_steny_ciste() {
+int CiCreate::wallFollowingPure() {
     int uhol_0;
     int x_0;
     int y_0;
@@ -482,34 +482,34 @@ int CiCreate::Sledovanie_steny_ciste() {
     while (1) {
         //ak narazí na stenu pred sebou otočí sa dolava        
         if (shm_odo->naraznik_vpredu) {
-            Otocenie_o_uhol(70, 1);
+            rotateAngle(70, 1);
         }
         //ak narazí na stenu pred sebou otočí sa dolava        
         if (shm_odo->naraznik_vlavo) {
-            Otocenie_o_uhol(90, 1);
+            rotateAngle(90, 1);
         }
         if ((shm_odo->stena == 0) && (shm_odo->naraznik_vpravo == 0)) {
             if (shm_odo->signalSteny > 10) {
-                Pohyb(180, 200);
+                move(180, 200);
             } else {
                 if (abs(vzdialPoslSoStenou - shm_odo->prejdena_vzdialenost) > 80) {
-                    Pohyb(30, 230);
+                    move(30, 230);
                 } else {
-                    Pohyb(180, 200);
+                    move(180, 200);
                 }
             }
         } else {
             if ((shm_odo->stena == 0) && (shm_odo->naraznik_vpravo == 1)) {
                 if (shm_odo->signalSteny < 20) {
-                    Pohyb(150, -90);
+                    move(150, -90);
                 } else {
-                    Pohyb(200, 160);
+                    move(200, 160);
                 }
             } else {
                 if ((shm_odo->stena == 1) && (shm_odo->naraznik_vpravo == 1)) {
-                    Pohyb(190, 150);
+                    move(190, 150);
                 } else {
-                    Pohyb(190, 170);
+                    move(190, 170);
                 }
             }
         }
@@ -519,7 +519,7 @@ int CiCreate::Sledovanie_steny_ciste() {
 
         // ukončenie na základe požiadavky zo SHM
         if (shm_R_GUI->ukonci_ulohu) {
-            Pohyb(0, 0);
+            move(0, 0);
             break;
         }
         // kazdy 1 meter tolerancia + 130mm
@@ -531,21 +531,21 @@ int CiCreate::Sledovanie_steny_ciste() {
         //std::cout << "vzdial: " << vzdial << "toler: " << tolerancia << "uhol0" << uhol_0 << "\n";
         // ukončí ak sa vráti do počiatočného bodu
         if (((shm_odo->prejdena_vzdialenost - prejdena_vzdial) > 1000) && (abs(shm_odo->aktualny_uhol - uhol_0) < 35) && (vzdial < tolerancia)) {
-            Pohyb(0, 0);
-            Poloha *poloha0 = new Poloha(0, shm_R_GUI->id_spustenia, shm_R_GUI->agent_id, x_0, y_0, uhol_0);
-            Prekazka *prekazka0 = new Prekazka(0, shm_R_GUI->id_spustenia, shm_R_GUI->id_prekazky, poloha0, 1, 0, 0);
+            move(0, 0);
+            Position *poloha0 = new Position(0, shm_R_GUI->id_spustenia, shm_R_GUI->agent_id, x_0, y_0, uhol_0);
+            Obstacle *prekazka0 = new Obstacle(0, shm_R_GUI->id_spustenia, shm_R_GUI->id_prekazky, poloha0, 1, 0, 0);
             shm_R_GUI->socket->sendJson(prekazka0->toJson());
             std::cout << "prekazka obidena dookola\n";
             break;
         }
         // ukončí ak tu už bol iný robot
-        Poloha *aktPoloha = new Poloha(0, shm_R_GUI->id_spustenia, shm_R_GUI->agent_id, shm_odo->x_rel, shm_odo->y_rel, shm_odo->aktualny_uhol);
-        Prekazka *aktPrekazka = new Prekazka(0, shm_R_GUI->id_spustenia, shm_R_GUI->id_prekazky, aktPoloha, shm_odo->naraznik_vpravo, shm_odo->naraznik_vlavo, shm_odo->naraznik_vpredu);
+        Position *aktPoloha = new Position(0, shm_R_GUI->id_spustenia, shm_R_GUI->agent_id, shm_odo->x_rel, shm_odo->y_rel, shm_odo->aktualny_uhol);
+        Obstacle *aktPrekazka = new Obstacle(0, shm_R_GUI->id_spustenia, shm_R_GUI->id_prekazky, aktPoloha, shm_odo->naraznik_vpravo, shm_odo->naraznik_vlavo, shm_odo->naraznik_vpredu);
         if (shm_R_GUI->prekazky->isNearOtherExceptId(aktPrekazka, (tolerancia*0.7))) {
-            Pohyb(0, 0);
-            Prekazka *prekazka1 = shm_R_GUI->prekazky->nearestPrekazkaExceptId(aktPrekazka);
+            move(0, 0);
+            Obstacle *prekazka1 = shm_R_GUI->prekazky->nearestObstacleExceptId(aktPrekazka);
             prekazka1->SetRobot(shm_R_GUI->agent_id);
-            prekazka1->SetPrekazka(shm_R_GUI->id_prekazky);
+            prekazka1->SetObstacle(shm_R_GUI->id_prekazky);
             shm_R_GUI->socket->sendJson(prekazka1->toJson());
             std::cout << "bol tu iny robot\n";
             std::cout << "aktualna " << aktPrekazka->toString() << "\n";
@@ -601,7 +601,7 @@ AkcnyZasah * CiCreate::skumanie(AkcnyZasah *zasah) {
         if (sqrt(((shm_R_GUI->koorSur->GetY() - shm_odo->y_rel)*(shm_R_GUI->koorSur->GetY() - shm_odo->y_rel))
                 + ((shm_R_GUI->koorSur->GetX() - shm_odo->x_rel)*(shm_R_GUI->koorSur->GetX() - shm_odo->x_rel))) < 200) {
             shm_R_GUI->koorSur->setInvalid();
-            shm_R_GUI->socket->sendJson(SocketUtil::createInvalidKoorSur(shm_R_GUI->agent_id));
+            shm_R_GUI->socket->sendJson(SocketUtil::createInvalidCoorPosition(shm_R_GUI->agent_id));
             std::cout << "-------set invalid --------------- \n";
         }
     }
@@ -620,7 +620,7 @@ AkcnyZasah * CiCreate::skumanie(AkcnyZasah *zasah) {
     }
 
     if (shm_R_GUI->koorSur->isValid() && !zasah->IsObchadzanie()) {
-        int uhol = uholKBodu(shm_R_GUI->koorSur->GetX(), shm_R_GUI->koorSur->GetY());
+        int uhol = angleToPosition(shm_R_GUI->koorSur->GetX(), shm_R_GUI->koorSur->GetY());
         //std::cout << "uhol k bodu " << uhol << "\n";
 
         if (uhol > 3) {
@@ -658,7 +658,7 @@ AkcnyZasah * CiCreate::skumanie(AkcnyZasah *zasah) {
     return zasah;
 }
 
-int CiCreate::uholKBodu(int x, int y) {
+int CiCreate::angleToPosition(int x, int y) {
     int uhol; //otoc sa o uhol k cielu
 
     int x_0; //vychodzia poloha
@@ -698,19 +698,19 @@ int CiCreate::uholKBodu(int x, int y) {
     return uhol;
 }
 
-int CiCreate::Pohyb(AkcnyZasah *zasah) {
-    Pohyb(zasah->GetRightWheel(), zasah->GetLeftWheel());
+int CiCreate::move(AkcnyZasah *zasah) {
+    move(zasah->GetRightWheel(), zasah->GetLeftWheel());
 }
 
-int CiCreate::getPolohaX() {
+int CiCreate::getPositionX() {
     return shm_odo->x_rel;
 }
 
-int CiCreate::getPolohaY() {
+int CiCreate::getPositionY() {
     return shm_odo->y_rel;
 }
 
-int CiCreate::getPolohaUhol() {
+int CiCreate::getPositionAngle() {
     return shm_odo->aktualny_uhol;
 }
 
@@ -720,7 +720,7 @@ void CiCreate::pokusy() {
     //Sledovanie_steny();
     //Otocenie_o_uhol_reg(359,0);
 
-    Preskumaj_prostredie();
+    explore_environment();
     std::cout << shm_R_GUI->prekazky->toString();
     std::cout << shm_R_GUI->polohy->toString();
 
@@ -743,16 +743,16 @@ void CiCreate::pokusy() {
     //    Otocenie_o_uhol(90,1);
 }
 
-int CiCreate::Dopredu_po_naraz() {
+int CiCreate::moveForwardTillHit() {
     if (connectedComport && shm_R_GUI->ukonci_ulohu == false) {
-        Pohyb(100, 100);
+        move(100, 100);
         while (1) {
             if (shm_odo->naraznik_vpredu || shm_odo->naraznik_vlavo || shm_odo->naraznik_vpravo) {
-                Pohyb(0, 0);
+                move(0, 0);
                 break;
             }
             if (shm_R_GUI->ukonci_ulohu) {
-                Pohyb(0, 0);
+                move(0, 0);
                 break;
             }
             usleep(10 * 1000);
@@ -764,7 +764,7 @@ int CiCreate::Dopredu_po_naraz() {
     }
 }
 
-int CiCreate::Dopredu_o_vzdialenost(int ziad_vzdial) {
+int CiCreate::forwardDistance(int ziad_vzdial) {
     //postupne zrýchluje a spomaluje aby sa zmenšila chyba prešmykovaním kolies
     if (connectedComport && shm_R_GUI->ukonci_ulohu == false) {
         int poc_vzdial = shm_odo->prejdena_vzdialenost;
@@ -772,21 +772,21 @@ int CiCreate::Dopredu_o_vzdialenost(int ziad_vzdial) {
         // na 2 krat aby sme nepresmykovali, inak ideme len pomalsou rychlostou
         if (ziad_vzdial > 200) {
             ziad_vzdial += poc_vzdial;
-            Pohyb(150, 150);
+            move(150, 150);
             while (1) {
                 if (abs(shm_odo->prejdena_vzdialenost - poc_vzdial) > 10) {
                     break;
                 }
                 if (shm_R_GUI->ukonci_ulohu) {
-                    Pohyb(0, 0);
+                    move(0, 0);
                     break;
                 }
                 usleep(10 * 1000);
             }
-            Pohyb(250, 250);
+            move(250, 250);
         } else {
             ziad_vzdial += poc_vzdial;
-            Pohyb(150, 150);
+            move(150, 150);
         }
         //cakame kym sa priblizime na 70mm
         while (1) {
@@ -794,25 +794,25 @@ int CiCreate::Dopredu_o_vzdialenost(int ziad_vzdial) {
                 break;
             }
             if (shm_R_GUI->ukonci_ulohu) {
-                Pohyb(0, 0);
+                move(0, 0);
                 break;
             }
             usleep(10 * 1000);
         }
         //ked sme blizko zmensime rychlost aby sme sa presnejsie priblizili
-        Pohyb(100, 100);
+        move(100, 100);
         while (1) {
             if (abs(shm_odo->prejdena_vzdialenost - ziad_vzdial) < 20) {
                 break;
             }
             if (shm_R_GUI->ukonci_ulohu) {
-                Pohyb(0, 0);
+                move(0, 0);
                 break;
             }
             usleep(10 * 1000);
         }
         //sme na mieste zastavime
-        Pohyb(0, 0);
+        move(0, 0);
         return 1;
     } else {
         std::cout << "Nemožno spustit pohyb po naraz, neni pripojený robot\n";
@@ -820,7 +820,7 @@ int CiCreate::Dopredu_o_vzdialenost(int ziad_vzdial) {
     }
 }
 
-int CiCreate::Dopredu_o_vzdialenost_reg(int ziad_vzdial) {
+int CiCreate::forwardDistanceReg(int ziad_vzdial) {
     //postupne zrýchluje a potom regulatorom zastavi na pozadovanej vzdialenosti
     int K = 2;
     int rychl = 50;
@@ -836,14 +836,14 @@ int CiCreate::Dopredu_o_vzdialenost_reg(int ziad_vzdial) {
             rychl += 10 * K;
             akcZasah = K * (ziad_vzdial - shm_odo->prejdena_vzdialenost);
 
-            Pohyb((WORD) rychl, (WORD) rychl);
+            move((WORD) rychl, (WORD) rychl);
 
             if (rychl >= abs(akcZasah) || abs(rychl) > LEFT_WHEEL_MAX_POS_SPEED) {
                 break;
             }
 
             if (shm_R_GUI->ukonci_ulohu) {
-                Pohyb(0, 0);
+                move(0, 0);
                 break;
             }
             usleep(10 * 1000);
@@ -858,20 +858,20 @@ int CiCreate::Dopredu_o_vzdialenost_reg(int ziad_vzdial) {
                 if (akcZasah < 0) akcZasah = -50;
             }
 
-            Pohyb((WORD) akcZasah, (WORD) akcZasah);
+            move((WORD) akcZasah, (WORD) akcZasah);
 
             if (abs(shm_odo->prejdena_vzdialenost - ziad_vzdial) < 10) {
                 break;
             }
 
             if (shm_R_GUI->ukonci_ulohu) {
-                Pohyb(0, 0);
+                move(0, 0);
                 break;
             }
             usleep(10 * 1000);
         }
         //sme na mieste zastavime
-        Pohyb(0, 0);
+        move(0, 0);
         return 1;
     } else {
         std::cout << "Nemožno spustit pohyb po naraz, neni pripojený robot\n";
@@ -879,7 +879,7 @@ int CiCreate::Dopredu_o_vzdialenost_reg(int ziad_vzdial) {
     }
 }
 
-int CiCreate::Otocenie_o_uhol(int ziad_uhol, int smer) {
+int CiCreate::rotateAngle(int ziad_uhol, int smer) {
     // 0 doprava
     // 1 dolava
 
@@ -894,45 +894,45 @@ int CiCreate::Otocenie_o_uhol(int ziad_uhol, int smer) {
         if (ziad_uhol > 30) {
             ziad_uhol += shm_odo->prejdeny_uhol;
             if (smer) {
-                Pohyb(70, -70);
+                move(70, -70);
             } else {
-                Pohyb(-70, 70);
+                move(-70, 70);
             }
             while (1) {
                 if (abs(shm_odo->prejdeny_uhol - pociatocny_uhol) > 4) {
                     break;
                 }
                 if (shm_R_GUI->ukonci_ulohu) {
-                    Pohyb(0, 0);
+                    move(0, 0);
                     break;
                 }
                 usleep(10 * 1000);
             }
             if (smer) {
-                Pohyb(150, -150);
+                move(150, -150);
             } else {
-                Pohyb(-150, 150);
+                move(-150, 150);
             }
         } else {
             ziad_uhol += shm_odo->prejdeny_uhol;
             if (smer) {
-                Pohyb(45, -45);
+                move(45, -45);
             } else {
-                Pohyb(-45, 45);
+                move(-45, 45);
             }
 
         }
         while (1) {
             if (abs((shm_odo->prejdeny_uhol) - (ziad_uhol)) < 30) {
                 if (smer) {
-                    Pohyb(80, -80);
+                    move(80, -80);
                 } else {
-                    Pohyb(-80, 80);
+                    move(-80, 80);
                 }
                 break;
             }
             if (shm_R_GUI->ukonci_ulohu) {
-                Pohyb(0, 0);
+                move(0, 0);
                 break;
             }
             usleep(30000);
@@ -940,25 +940,25 @@ int CiCreate::Otocenie_o_uhol(int ziad_uhol, int smer) {
         while (1) {
             if (abs((shm_odo->prejdeny_uhol) - (ziad_uhol)) < 15) {
                 if (smer) {
-                    Pohyb(45, -45);
+                    move(45, -45);
                 } else {
-                    Pohyb(-45, 45);
+                    move(-45, 45);
                 }
                 break;
             }
             if (shm_R_GUI->ukonci_ulohu) {
-                Pohyb(0, 0);
+                move(0, 0);
                 break;
             }
             usleep(30000);
         }
         while (1) {
             if (abs((shm_odo->prejdeny_uhol) - (ziad_uhol)) < 7) {
-                Pohyb(0, 0);
+                move(0, 0);
                 break;
             }
             if (shm_R_GUI->ukonci_ulohu) {
-                Pohyb(0, 0);
+                move(0, 0);
                 break;
             }
             usleep(30000);
@@ -970,7 +970,7 @@ int CiCreate::Otocenie_o_uhol(int ziad_uhol, int smer) {
     }
 }
 
-int CiCreate::Otocenie_o_uhol_reg(int ziad_uhol, int smer) {
+int CiCreate::rotateAngleReg(int ziad_uhol, int smer) {
     // 0 doprava
     // 1 dolava
 
@@ -995,9 +995,9 @@ int CiCreate::Otocenie_o_uhol_reg(int ziad_uhol, int smer) {
             zasah = e*P;
 
             if (smer) {
-                Pohyb(rychl, -1 * rychl);
+                move(rychl, -1 * rychl);
             } else {
-                Pohyb(-1 * rychl, rychl);
+                move(-1 * rychl, rychl);
             }
 
             if (rychl >= abs(zasah) || abs(rychl) > LEFT_WHEEL_MAX_POS_SPEED) {
@@ -1005,7 +1005,7 @@ int CiCreate::Otocenie_o_uhol_reg(int ziad_uhol, int smer) {
             }
 
             if (shm_R_GUI->ukonci_ulohu) {
-                Pohyb(0, 0);
+                move(0, 0);
                 break;
             }
             usleep(10 * 1000);
@@ -1016,16 +1016,16 @@ int CiCreate::Otocenie_o_uhol_reg(int ziad_uhol, int smer) {
             e = ziad_uhol - shm_odo->prejdeny_uhol;
             zasah = e*P;
             if (smer) {
-                Pohyb((WORD) zasah, (WORD) - 1 * zasah);
+                move((WORD) zasah, (WORD) - 1 * zasah);
             } else {
-                Pohyb((WORD) - 1 * zasah, (WORD) zasah);
+                move((WORD) - 1 * zasah, (WORD) zasah);
             }
             if (abs((shm_odo->prejdeny_uhol) - (ziad_uhol)) < 2) {
-                Pohyb(0, 0);
+                move(0, 0);
                 break;
             }
             if (shm_R_GUI->ukonci_ulohu) {
-                Pohyb(0, 0);
+                move(0, 0);
                 break;
             }
             usleep(30000);
@@ -1037,7 +1037,7 @@ int CiCreate::Otocenie_o_uhol_reg(int ziad_uhol, int smer) {
     }
 }
 
-int CiCreate::Sledovanie_steny() {
+int CiCreate::wallFollowing() {
     int uhol_0;
     int celk_uhol_0;
     int x_0;
@@ -1049,35 +1049,35 @@ int CiCreate::Sledovanie_steny() {
 
     if (connectedComport && shm_R_GUI->ukonci_ulohu == false) {
         if (shm_R_GUI->ukonci_ulohu) {
-            Pohyb(0, 0);
+            move(0, 0);
             return 1;
         }
-        Dopredu_po_naraz();
+        moveForwardTillHit();
 
         // ulozime ze sledujeme stenu koli posielaniu suradnic prekazok
         shm_odo->wallFollowing = true;
 
         celk_uhol_0 = shm_odo->prejdeny_uhol;
         if (shm_odo->naraznik_vlavo) {
-            Otocenie_o_uhol(60, 1);
+            rotateAngle(60, 1);
         }
         if (shm_odo->naraznik_vpredu) {
-            Otocenie_o_uhol(30, 1);
+            rotateAngle(30, 1);
         }
-        Dopredu_po_naraz();
+        moveForwardTillHit();
         //chytí sa steny (natočí sa aby chytil signál steny)
         while (shm_odo->signalSteny < 35) {
-            Pohyb(100, -100);
+            move(100, -100);
             if (shm_odo->naraznik_vpravo == 0) {
                 //Dopredu_po_naraz();
             }
             if (shm_R_GUI->ukonci_ulohu) {
-                Pohyb(0, 0);
+                move(0, 0);
                 shm_odo->wallFollowing = false;
                 return 1;
             }
             if (abs(celk_uhol_0 - shm_odo->prejdeny_uhol) > 200) {
-                Pohyb(0, 0);
+                move(0, 0);
                 shm_odo->wallFollowing = false;
                 return 0;
             }
@@ -1087,7 +1087,7 @@ int CiCreate::Sledovanie_steny() {
         shm_R_GUI->isIdPrekazkyValid = false;
         if (connectedIp) {
             int lastIdPrekazky = shm_R_GUI->id_prekazky;
-            shm_R_GUI->socket->sendJson(SocketUtil::createNewIdPrekazky());
+            shm_R_GUI->socket->sendJson(SocketUtil::createNewIdOfObstacle());
             while (lastIdPrekazky == shm_R_GUI->id_prekazky && shm_R_GUI->ukonci_ulohu == false) {
                 //pockame kym nam pride nove
                 usleep(50 * 1000);
@@ -1108,29 +1108,29 @@ int CiCreate::Sledovanie_steny() {
         while (1) {
             //ak narazí na stenu pred sebou otočí sa dolava        
             if (shm_odo->naraznik_vpredu) {
-                Otocenie_o_uhol(70, 1);
+                rotateAngle(70, 1);
             }
             //mení zakrivenie pohybu podla pozície k stene
             if ((shm_odo->stena == 0) && (shm_odo->naraznik_vpravo == 0)) {
                 if (shm_odo->signalSteny < 20) {
-                    Pohyb(30, 230);
+                    move(30, 230);
                 } else {
-                    Pohyb(180, 200);
+                    move(180, 200);
                 }
             } else {
                 if ((shm_odo->stena == 0) && (shm_odo->naraznik_vpravo == 1)) {
                     if (shm_odo->signalSteny < 20) {
-                        Pohyb(150, -90);
+                        move(150, -90);
                     } else {
-                        Pohyb(200, 160);
+                        move(200, 160);
                     }
                 } else {
-                    Pohyb(190, 170);
+                    move(190, 170);
                 }
             }
             // ukončenie na základe požiadavky zo SHM
             if (shm_R_GUI->ukonci_ulohu) {
-                Pohyb(0, 0);
+                move(0, 0);
                 break;
             }
             // kazde 2 metre tolerancia + 130mm
@@ -1139,14 +1139,14 @@ int CiCreate::Sledovanie_steny() {
             //std::cout << "vzdial: " << vzdial << "toler: " << tolerancia << "\n";
             // ukončí ak sa vráti do počiatočného bodu
             if (((shm_odo->prejdena_vzdialenost - prejdena_vzdial) > 1000) && (abs(shm_odo->aktualny_uhol - uhol_0) < 40) && (vzdial < tolerancia)) {
-                Pohyb(0, 0);
+                move(0, 0);
                 break;
             }
             // ukončí ak tu už bol iný robot
-            Poloha *aktPoloha = new Poloha(0, shm_R_GUI->id_spustenia, shm_R_GUI->agent_id, shm_odo->x_rel, shm_odo->y_rel, shm_odo->aktualny_uhol);
-            Prekazka *aktPrekazka = new Prekazka(0, shm_R_GUI->id_spustenia, shm_R_GUI->id_prekazky, aktPoloha, shm_odo->naraznik_vpravo, shm_odo->naraznik_vlavo, shm_odo->naraznik_vpredu);
+            Position *aktPoloha = new Position(0, shm_R_GUI->id_spustenia, shm_R_GUI->agent_id, shm_odo->x_rel, shm_odo->y_rel, shm_odo->aktualny_uhol);
+            Obstacle *aktPrekazka = new Obstacle(0, shm_R_GUI->id_spustenia, shm_R_GUI->id_prekazky, aktPoloha, shm_odo->naraznik_vpravo, shm_odo->naraznik_vlavo, shm_odo->naraznik_vpredu);
             if (shm_R_GUI->prekazky->isNearOtherExceptId(aktPrekazka, (tolerancia + 300))) {
-                Pohyb(0, 0);
+                move(0, 0);
                 break;
             }
             usleep(40 * 1000);
@@ -1162,16 +1162,16 @@ int CiCreate::Sledovanie_steny() {
     }
 }
 
-int CiCreate::getSnimacSteny() {
+int CiCreate::getWallSensor() {
     int pom = shm_odo->signalSteny;
     return pom;
 }
 
-bool CiCreate::isStena() {
+bool CiCreate::isWall() {
     return shm_odo->stena == 1 ? true : false;
 }
 
-bool CiCreate::isKolizia() {
+bool CiCreate::isInColision() {
     return (shm_odo->naraznik_vlavo == 1 ||
             shm_odo->naraznik_vpravo == 1 ||
             shm_odo->naraznik_vpredu == 1 ||

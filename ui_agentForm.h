@@ -66,7 +66,6 @@ public:
     QLabel *zLabel;
     QLineEdit *z0Edit;
     QPushButton *nastavAktPolohuButton;
-    QPushButton *testButton;
 
     void setupUi(QDialog *agentForm)
     {
@@ -94,7 +93,7 @@ public:
         label_15->setGeometry(QRect(360, 200, 131, 26));
         layoutWidget = new QWidget(agentForm);
         layoutWidget->setObjectName(QString::fromUtf8("layoutWidget"));
-        layoutWidget->setGeometry(QRect(20, 80, 222, 60));
+        layoutWidget->setGeometry(QRect(20, 80, 222, 62));
         formLayout = new QFormLayout(layoutWidget);
         formLayout->setObjectName(QString::fromUtf8("formLayout"));
         formLayout->setContentsMargins(0, 0, 0, 0);
@@ -120,7 +119,7 @@ public:
 
         layoutWidget1 = new QWidget(agentForm);
         layoutWidget1->setObjectName(QString::fromUtf8("layoutWidget1"));
-        layoutWidget1->setGeometry(QRect(310, 80, 221, 90));
+        layoutWidget1->setGeometry(QRect(310, 80, 221, 95));
         gridLayout = new QGridLayout(layoutWidget1);
         gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
         gridLayout->setContentsMargins(0, 0, 0, 0);
@@ -156,7 +155,7 @@ public:
 
         layoutWidget2 = new QWidget(agentForm);
         layoutWidget2->setObjectName(QString::fromUtf8("layoutWidget2"));
-        layoutWidget2->setGeometry(QRect(290, 230, 269, 60));
+        layoutWidget2->setGeometry(QRect(290, 230, 269, 62));
         gridLayout_2 = new QGridLayout(layoutWidget2);
         gridLayout_2->setObjectName(QString::fromUtf8("gridLayout_2"));
         gridLayout_2->setContentsMargins(0, 0, 0, 0);
@@ -182,7 +181,7 @@ public:
 
         layoutWidget3 = new QWidget(agentForm);
         layoutWidget3->setObjectName(QString::fromUtf8("layoutWidget3"));
-        layoutWidget3->setGeometry(QRect(30, 210, 217, 142));
+        layoutWidget3->setGeometry(QRect(30, 210, 217, 151));
         gridLayout_3 = new QGridLayout(layoutWidget3);
         gridLayout_3->setObjectName(QString::fromUtf8("gridLayout_3"));
         gridLayout_3->setContentsMargins(0, 0, 0, 0);
@@ -241,9 +240,6 @@ public:
 
         gridLayout_3->addWidget(nastavAktPolohuButton, 4, 0, 1, 3);
 
-        testButton = new QPushButton(agentForm);
-        testButton->setObjectName(QString::fromUtf8("testButton"));
-        testButton->setGeometry(QRect(310, 330, 85, 26));
 
         retranslateUi(agentForm);
         QObject::connect(koniecButton, SIGNAL(clicked()), agentForm, SLOT(close()));
@@ -256,7 +252,6 @@ public:
         QObject::connect(dopravaButton, SIGNAL(clicked()), agentForm, SLOT(dopravaClicked()));
         QObject::connect(dolavaButton, SIGNAL(clicked()), agentForm, SLOT(dolavaClicked()));
         QObject::connect(zastavButton, SIGNAL(clicked()), agentForm, SLOT(zastavClicked()));
-        QObject::connect(testButton, SIGNAL(clicked()), agentForm, SLOT(testClicked()));
 
         QMetaObject::connectSlotsByName(agentForm);
     } // setupUi
@@ -292,7 +287,6 @@ public:
         label_6->setText(QApplication::translate("agentForm", "Uhol:", 0, QApplication::UnicodeUTF8));
         zLabel->setText(QApplication::translate("agentForm", "0", 0, QApplication::UnicodeUTF8));
         nastavAktPolohuButton->setText(QApplication::translate("agentForm", "Nastav ako aktu\303\241lnu polohu", 0, QApplication::UnicodeUTF8));
-        testButton->setText(QApplication::translate("agentForm", "T", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 
 };

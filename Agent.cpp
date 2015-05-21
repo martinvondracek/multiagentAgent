@@ -16,7 +16,7 @@ void *vlaknoMapovanie(void *arg) {
     shm_R_GUI->ukonci_ulohu = false;
     shm_R_GUI->id_prekazky = 0;
     shm_R_GUI->isIdPrekazkyValid = false;
-    agent->Preskumaj_prostredie();
+    agent->explore_environment();
     shm_R_GUI->prebieha_uloha = false;
 }
 
@@ -71,7 +71,7 @@ void *vlaknoPrijimanieDatServera(void *arg) {
                 }
                 //todo ak pride koordinacna suradnica pre mapovanie
                 if (ctype.compare("KOORDINACNA_SUR") == 0) {
-                    KoordinacnaSur *koorSur = KoordinacnaSur::fromJson(token);
+                    CoordinationPosition *koorSur = CoordinationPosition::fromJson(token);
                     shm_R_GUI->koorSur = koorSur;
                     //std::cout << "prisla koorSur" <<  koorSur->toString() << "\n";
                 }
@@ -96,7 +96,7 @@ void *vlaknoPrijimanieDatServera(void *arg) {
                 }
                 // ak pride nove ID spustenia
                 if (ctype.compare("ID_SPUSTENIA") == 0) {
-                    int id_p = SocketUtil::parseIdSpusteniaFromJson(token.c_str());
+                    int id_p = SocketUtil::parseIdMappingFromJson(token.c_str());
                     if (id_p > 0) {
                         shm_R_GUI->id_spustenia = id_p;
                         std::cout << "id spustenia=" << shm_R_GUI->id_spustenia << "\n";
@@ -104,18 +104,18 @@ void *vlaknoPrijimanieDatServera(void *arg) {
                 }
                 // ak pride nove ID prekazky
                 if (ctype.compare("NEW_ID_PREKAZKY") == 0) {
-                    int id_p = SocketUtil::parseNewIdPrekazkyFromJson(token.c_str());
+                    int id_p = SocketUtil::parseNewIdObstacleFromJson(token.c_str());
                     shm_R_GUI->id_prekazky = id_p;
                 }
                 // ak pride prekazka ulozime ju k ostatnym
                 if (ctype.compare("PREKAZKACLASS") == 0) {
-                    Prekazka *prekazka = Prekazka::fromJson(token.c_str());
-                    shm_R_GUI->prekazky->addPrekazka(prekazka);
+                    Obstacle *prekazka = Obstacle::fromJson(token.c_str());
+                    shm_R_GUI->prekazky->addObstacle(prekazka);
                     //std::cout << "prisla prekazka od:" <<  prekazka->GetRobot() << "\n";
                 }
                 // ak pride poloha ulozime ju k ostatnym
                 if (ctype.compare("POLOHACLASS") == 0) {
-                    Poloha *poloha = Poloha::fromJson(token.c_str());
+                    Position *poloha = Position::fromJson(token.c_str());
                     shm_R_GUI->polohy->addOrUpdatePoloha(poloha);
                     //std::cout << "prisla poloha od:" <<  poloha->GetRobot() << "\n";
                 }
@@ -132,9 +132,9 @@ Agent::Agent(komunikacia_shm *shm_R_GUI) {
     this->socket = new SocketConnector();    
     this->shm_R_GUI->socket = this->socket;
     this->shm_R_GUI->vlaknoMapovanie = &(this->vlaknoMapovanie);
-    this->shm_R_GUI->prekazky = new Prekazky();
-    this->shm_R_GUI->polohy = new PolohyAgentov(shm_R_GUI->agent_id);
-    this->shm_R_GUI->koorSur = KoordinacnaSur::newInvalid();
+    this->shm_R_GUI->prekazky = new Obstacles();
+    this->shm_R_GUI->polohy = new PositionsOfAgents(shm_R_GUI->agent_id);
+    this->shm_R_GUI->koorSur = CoordinationPosition::newInvalid();
 }
 
 const char * Agent::getComport() {
@@ -194,7 +194,7 @@ int Agent::connectIp(int portNumber, const char *hostName) {
         //std::cout << "json token" << token << "\n";
         
         int id = SocketUtil::parseAgentIdFromJson(token.c_str());
-        int idSpustenia = SocketUtil::parseAgentIdSpusteniaFromJson(token.c_str());
+        int idSpustenia = SocketUtil::parseAgentIdMappingFromJson(token.c_str());
         if (id>0 && idSpustenia>0) {
             shm_R_GUI->agent_id = id;
             shm_R_GUI->id_spustenia = idSpustenia;
@@ -247,28 +247,28 @@ bool Agent::getConnectedIp() {
     return this->connectedIp;
 }
 
-int Agent::Nastav_polohu(int x_0, int y_0, int uhol_0) {
+int Agent::set_position(int x_0, int y_0, int uhol_0) {
     return 0;
 }
 
-int Agent::Pohyb(WORD p, WORD l) {
+int Agent::move(WORD p, WORD l) {
     return 0;
 }
 
-int Agent::Preskumaj_prostredie() {
-    Poloha *poloha = new Poloha(0, shm_R_GUI->id_spustenia, shm_R_GUI->agent_id, 0, 0, 0);
+int Agent::explore_environment() {
+    Position *poloha = new Position(0, shm_R_GUI->id_spustenia, shm_R_GUI->agent_id, 0, 0, 0);
     switch (shm_R_GUI->agent_id) {
         case 1:
-            poloha = new Poloha(0, shm_R_GUI->id_spustenia, shm_R_GUI->agent_id, 0, -3000, 0);
+            poloha = new Position(0, shm_R_GUI->id_spustenia, shm_R_GUI->agent_id, 0, -3000, 0);
             break;
         case 2:
-            poloha = new Poloha(0, shm_R_GUI->id_spustenia, shm_R_GUI->agent_id, 0, 3000, 0);
+            poloha = new Position(0, shm_R_GUI->id_spustenia, shm_R_GUI->agent_id, 0, 3000, 0);
             break;
         case 3:
-            poloha = new Poloha(0, shm_R_GUI->id_spustenia, shm_R_GUI->agent_id, 3000, 0, 0);
+            poloha = new Position(0, shm_R_GUI->id_spustenia, shm_R_GUI->agent_id, 3000, 0, 0);
             break;
         case 4:
-            poloha = new Poloha(0, shm_R_GUI->id_spustenia, shm_R_GUI->agent_id, -3000, 0, 0);
+            poloha = new Position(0, shm_R_GUI->id_spustenia, shm_R_GUI->agent_id, -3000, 0, 0);
             break;
     }
     shm_R_GUI->socket->sendJson(poloha->toJson());
@@ -287,7 +287,7 @@ void Agent::pokusy() {
     
 }
 
-bool Agent::isKolizia() {
+bool Agent::isInColision() {
     return false;
 }
 

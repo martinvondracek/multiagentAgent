@@ -3,6 +3,8 @@
  * Author: martin
  *
  * Created on Sobota, 2013, február 23, 13:36
+ * 
+ * comport connector
  */
 
 #ifndef CCOMPORT_H
@@ -34,16 +36,15 @@ class CComport {
 public:
     CComport();
     CComport(const char *cp, int bd);
-    int OpenComport(); // pripojí sa na port
-    int PollComport(unsigned char *buf, int size); //číta z portu
+    int OpenComport(); // connects/opens comport
+    int PollComport(unsigned char *buf, int size); //reades from comport
     int ReadByte(unsigned char *buf);
-    int ReadNBytes(unsigned char *buf, int size); //precita n bytov, caka kym ich neni taky pocet
-                                                    // alebo neprejde 1 sekunda
-    int ReadGyro();
-    int SendByte(unsigned char byte); // pošle byte
-    int SendnBytes(unsigned char * byte, int size); //pošle n bytov
-    int SendBuf(unsigned char *buf, int size); //pošle buffer
-    void CloseComport();  //zatvorí port
+    int ReadNBytes(unsigned char *buf, int size); //reads N bytes or breaks after 300ms
+    int ReadGyro(); // reads packet from gyroscope
+    int SendByte(unsigned char byte); // sends byte
+    int SendnBytes(unsigned char * byte, int size); //sends n bytes
+    int SendBuf(unsigned char *buf, int size); //sends buffer
+    void CloseComport();  //closes comport
     int IsCTSEnabled(int comport_number);
     ~CComport();
 };

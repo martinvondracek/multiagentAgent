@@ -15,28 +15,28 @@
 #include <unistd.h>
 #include <iostream>
 
-class KoordinacnaSur {
+class CoordinationPosition {
 public:
-    KoordinacnaSur(int x, int y);
+    CoordinationPosition(int x, int y);
     
     int GetX();
     int GetY();    
     bool isValid();
     void setInvalid();
     
-    static KoordinacnaSur* newInvalid();
+    static CoordinationPosition* newInvalid();
     
     std::string toJson();
-    static KoordinacnaSur* fromJson(std::string json);
+    static CoordinationPosition* fromJson(std::string json);
     std::string toString();
     
-    virtual ~KoordinacnaSur();
+    virtual ~CoordinationPosition();
 private:
     int x;
     int y;
     bool valid;
     
-    KoordinacnaSur(int x, int y, bool valid);
+    CoordinationPosition(int x, int y, bool valid);
 };
 
 #endif	/* KOORDINACNASUR_H */

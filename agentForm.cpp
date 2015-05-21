@@ -166,7 +166,7 @@ void agentForm::nastavAktPolohuClicked() {
     x = widget.x0Edit->text().toInt();
     y = widget.y0Edit->text().toInt();
     fi = widget.z0Edit->text().toInt();
-    agent->Nastav_polohu(x, y, fi);
+    agent->set_position(x, y, fi);
 }
 
 void agentForm::dopreduClicked() {
@@ -177,7 +177,7 @@ void agentForm::dopreduClicked() {
         return;
     }
     
-    agent->Pohyb(250, 250);
+    agent->move(250, 250);
 }
 
 void agentForm::zastavClicked() {
@@ -188,7 +188,7 @@ void agentForm::zastavClicked() {
         return;
     }
     
-    agent->Pohyb(0, 0);
+    agent->move(0, 0);
 }
 
 void agentForm::dolavaClicked() {
@@ -199,7 +199,7 @@ void agentForm::dolavaClicked() {
         return;
     }
     
-    agent->Pohyb(100, -100);
+    agent->move(100, -100);
 }
 
 void agentForm::dopravaClicked() {
@@ -210,7 +210,7 @@ void agentForm::dopravaClicked() {
         return;
     }
     
-    agent->Pohyb(-100, 100);
+    agent->move(-100, 100);
 }
 
 void agentForm::mapujClicked() {

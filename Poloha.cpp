@@ -5,9 +5,9 @@
  * Created on Sobota, 2015, január 24, 10:45
  */
 
-#include "Poloha.h"
+#include "Position.h"
 
-Poloha::Poloha(int id, int id_spustenia, int robot, float x, float y, float fi) {
+Position::Position(int id, int id_spustenia, int robot, float x, float y, float fi) {
     this->id = id;
     this->id_spustenia = id_spustenia;
     this->robot = robot;
@@ -16,55 +16,55 @@ Poloha::Poloha(int id, int id_spustenia, int robot, float x, float y, float fi) 
     this->fi = fi;
 }
 
-float Poloha::GetFi() {
+float Position::GetFi() {
     return fi;
 }
 
-void Poloha::SetFi(float fi) {
+void Position::SetFi(float fi) {
     this->fi = fi;
 }
 
-int Poloha::GetId() {
+int Position::GetId() {
     return id;
 }
 
-void Poloha::SetId(int id) {
+void Position::SetId(int id) {
     this->id = id;
 }
 
-int Poloha::GetId_spustenia() {
+int Position::GetId_mapping() {
     return id_spustenia;
 }
 
-void Poloha::SetId_spustenia(int id_spustenia) {
+void Position::SetId_mapping(int id_spustenia) {
     this->id_spustenia = id_spustenia;
 }
 
-int Poloha::GetRobot() {
+int Position::GetRobot() {
     return robot;
 }
 
-void Poloha::SetRobot(int robot) {
+void Position::SetRobot(int robot) {
     this->robot = robot;
 }
 
-float Poloha::GetX() {
+float Position::GetX() {
     return x;
 }
 
-void Poloha::SetX(float x) {
+void Position::SetX(float x) {
     this->x = x;
 }
 
-float Poloha::GetY() {
+float Position::GetY() {
     return y;
 }
 
-void Poloha::SetY(float y) {
+void Position::SetY(float y) {
     this->y = y;
 }
 
-const char * Poloha::toJson() {
+const char * Position::toJson() {
     std::string pom;
     
     std::string json = "{\n";
@@ -99,7 +99,7 @@ const char * Poloha::toJson() {
     return json.c_str();
 }
 
-Poloha * Poloha::fromJson(const char *json) {
+Position * Position::fromJson(const char *json) {
     int id;
     int id_spustenia;
     int robot;
@@ -117,21 +117,21 @@ Poloha * Poloha::fromJson(const char *json) {
     y = document["Y"].GetDouble();
     fi = document["FI"].GetDouble();
     
-    return new Poloha(id, id_spustenia, robot, x, y, fi);
+    return new Position(id, id_spustenia, robot, x, y, fi);
 }
 
-const char * Poloha::toString() {
+const char * Position::toString() {
     return toJson();
 }
 
-float Poloha::getVzdialenost(Poloha *p2) {
+float Position::getDistance(Position *p2) {
     return sqrt((x-p2->GetX())*(x-p2->GetX()) + (y-p2->GetY())*(y-p2->GetY()));
 }
 
-float Poloha::getVzdialenost(KoordinacnaSur *koorSur) {
+float Position::getDistance(CoordinationPosition *koorSur) {
     return sqrt((x-koorSur->GetX())*(x-koorSur->GetX()) + (y-koorSur->GetY())*(y-koorSur->GetY()));
 }
 
-Poloha::~Poloha() {
+Position::~Position() {
 }
 
